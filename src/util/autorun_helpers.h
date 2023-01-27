@@ -2,8 +2,11 @@
 
 #include <fstream>
 #include <string>
+#include <time.h>
 #include <vector>
 #include "common.h"
+
+#define BILLION  1000000000L
 
 namespace erpc {
 
@@ -100,6 +103,15 @@ static std::string get_uri_for_process(size_t process_i) {
   std::string hostname = erpc::get_hostname_for_process(process_i);
   std::string udp_port_str = erpc::get_udp_port_for_process(process_i);
   return hostname + ":" + udp_port_str;
+}
+
+/// Return seconds since <start>
+static double sec_since(struct timespec &start) {
+  struct timespec now;
+  clock_gettime(CLOCK_REALTIME, &now);
+
+  return (now.tv_sec - start.tv_sec) + static_cast<double>(now.tv_nsec - start.tv_nsec) / 
+	  			       static_cast<double> (BILLION);
 }
 
 }  // namespace erpc
