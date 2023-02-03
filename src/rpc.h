@@ -952,9 +952,9 @@ class Rpc {
   /// happens when the server RPC thread has not started.
   bool retry_connect_on_invalid_rpc_id_ = false;
 
- private:
   // Constructor args
   Nexus *nexus_;
+ private:
   void *context_;  ///< The application context
   const uint8_t rpc_id_;
   const sm_handler_t sm_handler_;
