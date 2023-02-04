@@ -5,8 +5,8 @@ void cont_func(void *context, void *tag) { printf("I am called \n"); }
 void sm_handler(int unknown, int SmEventType, int SmErrType, void * unknownpointer) {}
 
 int main() {
-  char *client_uri = append(client_uri, kUDPPort);
-  printf("client uri is %s\n", client_uri);
+  char *client_uri = append(kClientHostname, ":");
+  client_uri = append(client_uri, kUDPPort);
 
   erpc_init(client_uri, 0, 0);
   erpc_start(NULL, 0, sm_handler, 0); 
@@ -18,7 +18,7 @@ int main() {
 
   while (!erpc_is_session_connected(session_num)) erpc_run_event_loop_once();
 
-  erpc_enqueue_request(session_num, kMsgSize, kReqType, kMsgSize, cont_func, NULL, 0);
+  erpc_enqueue_request(session_num, kMsgSize, kReqType, kMsgSize, cont_func, NULL, 8);
 
   erpc_run_event_loop(100);
 

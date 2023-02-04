@@ -51,11 +51,13 @@ extern "C" {
 	/*
 	 * Called after erpc_create_session
 	 */
+	erpc::MsgBuffer req;
+	erpc::MsgBuffer resp;
 	int erpc_enqueue_request(int session_num, size_t reqsize, uint8_t reqtype, size_t respsize,
                          erpc_cont_func_t cont_func, void *tag, size_t cont_etid) {
 		
-		erpc::MsgBuffer req = erpc_store->rpc_->alloc_msg_buffer_or_die(reqsize);
-		erpc::MsgBuffer resp = erpc_store->rpc_->alloc_msg_buffer_or_die(respsize);
+		req = erpc_store->rpc_->alloc_msg_buffer_or_die(reqsize);
+		resp = erpc_store->rpc_->alloc_msg_buffer_or_die(respsize);
 
 		erpc_store->rpc_->enqueue_request(session_num, reqtype, &req, &resp, cont_func, tag, cont_etid);
 		return 0;
