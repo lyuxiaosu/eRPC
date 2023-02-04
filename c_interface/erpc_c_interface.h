@@ -23,8 +23,9 @@ typedef void (*erpc_cont_func_t)(void *context, void *tag);
  */
 typedef void (*erpc_req_func_c)(void *req_handle, void *context);
 
-int erpc_init(char* local_uri, void *context, uint8_t rpc_id, sm_handler_c sm_handler,
-                      uint8_t phy_port, size_t numa_node, size_t num_bg_threads);
+
+int erpc_init(char* local_uri,size_t numa_node, size_t num_bg_threads);
+int erpc_start(void *context, uint8_t rpc_id, sm_handler_c sm_handler, uint8_t phy_port);
 int erpc_create_session(char* remote_uri, uint8_t rem_rpc_id);
 
 int erpc_enqueue_request(int session_num, size_t reqsize, uint8_t reqtype, size_t respsize, 

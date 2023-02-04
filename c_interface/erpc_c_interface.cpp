@@ -6,13 +6,10 @@ typedef void (*sm_handler_t)(int, erpc::SmEventType, erpc::SmErrType, void *);
 class ErpcStore
 {
 public:
-	ErpcStore(char* local_uri, void *context, uint8_t rpc_id, sm_handler_c sm_handler, 
-		  uint8_t phy_port, size_t numa_node, size_t num_bg_threads): nexus_(local_uri, numa_node, num_bg_threads) 
+	ErpcStore(char* local_uri,size_t numa_node, size_t num_bg_threads) : nexus_(local_uri, numa_node, num_bg_threads),
+									     rpc_(NULL)
 	{
-		sm_handler_t sh = reinterpret_cast<void(*)(int, erpc::SmEventType, erpc::SmErrType, void *)>(sm_handler);
-		rpc_ = new erpc::Rpc<erpc::CTransport> (&nexus_, context, rpc_id, sh, phy_port);
 	}
-
 	~ErpcStore() {
 		if (rpc_) {
 			delete rpc_;
@@ -27,18 +24,33 @@ public:
 static ErpcStore *erpc_store = NULL;
 
 extern "C" {
-	int erpc_init(char* local_uri, void *context, uint8_t rpc_id, sm_handler_c sm_handler,
-		      uint8_t phy_port, size_t numa_node, size_t num_bg_threads) {
-		
+
+	int erpc_init(char* local_uri,size_t numa_node, size_t num_bg_threads) {
 		if (!erpc_store) {
-			erpc_store = new ErpcStore(local_uri, context, rpc_id, sm_handler, phy_port, numa_node, num_bg_threads);
-		}
+                        erpc_store = new ErpcStore(local_uri, numa_node, num_bg_threads);
+                }
 		return 0;
 	}
+	/*
+	 * Called after erpc_register_req_func()
+	 */
+	int erpc_start(void *context, uint8_t rpc_id, sm_handler_c sm_handler, uint8_t phy_port) {
+		
+		sm_handler_t sh = reinterpret_cast<void(*)(int, erpc::SmEventType, erpc::SmErrType, void *)>(sm_handler);
+		erpc::Rpc<erpc::CTransport> *rpc = new erpc::Rpc<erpc::CTransport> (&erpc_store->nexus_, context, rpc_id, sh, phy_port);
+		erpc_store->rpc_ = rpc;
+		return 0;
+	}
+	/*
+	 * Called after erpc_start()
+	 */
 	int erpc_create_session(char* remote_uri, uint8_t rem_rpc_id) {
 		assert(erpc_store != NULL);
 		return erpc_store->rpc_->create_session(remote_uri, rem_rpc_id);
 	}
+	/*
+	 * Called after erpc_create_session
+	 */
 	int erpc_enqueue_request(int session_num, size_t reqsize, uint8_t reqtype, size_t respsize,
                          erpc_cont_func_t cont_func, void *tag, size_t cont_etid) {
 		
@@ -60,7 +72,7 @@ extern "C" {
 	}
 	int erpc_register_req_func(uint8_t req_type, erpc_req_func_c req_func, int req_func_type) {
 		erpc::erpc_req_func_t rf = reinterpret_cast<erpc::erpc_req_func_t> (req_func);
-		return erpc_store->rpc_->nexus_->register_req_func(req_type, rf, static_cast<erpc::ReqFuncType>(req_func_type)); 
+		return erpc_store->nexus_.register_req_func(req_type, rf, static_cast<erpc::ReqFuncType>(req_func_type)); 
 	}
 
 	int erpc_req_response_enqueue(void *req_handle, char* content, size_t data_size) {

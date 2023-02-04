@@ -8,7 +8,8 @@ int main() {
   char *client_uri = append(client_uri, kUDPPort);
   printf("client uri is %s\n", client_uri);
 
-  erpc_init(client_uri, NULL, 0, sm_handler, 0, 0, 0);
+  erpc_init(client_uri, 0, 0);
+  erpc_start(NULL, 0, sm_handler, 0); 
 
   char *server_uri = append(kServerHostname, ":");
   server_uri = append(server_uri, kUDPPort);
