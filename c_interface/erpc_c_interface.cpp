@@ -69,7 +69,7 @@ extern "C" {
 	void erpc_run_event_loop_once() {
 		erpc_store->rpc_->run_event_loop_once();
 	}
-	bool erpc_is_session_connected(int session_num) {
+	bool erpc_session_is_connected(int session_num) {
 		return erpc_store->rpc_->is_connected(session_num);
 	}
 	int erpc_register_req_func(uint8_t req_type, erpc_req_func_c req_func, int req_func_type) {
@@ -84,5 +84,9 @@ extern "C" {
 		sprintf(reinterpret_cast<char *>(resp.buf_), "%s", content);
 		erpc_store->rpc_->enqueue_response(rh, &resp);
 		return 0;
+	}
+
+	unsigned char* erpc_get_req_response_content() {
+		return resp.buf_; 
 	}
 }

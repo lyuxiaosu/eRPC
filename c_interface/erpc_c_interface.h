@@ -33,11 +33,13 @@ int erpc_enqueue_request(int session_num, size_t reqsize, uint8_t reqtype, size_
 
 int erpc_run_event_loop(size_t timeout_ms);
 void erpc_run_event_loop_once();
-bool erpc_is_session_connected(int session_num);
+bool erpc_session_is_connected(int session_num);
 
 int erpc_register_req_func(uint8_t req_type, erpc_req_func_c req_func, int req_func_type);
 
 int erpc_req_response_enqueue(void *req_handle, char* content, size_t data_size);
+
+unsigned char* erpc_get_req_response_content();
 #ifdef __cplusplus
 }
 #endif
