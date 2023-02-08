@@ -9,17 +9,18 @@ int main() {
   client_uri = append(client_uri, kUDPPort);
 
   erpc_init(client_uri, 0, 0);
-  erpc_start(NULL, 0, sm_handler, 0); 
+  uint8_t rpc_id = 0;
+  erpc_start(NULL, rpc_id, sm_handler, 0); 
 
   char *server_uri = append(kServerHostname, ":");
   server_uri = append(server_uri, kUDPPort);
 
-  int session_num = erpc_create_session(server_uri, 0);
+  int session_num = erpc_create_session(rpc_id, server_uri, 0);
 
-  while (!erpc_session_is_connected(session_num)) erpc_run_event_loop_once();
+  while (!erpc_session_is_connected(rpc_id, session_num)) erpc_run_event_loop_once(rpc_id);
 
-  erpc_enqueue_request(session_num, kMsgSize, kReqType, kMsgSize, cont_func, NULL, 8);
+  erpc_enqueue_request(rpc_id, session_num, kMsgSize, kReqType, kMsgSize, cont_func, NULL, 8);
 
-  erpc_run_event_loop(100);
+  erpc_run_event_loop(rpc_id, 100);
 
 }
