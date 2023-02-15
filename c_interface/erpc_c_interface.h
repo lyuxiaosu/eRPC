@@ -32,7 +32,7 @@ int erpc_start(void *context, uint8_t rpc_id, sm_handler_c sm_handler, uint8_t p
 int erpc_create_session(uint8_t rpc_id, char* remote_uri, uint8_t rem_rpc_id);
 
 int erpc_enqueue_request(uint8_t rpc_id, int session_num, size_t reqsize, uint8_t reqtype, size_t respsize, 
-		         erpc_cont_func_t cont_func, void *tag, size_t cont_etid);
+		         erpc_cont_func_t cont_func, void *tag, size_t cont_etid, uint8_t *input);
 
 int erpc_run_event_loop(uint8_t rpc_id, size_t timeout_ms);
 void erpc_run_event_loop_once(uint8_t rpc_id);

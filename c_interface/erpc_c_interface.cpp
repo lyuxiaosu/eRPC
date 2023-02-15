@@ -56,12 +56,13 @@ extern "C" {
 	erpc::MsgBuffer req;
 	erpc::MsgBuffer resp;
 	int erpc_enqueue_request(uint8_t rpc_id, int session_num, size_t reqsize, uint8_t reqtype, size_t respsize,
-                         erpc_cont_func_t cont_func, void *tag, size_t cont_etid) {
+                         erpc_cont_func_t cont_func, void *tag, size_t cont_etid, uint8_t *input) {
 		assert(erpc_store != NULL);
 		erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
 		assert(rpc != NULL);	
 		req = rpc->alloc_msg_buffer_or_die(reqsize);
 		resp = rpc->alloc_msg_buffer_or_die(respsize);
+		sprintf(reinterpret_cast<char *>(req.buf_), "%s", input);
 
 		rpc->enqueue_request(session_num, reqtype, &req, &resp, cont_func, tag, cont_etid);
 		return 0;
