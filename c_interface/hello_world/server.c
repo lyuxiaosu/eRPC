@@ -7,7 +7,7 @@ uint8_t rpc_id = 0;
 //}
 void req_func (void *req_handle, uint8_t req_type, uint8_t *msg, size_t size, uint16_t port) {
 	printf("req_type is %d, msg %s size %zu port %d\n", req_type, msg, size, port);
-	erpc_req_response_enqueue(rpc_id, req_handle, "hello world", kMsgSize);
+	erpc_req_response_enqueue(rpc_id, req_handle, "hello world", kMsgSize, 1);
 }
 
 int main() {
