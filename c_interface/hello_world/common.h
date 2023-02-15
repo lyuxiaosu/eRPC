@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char kServerHostname[] = "128.110.218.241";
-static const char kClientHostname[] = "128.110.218.246";
+static const char kServerHostname[] = "128.110.219.3";
+static const char kClientHostname[] = "128.110.218.248";
 
 static const char kUDPPort[] = "31850";
 static const uint8_t kReqType = 2;

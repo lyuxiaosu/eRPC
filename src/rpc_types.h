@@ -34,8 +34,11 @@ class ReqHandle;
  * @param ReqHandle A handle to the received request
  * @param context The context that was used while creating the Rpc object
  */
+#ifdef SLEDGE
+typedef void (*erpc_req_func_t)(ReqHandle *req_handle, uint8_t req_type, uint8_t *msg, size_t size, uint16_t port);
+#else
 typedef void (*erpc_req_func_t)(ReqHandle *req_handle, void *context);
-
+#endif
 /**
  * @relates Rpc
  *

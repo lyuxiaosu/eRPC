@@ -140,7 +140,18 @@ void Rpc<TTr>::process_small_req_st(SSlot *sslot, pkthdr_t *pkthdr) {
       req_msgbuf = alloc_msg_buffer(pkthdr->msg_size_);
       memcpy(req_msgbuf.buf_, pkthdr + 1, pkthdr->msg_size_);  // Omit header
     }
+
+    if (req_func.req_func_ == NULL) {
+	//TODO return a error message to client, call enqueue_reponse directly, first papameter is static_cast<ReqHandle *>(sslot)
+    	printf("request a not existing function\n");
+	return;
+    }
+#ifdef SLEDGE
+    uint16_t src_port = sslot->get_session()->get_src_port();
+    req_func.req_func_(static_cast<ReqHandle *>(sslot), pkthdr->req_type_, req_msgbuf.buf_, pkthdr->msg_size_, src_port);
+#else
     req_func.req_func_(static_cast<ReqHandle *>(sslot), context_);
+#endif
     return;
   } else {
     // Background request handlers need an RX ring--independent request copy
@@ -248,7 +259,12 @@ void Rpc<TTr>::process_large_req_one_st(SSlot *sslot, const pkthdr_t *pkthdr) {
 
   // req_msgbuf here is independent of the RX ring, so don't make another copy
   if (likely(!req_func.is_background())) {
+#ifdef SLEDGE
+    uint16_t src_port = sslot->get_session()->get_src_port();
+    req_func.req_func_(static_cast<ReqHandle *>(sslot), pkthdr->req_type_, req_msgbuf.buf_, pkthdr->msg_size_, src_port);
+#else
     req_func.req_func_(static_cast<ReqHandle *>(sslot), context_);
+#endif
   } else {
     submit_bg_req_st(sslot);
   }

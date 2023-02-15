@@ -8,6 +8,7 @@ LIBS = -lerpc_c_interface -lpthread -lnuma -ldl
 CC=clang
 CFLAGS=-std=c18 -pthread
 
+CFLAGS += -DSLEDGE
 # Release Flags
 CFLAGS+=-O3 -flto
 

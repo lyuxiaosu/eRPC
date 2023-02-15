@@ -60,7 +60,9 @@ class Session {
 
  public:
   enum class Role : int { kServer, kClient };
-
+  uint16_t get_src_port() {
+  	return client_.sm_udp_port_;
+  }
  private:
   Session(Role role, conn_req_uniq_token_t uniq_token, double freq_ghz,
           double link_bandwidth)
@@ -135,6 +137,14 @@ class Session {
   std::string get_remote_hostname() const {
     if (is_client()) return trim_hostname(server_.hostname_);
     return trim_hostname(client_.hostname_);
+  }
+
+  inline SessionEndpoint &get_client_session_endpoint () {
+  	return client_;
+  }
+
+  inline SessionEndpoint &get_server_session_endpoint() {
+  	return server_;
   }
 
   const Role role_;  ///< The role (server/client) of this session endpoint

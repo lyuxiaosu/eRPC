@@ -8,14 +8,15 @@ typedef void (*sm_handler_t)(int, erpc::SmEventType, erpc::SmErrType, void *);
 class ErpcStore
 {
 public:
-	ErpcStore(char* local_uri,size_t numa_node, size_t num_bg_threads) : nexus_(local_uri, numa_node, num_bg_threads)
+	ErpcStore(char* local_uri,size_t numa_node, size_t num_bg_threads) 
 	{
+		nexus_ = new erpc::Nexus(local_uri, numa_node, num_bg_threads);
 	}
 	~ErpcStore() {
 		//TODO: release all rpc pointer in rpc_table_
 	}	
 public:
-	erpc::Nexus nexus_;
+	erpc::Nexus *nexus_;
 	std::unordered_map<uint8_t, erpc::Rpc<erpc::CTransport>*> rpc_table_;
 };
 
@@ -35,7 +36,7 @@ extern "C" {
 	int erpc_start(void *context, uint8_t rpc_id, sm_handler_c sm_handler, uint8_t phy_port) {
 		assert(erpc_store != NULL);
 		sm_handler_t sh = reinterpret_cast<void(*)(int, erpc::SmEventType, erpc::SmErrType, void *)>(sm_handler);
-		erpc::Rpc<erpc::CTransport> *rpc = new erpc::Rpc<erpc::CTransport> (&erpc_store->nexus_, context, rpc_id, sh, phy_port);
+		erpc::Rpc<erpc::CTransport> *rpc = new erpc::Rpc<erpc::CTransport> (erpc_store->nexus_, context, rpc_id, sh, phy_port);
 		erpc_store->rpc_table_[rpc_id] = rpc;
 		return 0;
 	}
@@ -89,18 +90,22 @@ extern "C" {
 	}
 	int erpc_register_req_func(uint8_t req_type, erpc_req_func_c req_func, int req_func_type) {
 		erpc::erpc_req_func_t rf = reinterpret_cast<erpc::erpc_req_func_t> (req_func);
-		return erpc_store->nexus_.register_req_func(req_type, rf, static_cast<erpc::ReqFuncType>(req_func_type)); 
+		return erpc_store->nexus_->register_req_func(req_type, rf, static_cast<erpc::ReqFuncType>(req_func_type)); 
 	}
 
-	int erpc_req_response_enqueue(uint8_t rpc_id, void *req_handle, char* content, size_t data_size) {
+	int erpc_req_response_enqueue(uint8_t rpc_id, void *req_handle, char* content, size_t data_size, uint8_t response_code) {
 		assert(erpc_store != NULL);
                 erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
                 assert(rpc != NULL);
 
 		erpc::ReqHandle * rh = reinterpret_cast<erpc::ReqHandle*> (req_handle);
 		auto &resp = rh->pre_resp_msgbuf_;
-		rpc->resize_msg_buffer(&resp, data_size);
-		sprintf(reinterpret_cast<char *>(resp.buf_), "%s", content);
+		rpc->resize_msg_buffer(&resp, data_size + 2); // one for response_code, the other is white space 
+		sprintf(reinterpret_cast<char *>(resp.buf_), "%hhu", response_code);
+		sprintf(reinterpret_cast<char *>(resp.buf_ + 1), "%s", " ");
+		if (content != NULL) {
+			sprintf(reinterpret_cast<char *>(resp.buf_ + 2), "%s", content);
+		}
 		rpc->enqueue_response(rh, &resp);
 		return 0;
 	}

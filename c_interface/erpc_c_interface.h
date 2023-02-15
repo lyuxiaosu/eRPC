@@ -21,8 +21,11 @@ typedef void (*erpc_cont_func_t)(void *context, void *tag);
 /*
  * rpc handler that will be called on the server side
  */
+#ifdef SLEDGE
+typedef void (*erpc_req_func_c)(void *req_handle, uint8_t req_type, uint8_t *msg, size_t size, uint16_t port);
+#else
 typedef void (*erpc_req_func_c)(void *req_handle, void *context);
-
+#endif
 
 int erpc_init(char* local_uri,size_t numa_node, size_t num_bg_threads);
 int erpc_start(void *context, uint8_t rpc_id, sm_handler_c sm_handler, uint8_t phy_port);
@@ -37,7 +40,7 @@ bool erpc_session_is_connected(uint8_t rpc_id, int session_num);
 
 int erpc_register_req_func(uint8_t req_type, erpc_req_func_c req_func, int req_func_type);
 
-int erpc_req_response_enqueue(uint8_t rpc_id, void *req_handle, char* content, size_t data_size);
+int erpc_req_response_enqueue(uint8_t rpc_id, void *req_handle, char* content, size_t data_size, uint8_t response_code);
 
 unsigned char* erpc_get_req_response_content();
 #ifdef __cplusplus

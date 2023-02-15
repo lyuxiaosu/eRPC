@@ -37,6 +37,7 @@ include_directories(SYSTEM ../third_party/asio/include)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -march=native -Wall -Wextra -Werror -pedantic")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsign-conversion -Wold-style-cast -Wno-unused-function")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-nested-anon-types -Wno-keyword-macro -Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-address-of-packed-member")
 
 include_directories(${CMAKE_SOURCE_DIR}/../src)
 include_directories(${CMAKE_SOURCE_DIR}/)
@@ -70,6 +71,9 @@ elseif(PGO STREQUAL "use")
 elseif(PGO STREQUAL "none")
   message(STATUS "Profile-guided optimization is disabled.")
 endif()
+
+#for sledge
+add_definitions(-DSLEDGE)
 
 # Logging level
 if(LOG_LEVEL STREQUAL "none")
