@@ -56,18 +56,23 @@ extern "C" {
 	/*
 	 * Called after erpc_create_session
 	 */
-	erpc::MsgBuffer req;
-	erpc::MsgBuffer resp;
+	//erpc::MsgBuffer req;
+	//erpc::MsgBuffer resp;
 	int erpc_enqueue_request(uint8_t rpc_id, int session_num, size_t reqsize, uint8_t reqtype, size_t respsize,
-                         erpc_cont_func_t cont_func, void *tag, size_t cont_etid, uint8_t *input) {
+                         erpc_cont_func_t cont_func, void *tag, size_t cont_etid, uint8_t *input, erpc_msgbuffer *req, erpc_msgbuffer *resp) {
 		assert(erpc_store != NULL);
 		erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
 		assert(rpc != NULL);	
-		req = rpc->alloc_msg_buffer_or_die(reqsize);
-		resp = rpc->alloc_msg_buffer_or_die(respsize);
-		sprintf(reinterpret_cast<char *>(req.buf_), "%s", input);
+		erpc::MsgBuffer *req_local = reinterpret_cast<erpc::MsgBuffer*>(req);
+		*req_local = rpc->alloc_msg_buffer_or_die(reqsize);
 
-		rpc->enqueue_request(session_num, reqtype, &req, &resp, cont_func, tag, cont_etid);
+		erpc::MsgBuffer *resp_local = reinterpret_cast<erpc::MsgBuffer*>(resp);
+		*resp_local = rpc->alloc_msg_buffer_or_die(respsize);
+		//req = rpc->alloc_msg_buffer_or_die(reqsize);
+		//resp = rpc->alloc_msg_buffer_or_die(respsize);
+		sprintf(reinterpret_cast<char *>(req_local->buf_), "%s", input);
+
+		rpc->enqueue_request(session_num, reqtype, req_local, resp_local, cont_func, tag, cont_etid);
 		return 0;
 	}
 	int erpc_run_event_loop(uint8_t rpc_id, size_t timeout_ms) {
@@ -114,7 +119,7 @@ extern "C" {
 		return 0;
 	}
 
-	unsigned char* erpc_get_req_response_content() {
-		return resp.buf_; 
-	}
+	//unsigned char* erpc_get_req_response_content() {
+	//	return resp.buf_; 
+	//}
 }
