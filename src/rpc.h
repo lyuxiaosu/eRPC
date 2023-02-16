@@ -22,6 +22,7 @@
 
 namespace erpc {
 
+#define SERVICE_NON_EXISTENT "Request a not existing function"
 /**
  * \mainpage
  *
