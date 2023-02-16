@@ -6,7 +6,8 @@ void sm_handler(int unknown, int SmEventType, int SmErrType, void * unknownpoint
 
 int main() {
   char *client_uri = append(kClientHostname, ":");
-  client_uri = append(client_uri, kUDPPort);
+  //client_uri = append(client_uri, "31851");
+  client_uri = append(client_uri, "31850");
 
   erpc_init(client_uri, 0, 0);
   uint8_t rpc_id = 0;
@@ -19,8 +20,12 @@ int main() {
 
   while (!erpc_session_is_connected(rpc_id, session_num)) erpc_run_event_loop_once(rpc_id);
 
-  erpc_enqueue_request(rpc_id, session_num, kMsgSize, kReqType, kMsgSize, cont_func, NULL, 8);
+  uint8_t input[10] = {0};
+  sprintf(input, "%u", 17);
+
+ // erpc_enqueue_request(rpc_id, session_num, kMsgSize, kReqType, kMsgSize, cont_func, NULL, 8);
+  erpc_enqueue_request(rpc_id, session_num, kMsgSize, kReqType, kMsgSize, cont_func, NULL, 8, input);
 
   erpc_run_event_loop(rpc_id, 100);
-
+  sleep(20);
 }
