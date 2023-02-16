@@ -62,7 +62,6 @@ int erpc_register_req_func(uint8_t req_type, erpc_req_func_c req_func, int req_f
 
 int erpc_req_response_enqueue(uint8_t rpc_id, void *req_handle, char* content, size_t data_size, uint8_t response_code);
 
-//unsigned char* erpc_get_req_response_content();
 #ifdef __cplusplus
 }
 #endif
