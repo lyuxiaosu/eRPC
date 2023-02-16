@@ -28,6 +28,9 @@ extern "C" {
 		if (!erpc_store) {
                         erpc_store = new ErpcStore(local_uri, numa_node, num_bg_threads);
                 }
+
+
+		printf("erpc_msgbuffer size is %ld MsgBuffer size is %ld\n", sizeof(erpc_msgbuffer), sizeof(erpc::MsgBuffer));
 		return 0;
 	}
 	/*

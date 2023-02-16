@@ -9,6 +9,25 @@
 extern "C" {
 #endif
 
+struct erpc_buffer {
+	uint8_t *buf_;
+  	size_t class_size_;  ///< The allocator's class size
+  	uint32_t lkey_;  
+};
+
+struct erpc_msgbuffer {
+	struct erpc_buffer buffer_;
+
+  	// Size info
+  	size_t max_data_size_;  ///< Max data bytes in the MsgBuffer
+  	size_t data_size_;      ///< Current data bytes in the MsgBuffer
+  	size_t max_num_pkts_;   ///< Max number of packets in this MsgBuffer
+  	size_t num_pkts_;    
+        uint8_t *buf_;	/// Pointer to the first application data byte. The message buffer is invalid
+  			/// invalid if this is null.
+};
+
+
 /*
  * The session management handler when the client receives a response for a seesion's request
  */
