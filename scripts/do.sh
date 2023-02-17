@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 # Run an eRPC app on this machine. This script must be run from eRPC homedir.
+
+function usage {
+        echo "$0 [process id] [numa node]"
+        exit 1
+}
+
+if [ $# != 2 ] ; then
+        usage
+        exit 1;
+fi
+
+
+
 source $(dirname $0)/utils.sh
 
 assert_file_exists scripts/autorun_app_file

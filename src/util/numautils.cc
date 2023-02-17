@@ -14,12 +14,9 @@ namespace erpc {
 
 #ifdef __linux__
 size_t num_lcores_per_numa_node() {
-#ifdef SLEDGE
+  //return static_cast<size_t>(numa_num_configured_cpus() /
+  //                           numa_num_configured_nodes());
   return 32; // The only machine we tested on Cloudlab has 32 CPU core
-#else
-  return static_cast<size_t>(numa_num_configured_cpus() /
-                             numa_num_configured_nodes());
-#endif
 }
 
 std::vector<size_t> get_lcores_for_numa_node(size_t numa_node) {
