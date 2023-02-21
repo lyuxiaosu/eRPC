@@ -89,7 +89,6 @@ void app_cont_func(void *_context, void *_ws_i) {
   const double req_lat_us = c->start_time[ws_i].get_us();
   c->latency.update(static_cast<size_t>(req_lat_us * kAppLatFac));
   c->num_resps++;
-
   send_req(*c, ws_i);  // Clock the used window slot
 }
 
@@ -114,6 +113,7 @@ void create_sessions(ClientContext &c) {
 }
 
 void client_func(erpc::Nexus *nexus, size_t thread_id) {
+
   std::vector<size_t> port_vec = flags_get_numa_ports(FLAGS_numa_node);
   uint8_t phy_port = port_vec.at(0);
 
@@ -136,6 +136,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   for (size_t i = 0; i < FLAGS_window_size; i++) {
     c.req_msgbuf[i] = rpc.alloc_msg_buffer_or_die(FLAGS_req_size);
     c.resp_msgbuf[i] = rpc.alloc_msg_buffer_or_die(FLAGS_resp_size);
+    sprintf(reinterpret_cast<char *>(c.req_msgbuf[i].buf_), "%u", 15);
     send_req(c, i);
   }
 
