@@ -80,7 +80,6 @@ elseif(PGO STREQUAL "none")
   message(STATUS "Profile-guided optimization is disabled.")
 endif()
 
-add_definitions(-DSLEDGE)
 # Logging level
 if(LOG_LEVEL STREQUAL "none")
   message(STATUS "Logging level = none.")
