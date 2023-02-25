@@ -19,7 +19,10 @@ void TlsRegistry::reset() {
 }
 
 size_t TlsRegistry::get_etid() const {
-  assert(tls_initialized);
+#ifndef SLEDGE
+  assert(tls_initialized == true); // for sledge, worker thread will send the 
+				   // response but worker threads doesn't init TlsRegistry
+#endif
   return etid;
 }
 
