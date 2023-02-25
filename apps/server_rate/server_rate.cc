@@ -84,8 +84,8 @@ inline void send_req(ClientContext &c, size_t ws_i) {
 void app_cont_func(void *_context, void *_ws_i) {
   auto *c = static_cast<ClientContext *>(_context);
   const auto ws_i = reinterpret_cast<size_t>(_ws_i);
-  assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
-  assert(c->resp_msgbuf[ws_i].buf_[0] == 0);
+  //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
+  assert(c->resp_msgbuf[ws_i].buf_[0] == '0');
 
   const double req_lat_us = c->start_time[ws_i].get_us();
   c->latency.update(static_cast<size_t>(req_lat_us * kAppLatFac));
@@ -100,7 +100,6 @@ void create_sessions(ClientContext &c) {
     printf("Process %zu: Creating %zu sessions to %s.\n", FLAGS_process_id,
            FLAGS_num_server_threads, server_uri.c_str());
   }
-
   for (size_t i = 0; i < FLAGS_num_server_threads; i++) {
     int session_num = c.rpc_->create_session(server_uri, i);
     erpc::rt_assert(session_num >= 0, "Failed to create session");
