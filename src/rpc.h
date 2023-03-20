@@ -158,6 +158,27 @@ class Rpc {
     return msg_buffer;
   }
 
+  inline MsgBuffer* alloc_msg_buffer_pointer(size_t max_data_size) {
+    assert(max_data_size > 0);  // Doesn't work for max_data_size = 0
+
+    // This function avoids division for small data sizes
+    size_t max_num_pkts = data_size_to_num_pkts(max_data_size);
+
+    lock_cond(&huge_alloc_lock_);
+    Buffer buffer =
+        huge_alloc_->alloc(max_data_size + (max_num_pkts * sizeof(pkthdr_t)));
+    unlock_cond(&huge_alloc_lock_);
+
+    if (unlikely(buffer.buf_ == nullptr)) {
+      MsgBuffer *msg_buffer = new MsgBuffer();
+      msg_buffer->buf_ = nullptr;
+      return msg_buffer;
+    }
+
+    MsgBuffer *msg_buffer = new MsgBuffer(buffer, max_data_size, max_num_pkts);
+    return msg_buffer;
+  }
+
   /**
    * @brief Resize a MsgBuffer to fit a request or response. Safe to call from
    * background threads (TS).
@@ -185,6 +206,15 @@ class Rpc {
     lock_cond(&huge_alloc_lock_);
     huge_alloc_->free_buf(msg_buffer.buffer_);
     unlock_cond(&huge_alloc_lock_);
+  }
+  
+  inline void free_msg_buffer_pointer(MsgBuffer *msg_buffer) {
+    assert(msg_buffer != NULL);
+    lock_cond(&huge_alloc_lock_);
+    huge_alloc_->free_buf(msg_buffer->buffer_);
+    unlock_cond(&huge_alloc_lock_);
+    delete(msg_buffer);
+    msg_buffer = NULL;
   }
 
   /**
@@ -314,6 +344,12 @@ class Rpc {
     return m;
   }
 
+  inline MsgBuffer* alloc_msg_buffer_pointer_or_die(size_t max_data_size) {
+    MsgBuffer *m = alloc_msg_buffer_pointer(max_data_size);
+    rt_assert(m->buf_ != nullptr);
+    return m;
+  }
+  
   /// Return the number of active server or client sessions. This function
   /// can be called only from the creator thread.
   size_t num_active_sessions() { return num_active_sessions_st(); }
