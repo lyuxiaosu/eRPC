@@ -63,6 +63,12 @@ DpdkTransport::DpdkTransport(uint16_t sm_udp_port, uint8_t rpc_id,
                              ? DpdkProcType::kPrimary
                              : DpdkProcType::kSecondary);
 
+      /* If there is not erpc daemon process running, the application will start 
+       * as a Primary process, that means there are no applications share the 
+       * memory pool, it doesn't matter this application runs as primary process.
+       * Therefore, just create a fake memzone
+       */
+
       if (dpdk_proc_type_ == DpdkProcType::kPrimary) {
         ERPC_WARN(
             "Running as primary DPDK process. eRPC DPDK daemon is not "
@@ -336,7 +342,7 @@ bool DpdkTransport::resolve_remote_routing_info(
     uint32_t rss_l3l4 = rte_softrss(reinterpret_cast<uint32_t *>(&tuple),
                                     RTE_THASH_V4_L4_LEN, kDefaultRssKey);
     if ((rss_l3l4 % ri->reta_size_) % DpdkTransport::kMaxQueuesPerPort ==
-        ri->rxq_id_)
+        ri->rxq_id_ % DpdkTransport::kMaxQueuesPerPort)
       break;
   }
   rt_assert(i < UINT16_MAX, "Scan error");

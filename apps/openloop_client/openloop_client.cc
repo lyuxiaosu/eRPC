@@ -2,6 +2,8 @@
 #include <signal.h>
 #include <cstring>
 #include <math.h>
+#include <sstream>
+#include <string>
 
 #include "../apps_common.h"
 #include "rpc.h"
@@ -13,13 +15,16 @@
 static constexpr size_t kAppEvLoopMs = 1000;     // Duration of event loop
 static constexpr bool kAppVerbose = false;       // Print debug info on datapath
 static constexpr double kAppLatFac = 10.0;       // Precision factor for latency
-static constexpr size_t kAppReqType = 1;         // eRPC request type
+static size_t kAppReqType = 1;         // eRPC request type
 static constexpr size_t kAppMaxWindowSize = 32;  // Max pending reqs per client
 
 bool stop = false;
+std::vector<int> rps_array;
+std::vector<int> req_type_array;
 DEFINE_uint64(num_server_threads, 1, "Number of threads at the server machine");
 DEFINE_uint64(num_client_threads, 1, "Number of threads per client machine");
-DEFINE_uint64(rps, 100, "Number of requests per second that client sends to the server");
+DEFINE_string(rps, "100", "Number of requests per second that client sends to the server");
+DEFINE_string(req_type, "1", "Request type for each thread to send");
 DEFINE_uint64(window_size, 1, "Outstanding requests per client");
 DEFINE_uint64(req_size, 64, "Size of request message in bytes");
 DEFINE_uint64(resp_size, 32, "Size of response message in bytes ");
@@ -114,11 +119,11 @@ void app_cont_func2(void *_context, void *_tag) {
   delete(tag);
 }
 
-inline void send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuffer *resp_msgbuf) {
+inline void send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuffer *resp_msgbuf, size_t thread_id) {
 	struct Tag *tag = new Tag();
 	tag->req_msgbuf = req_msgbuf;
 	tag->resp_msgbuf = resp_msgbuf;
-	c.rpc_->enqueue_request(c.fast_get_rand_session_num(), kAppReqType, 
+	c.rpc_->enqueue_request(c.fast_get_rand_session_num(), static_cast<size_t>(req_type_array[thread_id]), 
 				req_msgbuf, resp_msgbuf, app_cont_func2, reinterpret_cast<void *>(tag)); 
 }
 
@@ -139,15 +144,15 @@ void create_sessions(ClientContext &c) {
   std::string server_uri = erpc::get_uri_for_process(0);
   if (FLAGS_sm_verbose == 1) {
     printf("Process %zu: Creating %zu sessions to %s.\n", FLAGS_process_id,
-           FLAGS_num_server_threads, server_uri.c_str());
+           rps_array.size(), server_uri.c_str());
   }
-  for (size_t i = 0; i < FLAGS_num_server_threads; i++) {
+  for (size_t i = 0; i < rps_array.size(); i++) {
     int session_num = c.rpc_->create_session(server_uri, i);
     erpc::rt_assert(session_num >= 0, "Failed to create session");
     c.session_num_vec_.push_back(session_num);
   }
 
-  while (c.num_sm_resps_ != FLAGS_num_server_threads) {
+  while (c.num_sm_resps_ != rps_array.size()) {
     c.rpc_->run_event_loop(kAppEvLoopMs);
     if (unlikely(ctrl_c_pressed == 1)) return;
   }
@@ -181,16 +186,16 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   }
 
   std::thread loop_th = std::thread(client_loop_fun, &rpc);
-  erpc::bind_to_core(loop_th, FLAGS_numa_node, thread_id + FLAGS_num_client_threads); 
+  erpc::bind_to_core(loop_th, FLAGS_numa_node, thread_id + rps_array.size()); 
   uint32_t tmp_counter = 0;
   double freq_ghz = erpc::measure_rdtsc_freq(); 
   while (stop != true && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
 	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 29);		
-	send_req2(c, req_msgbuf, resp_msgbuf);
+	send_req2(c, req_msgbuf, resp_msgbuf, thread_id);
  	//sleep expanantional time
-	uint64_t ms = ran_expo((FLAGS_rps / FLAGS_num_client_threads)) * 1000;
+	uint64_t ms = ran_expo(rps_array[thread_id]) * 1000;
 	size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 	uint64_t begin, end;
 	begin = erpc::rdtsc();
@@ -200,15 +205,33 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         	end = erpc::rdtsc();
         }	
 	tmp_counter++;
+        
   } 
  
   loop_th.join();
   printf("counter is %u\n", tmp_counter);
 }
 
+void parse_string(std::string rps, std::vector<int>& result) {
+    
+	std::stringstream ss(rps);
+    	while (ss.good()) {
+        	std::string substr;
+        	getline(ss, substr, ',');
+        	result.push_back(stoi(substr));
+    	}
+}
+
 int main(int argc, char **argv) {
   signal(SIGINT, ctrl_c_handler);
   gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+  parse_string(FLAGS_rps, rps_array);
+  for(long unsigned int i = 0; i < rps_array.size();i++){ 
+	printf("%d ", rps_array[i]);
+  }  
+
+  parse_string(FLAGS_req_type, req_type_array);
 
   erpc::rt_assert(FLAGS_numa_node <= 1, "Invalid NUMA node");
   erpc::rt_assert(FLAGS_resp_size <= erpc::CTransport::kMTU, "Resp too large");
@@ -216,15 +239,15 @@ int main(int argc, char **argv) {
 
   erpc::Nexus nexus(erpc::get_uri_for_process(FLAGS_process_id),
                     FLAGS_numa_node, 0);
+
+  kAppReqType = FLAGS_process_id;
   nexus.register_req_func(kAppReqType, req_handler);
 
-  size_t num_threads = FLAGS_process_id == 0 ? FLAGS_num_server_threads
-                                             : FLAGS_num_client_threads;
+  size_t num_threads = rps_array.size(); 
   std::vector<std::thread> threads(num_threads);
 
   for (size_t i = 0; i < num_threads; i++) {
-    threads[i] = std::thread(FLAGS_process_id == 0 ? server_func : client_func,
-                             &nexus, i);
+    threads[i] = std::thread(client_func, &nexus, i);
     erpc::bind_to_core(threads[i], FLAGS_numa_node, i);
   }
   usleep(FLAGS_test_ms * 1000);
