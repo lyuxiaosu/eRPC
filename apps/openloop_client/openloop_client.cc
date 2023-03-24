@@ -185,6 +185,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     printf("thread_id: median_us 5th_us 99th_us 999th_us Mops\n");
   }
 
+  /* set seed for this thread */
+  srand(thread_id);
   std::thread loop_th = std::thread(client_loop_fun, &rpc);
   erpc::bind_to_core(loop_th, FLAGS_numa_node, thread_id + rps_array.size()); 
   uint32_t tmp_counter = 0;
