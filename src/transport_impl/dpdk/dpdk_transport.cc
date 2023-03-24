@@ -342,7 +342,7 @@ bool DpdkTransport::resolve_remote_routing_info(
     uint32_t rss_l3l4 = rte_softrss(reinterpret_cast<uint32_t *>(&tuple),
                                     RTE_THASH_V4_L4_LEN, kDefaultRssKey);
     if ((rss_l3l4 % ri->reta_size_) % DpdkTransport::kMaxQueuesPerPort ==
-        ri->rxq_id_ % DpdkTransport::kMaxQueuesPerPort)
+        ri->rxq_id_)
       break;
   }
   rt_assert(i < UINT16_MAX, "Scan error");
