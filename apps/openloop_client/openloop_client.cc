@@ -194,10 +194,10 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   while (stop != true && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 29);		
+	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 15);		
 	send_req2(c, req_msgbuf, resp_msgbuf, thread_id);
  	//sleep expanantional time
-	uint64_t ms = ran_expo(rps_array[thread_id]) * 1000;
+	double ms = ran_expo(rps_array[thread_id]) * 1000;
 	size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 	uint64_t begin, end;
 	begin = erpc::rdtsc();
