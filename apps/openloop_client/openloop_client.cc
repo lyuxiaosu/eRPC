@@ -144,15 +144,15 @@ void create_sessions(ClientContext &c) {
   std::string server_uri = erpc::get_uri_for_process(0);
   if (FLAGS_sm_verbose == 1) {
     printf("Process %zu: Creating %zu sessions to %s.\n", FLAGS_process_id,
-           rps_array.size(), server_uri.c_str());
+           FLAGS_num_server_threads, server_uri.c_str());
   }
-  for (size_t i = 0; i < rps_array.size(); i++) {
+  for (size_t i = 0; i < FLAGS_num_server_threads; i++) {
     int session_num = c.rpc_->create_session(server_uri, i);
     erpc::rt_assert(session_num >= 0, "Failed to create session");
     c.session_num_vec_.push_back(session_num);
   }
 
-  while (c.num_sm_resps_ != rps_array.size()) {
+  while (c.num_sm_resps_ != FLAGS_num_server_threads) {
     c.rpc_->run_event_loop(kAppEvLoopMs);
     if (unlikely(ctrl_c_pressed == 1)) return;
   }
@@ -187,8 +187,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   /* set seed for this thread */
   srand(thread_id);
-  std::thread loop_th = std::thread(client_loop_fun, &rpc);
-  erpc::bind_to_core(loop_th, FLAGS_numa_node, thread_id + rps_array.size()); 
+  //std::thread loop_th = std::thread(client_loop_fun, &rpc);
+  //erpc::bind_to_core(loop_th, FLAGS_numa_node, thread_id + rps_array.size()); 
   uint32_t tmp_counter = 0;
   double freq_ghz = erpc::measure_rdtsc_freq(); 
   while (stop != true && ctrl_c_pressed != 1) {
@@ -203,14 +203,14 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 	begin = erpc::rdtsc();
 	end = begin;
 	while((end - begin < cycles) && stop != true && ctrl_c_pressed != 1) {
-		//rpc.run_event_loop_once();
+		rpc.run_event_loop_once();
         	end = erpc::rdtsc();
         }	
 	tmp_counter++;
         
   } 
  
-  loop_th.join();
+  //loop_th.join();
   printf("counter is %u\n", tmp_counter);
 }
 
