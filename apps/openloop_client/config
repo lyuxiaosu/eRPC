@@ -1,6 +1,6 @@
---test_ms 20000
+--test_ms 10000
 --sm_verbose 0
---num_server_threads 2 
+--num_server_threads 3 
 --num_client_threads 2
 --window_size 10
 --req_size 4 
@@ -8,5 +8,6 @@
 --num_processes 2
 --numa_0_ports 0
 --numa_1_ports 1,3
---rps 100,200,100,200
---req_type 1,1,1,1
+--rps 50000,50000,50000,50000,50000,50000,50000,50000,50000,50000
+--req_type 1,1,1,1,1,1,1,1,1,1
+--warmup_rps 200,200,200,200,200,200,200,200,200,200

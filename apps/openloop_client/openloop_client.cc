@@ -21,10 +21,13 @@ static constexpr size_t kAppMaxWindowSize = 32;  // Max pending reqs per client
 bool stop = false;
 std::vector<int> rps_array;
 std::vector<int> req_type_array;
+std::vector<int> warmup_rps;
 DEFINE_uint64(num_server_threads, 1, "Number of threads at the server machine");
 DEFINE_uint64(num_client_threads, 1, "Number of threads per client machine");
+DEFINE_uint64(warmup_count, 100, "Number of packets to send during the warmup phase");
 DEFINE_string(rps, "100", "Number of requests per second that client sends to the server");
 DEFINE_string(req_type, "1", "Request type for each thread to send");
+DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmup phase");
 DEFINE_uint64(window_size, 1, "Outstanding requests per client");
 DEFINE_uint64(req_size, 64, "Size of request message in bytes");
 DEFINE_uint64(resp_size, 32, "Size of response message in bytes ");
@@ -164,10 +167,36 @@ void client_loop_fun(erpc::Rpc<erpc::CTransport> *rpc) {
 	}
 
 }
+
+void warm_up(ClientContext &c, size_t thread_id, double freq_ghz) {
+	int rps = warmup_rps[thread_id];
+	int count = FLAGS_warmup_count;
+	int sent_out = 0;
+        while (stop != true && ctrl_c_pressed != 1 && sent_out != count) {	
+		erpc::MsgBuffer *req_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
+		erpc::MsgBuffer *resp_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
+		sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 15);
+		send_req2(c, req_msgbuf, resp_msgbuf, thread_id);
+		double ms = (1.0/rps) * 1000;
+		size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
+		uint64_t begin, end;
+		begin = erpc::rdtsc();
+        	end = begin;
+
+		while((end - begin < cycles) && stop != true && ctrl_c_pressed != 1) {
+                	c.rpc_->run_event_loop_once();
+                	end = erpc::rdtsc();
+        	}
+		sent_out++;
+	}
+}
+
+
 void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   std::vector<size_t> port_vec = flags_get_numa_ports(FLAGS_numa_node);
   uint8_t phy_port = port_vec.at(0);
+  double freq_ghz = erpc::measure_rdtsc_freq(); 
 
   ClientContext c;
   erpc::Rpc<erpc::CTransport> rpc(nexus, static_cast<void *>(&c), thread_id,
@@ -185,12 +214,10 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     printf("thread_id: median_us 5th_us 99th_us 999th_us Mops\n");
   }
 
+  warm_up(c, thread_id, freq_ghz);
   /* set seed for this thread */
   srand(thread_id);
-  //std::thread loop_th = std::thread(client_loop_fun, &rpc);
-  //erpc::bind_to_core(loop_th, FLAGS_numa_node, thread_id + rps_array.size()); 
   uint32_t tmp_counter = 0;
-  double freq_ghz = erpc::measure_rdtsc_freq(); 
   while (stop != true && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
@@ -210,7 +237,6 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         
   } 
  
-  //loop_th.join();
   printf("counter is %u\n", tmp_counter);
 }
 
@@ -234,6 +260,7 @@ int main(int argc, char **argv) {
   }  
 
   parse_string(FLAGS_req_type, req_type_array);
+  parse_string(FLAGS_warmup_rps, warmup_rps);
 
   erpc::rt_assert(FLAGS_numa_node <= 1, "Invalid NUMA node");
   erpc::rt_assert(FLAGS_resp_size <= erpc::CTransport::kMTU, "Resp too large");
