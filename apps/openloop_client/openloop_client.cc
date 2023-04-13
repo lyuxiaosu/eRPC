@@ -22,11 +22,14 @@ bool stop = false;
 std::vector<int> rps_array;
 std::vector<int> req_type_array;
 std::vector<int> warmup_rps;
+std::vector<int> req_parameter_array;
+
 DEFINE_uint64(num_server_threads, 1, "Number of threads at the server machine");
 DEFINE_uint64(num_client_threads, 1, "Number of threads per client machine");
 DEFINE_uint64(warmup_count, 100, "Number of packets to send during the warmup phase");
 DEFINE_string(rps, "100", "Number of requests per second that client sends to the server");
 DEFINE_string(req_type, "1", "Request type for each thread to send");
+DEFINE_string(req_parameter, "15", "Request parameters of each type request");
 DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmup phase");
 DEFINE_uint64(window_size, 1, "Outstanding requests per client");
 DEFINE_uint64(req_size, 64, "Size of request message in bytes");
@@ -214,17 +217,19 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     printf("thread_id: median_us 5th_us 99th_us 999th_us Mops\n");
   }
 
-  warm_up(c, thread_id, freq_ghz);
+  //warm_up(c, thread_id, freq_ghz);
   /* set seed for this thread */
   srand(thread_id);
   uint32_t tmp_counter = 0;
   while (stop != true && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 15);		
+	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", req_parameter_array.at(static_cast<size_t>(req_type_array[thread_id] - 1)));
+
 	send_req2(c, req_msgbuf, resp_msgbuf, thread_id);
  	//sleep expanantional time
 	double ms = ran_expo(rps_array[thread_id]) * 1000;
+	//double ms = (1.0/rps_array[thread_id]) * 1000;
 	size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 	uint64_t begin, end;
 	begin = erpc::rdtsc();
@@ -261,6 +266,7 @@ int main(int argc, char **argv) {
 
   parse_string(FLAGS_req_type, req_type_array);
   parse_string(FLAGS_warmup_rps, warmup_rps);
+  parse_string(FLAGS_req_parameter, req_parameter_array);
 
   erpc::rt_assert(FLAGS_numa_node <= 1, "Invalid NUMA node");
   erpc::rt_assert(FLAGS_resp_size <= erpc::CTransport::kMTU, "Resp too large");
