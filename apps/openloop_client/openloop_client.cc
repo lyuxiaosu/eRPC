@@ -18,7 +18,6 @@ static constexpr double kAppLatFac = 10.0;       // Precision factor for latency
 static size_t kAppReqType = 1;         // eRPC request type
 static constexpr size_t kAppMaxWindowSize = 32;  // Max pending reqs per client
 
-bool stop = false;
 std::vector<int> rps_array;
 std::vector<int> req_type_array;
 std::vector<int> warmup_rps;
@@ -165,7 +164,7 @@ void create_sessions(ClientContext &c) {
 }
 
 void client_loop_fun(erpc::Rpc<erpc::CTransport> *rpc) {
-	while(stop != true && ctrl_c_pressed != 1) {
+	while(ctrl_c_pressed != 1) {
 		rpc->run_event_loop(kAppEvLoopMs); 
 	}
 
@@ -175,7 +174,7 @@ void warm_up(ClientContext &c, size_t thread_id, double freq_ghz) {
 	int rps = warmup_rps[thread_id];
 	int count = FLAGS_warmup_count;
 	int sent_out = 0;
-        while (stop != true && ctrl_c_pressed != 1 && sent_out != count) {	
+        while (ctrl_c_pressed != 1 && sent_out != count) {	
 		erpc::MsgBuffer *req_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
 		erpc::MsgBuffer *resp_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
 		sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 15);
@@ -186,7 +185,7 @@ void warm_up(ClientContext &c, size_t thread_id, double freq_ghz) {
 		begin = erpc::rdtsc();
         	end = begin;
 
-		while((end - begin < cycles) && stop != true && ctrl_c_pressed != 1) {
+		while((end - begin < cycles) && ctrl_c_pressed != 1) {
                 	c.rpc_->run_event_loop_once();
                 	end = erpc::rdtsc();
         	}
@@ -221,7 +220,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   /* set seed for this thread */
   srand(thread_id);
   uint32_t tmp_counter = 0;
-  while (stop != true && ctrl_c_pressed != 1) {
+  uint64_t max_requests = (FLAGS_test_ms/1000) * static_cast<uint64_t>(rps_array[thread_id]);
+  while (tmp_counter != max_requests && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
 	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", req_parameter_array.at(static_cast<size_t>(req_type_array[thread_id] - 1)));
@@ -234,7 +234,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 	uint64_t begin, end;
 	begin = erpc::rdtsc();
 	end = begin;
-	while((end - begin < cycles) && stop != true && ctrl_c_pressed != 1) {
+	while((end - begin < cycles) && ctrl_c_pressed != 1) {
 		rpc.run_event_loop_once();
         	end = erpc::rdtsc();
         }	
@@ -285,7 +285,5 @@ int main(int argc, char **argv) {
     threads[i] = std::thread(client_func, &nexus, i);
     erpc::bind_to_core(threads[i], FLAGS_numa_node, i);
   }
-  usleep(FLAGS_test_ms * 1000);
-  stop = true;
   for (size_t i = 0; i < num_threads; i++) threads[i].join();
 }
