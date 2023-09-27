@@ -26,8 +26,8 @@ extern "C" {
 
 	int erpc_init(char* local_uri,size_t numa_node, size_t num_bg_threads) {
 		if (!erpc_store) {
-                        erpc_store = new ErpcStore(local_uri, numa_node, num_bg_threads);
-                }
+            erpc_store = new ErpcStore(local_uri, numa_node, num_bg_threads);
+        }
 
 
 		printf("erpc_msgbuffer size is %ld MsgBuffer size is %ld\n", sizeof(erpc_msgbuffer), sizeof(erpc::MsgBuffer));
@@ -49,7 +49,7 @@ extern "C" {
 	int erpc_create_session(uint8_t rpc_id, char* remote_uri, uint8_t rem_rpc_id) {
 		assert(erpc_store != NULL);
 		erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
-                assert(rpc != NULL);
+        assert(rpc != NULL);
 
 		return rpc->create_session(remote_uri, rem_rpc_id);
 	}
@@ -57,8 +57,8 @@ extern "C" {
 	 * Called after erpc_create_session
 	 */
 	int erpc_enqueue_request(uint8_t rpc_id, int session_num, size_t reqsize, uint8_t reqtype, size_t respsize,
-                         erpc_cont_func_t cont_func, void *tag, size_t cont_etid, uint8_t *input, 
-			 struct erpc_msgbuffer *req, struct erpc_msgbuffer *resp) {
+                             erpc_cont_func_t cont_func, void *tag, size_t cont_etid, uint8_t *input, 
+			                 struct erpc_msgbuffer *req, struct erpc_msgbuffer *resp) {
 		assert(erpc_store != NULL);
 		erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
 		assert(rpc != NULL);	
@@ -75,7 +75,7 @@ extern "C" {
 	int erpc_run_event_loop(uint8_t rpc_id, size_t timeout_ms) {
 		assert(erpc_store != NULL);
 		erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
-                assert(rpc != NULL);
+        assert(rpc != NULL);
 
 		rpc->run_event_loop(timeout_ms);
 		return 0;
@@ -83,14 +83,14 @@ extern "C" {
 	void erpc_run_event_loop_once(uint8_t rpc_id) {
 		assert(erpc_store != NULL);
 		erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
-                assert(rpc != NULL);
+        assert(rpc != NULL);
 
 		rpc->run_event_loop_once();
 	}
 	bool erpc_session_is_connected(uint8_t rpc_id, int session_num) {
 		assert(erpc_store != NULL);
 		erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
-                assert(rpc != NULL);
+        assert(rpc != NULL);
 
 		return rpc->is_connected(session_num);
 	}
@@ -101,8 +101,8 @@ extern "C" {
 
 	int erpc_req_response_enqueue(uint8_t rpc_id, void *req_handle, char* content, size_t data_size, uint8_t response_code) {
 		assert(erpc_store != NULL);
-                erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
-                assert(rpc != NULL);
+        erpc::Rpc<erpc::CTransport> *rpc = erpc_store->rpc_table_[rpc_id];
+        assert(rpc != NULL);
 
 		erpc::ReqHandle * rh = reinterpret_cast<erpc::ReqHandle*> (req_handle);
 		auto &resp = rh->pre_resp_msgbuf_;

@@ -30,10 +30,10 @@ void Nexus::bg_thread_func(BgThreadCtx ctx) {
         uint8_t req_type = s->server_info_.req_type_;
         const ReqFunc &req_func = ctx.req_func_arr_->at(req_type);
 #ifdef SLEDGE
-	uint8_t *msg = s->server_info_.req_msgbuf_.buf_;
-	uint8_t msg_size = s->server_info_.req_msgbuf_.get_data_size();
-	uint16_t src_port = s->get_session()->get_src_port();
-	req_func.req_func_(static_cast<ReqHandle *>(s), req_type, msg, msg_size, src_port);
+	    uint8_t *msg = s->server_info_.req_msgbuf_.buf_;
+	    uint8_t msg_size = s->server_info_.req_msgbuf_.get_data_size();
+	    uint16_t src_port = s->get_session()->get_src_port();
+	    req_func.req_func_(static_cast<ReqHandle *>(s), req_type, msg, msg_size, src_port);
 #else
         req_func.req_func_(static_cast<ReqHandle *>(s), wi.context_);
 #endif
