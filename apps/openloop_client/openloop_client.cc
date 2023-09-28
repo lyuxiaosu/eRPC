@@ -241,7 +241,11 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 	tmp_counter++;
         
   } 
- 
+  //wait for server sending back all responses
+  while(c.num_resps != max_requests) {
+  	rpc.run_event_loop_once();
+  }
+
   printf("counter is %u\n", tmp_counter);
 }
 
