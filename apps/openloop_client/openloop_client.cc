@@ -242,7 +242,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         
   } 
   //wait for server sending back all responses
-  while(c.num_resps != max_requests) {
+  while(c.num_resps != max_requests && ctrl_c_pressed != 1) {
   	rpc.run_event_loop_once();
   }
 
