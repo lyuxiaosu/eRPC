@@ -74,6 +74,7 @@ void server_func(erpc::Nexus *nexus, size_t thread_id) {
 }
 
 void app_cont_func(void *, void *);
+
 inline void send_req(ClientContext &c, size_t ws_i) {
   c.start_time[ws_i].reset();
   c.rpc_->enqueue_request(c.fast_get_rand_session_num(), kAppReqType,
