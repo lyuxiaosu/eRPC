@@ -13,10 +13,13 @@ chmod 400 ./id_rsa
 remote_ip="128.110.218.251"
 
 dispatcher_policy=$1
-base_throughput1=32344
-base_throughput2=2614
+#base_throughput1=32344
+#base_throughput2=2614
+base_throughput1=16000
+base_throughput2=2000
 
-throughput_percentage=(50 60 70 80 90 100 120 140 160 180 200)
+#throughput_percentage=(50 60 70 80 90 100 120 140 160 180 200)
+throughput_percentage=(1)
 
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -37,11 +40,12 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	total_throughput=$((base_throughput1 * 8 * throughput_percentage[i] + base_throughput2 * throughput_percentage[i]))
 	total_throughput=$((total_throughput / 100))
 	server_log="server-${total_throughput}.log"
+	client_log="client-${total_throughput}.log"
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 9 3 4 $dispatcher_policy  $server_log > 1.txt 2>&1 &"
         pushd ../
         #scripts/do.sh 1 0 > client.txt
-        scripts/do.sh 1 0
+        scripts/do.sh 1 0 $client_log
         popd
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
         sleep 10
@@ -49,4 +53,5 @@ done
 folder_name=$dispatcher_policy
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mkdir $path/$folder_name"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mv *.log $path/$folder_name"
-
+mkdir $folder_name
+mv ../client-*.log $folder_name

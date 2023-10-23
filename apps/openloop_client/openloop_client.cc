@@ -5,6 +5,7 @@
 #include <math.h>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 #include "../apps_common.h"
 #include "rpc.h"
@@ -22,6 +23,8 @@ static constexpr size_t kAppMaxWindowSize = 32;  // Max pending reqs per client
 
 int sending_rps[100]; // each client thread sending rps
 int service_rps[100]; // each client thread obtained the service rate
+std::unordered_map<int, int> seperate_sending_rps; // key is request type, value is the sending rps
+std::unordered_map<int, int> seperate_service_rps; 
 
 std::vector<int> rps_array;
 std::vector<int> req_type_array;
@@ -282,10 +285,22 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   int rps = tmp_counter / delta_s;
   sending_rps[thread_id] = rps;
 
+  if (seperate_sending_rps.count(req_type_array[thread_id]) > 0) {
+        seperate_sending_rps[req_type_array[thread_id]] += rps;
+  } else {
+  	seperate_sending_rps[req_type_array[thread_id]] = rps;
+  }
+
   delta_ms = (endT2.tv_sec - startT.tv_sec) * 1000 + (endT2.tv_nsec - startT.tv_nsec) / 1000000;
   delta_s = delta_ms / 1000;
   int s_rps = tmp_counter / delta_s;
   service_rps[thread_id] = s_rps;
+
+  if (seperate_service_rps.count(req_type_array[thread_id]) > 0) {
+        seperate_service_rps[req_type_array[thread_id]] += s_rps;
+  } else {
+        seperate_service_rps[req_type_array[thread_id]] = s_rps;
+  }
 
   printf("counter is %u sending rps %d service rps %d\n", tmp_counter, rps, s_rps);
   for (size_t i = 0; i < max_requests; i++) {
@@ -361,5 +376,13 @@ int main(int argc, char **argv) {
   	total_requests += rps_array[i] * (static_cast<int>(FLAGS_test_ms)/1000);
   }
   printf("total sending rate %d, service rate %d total requests %d\n", sending_rate, service_rate, total_requests);
+  fprintf(perf_log, "total sending rate %d, service rate %d total requests %d\n", sending_rate, service_rate, total_requests);
+  
+  for (const auto& pair : seperate_sending_rps) {
+        printf("type %d sending rate %d service rate %d\n", pair.first, 
+		pair.second, seperate_service_rps[pair.first]); 
+        fprintf(perf_log, "type %d sending rate %d service rate %d\n", pair.first, 
+		pair.second, seperate_service_rps[pair.first]); 
+  }
   fclose(perf_log);
 }
