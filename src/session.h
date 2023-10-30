@@ -70,7 +70,7 @@ class Session {
         uniq_token_(uniq_token),
         freq_ghz_(freq_ghz),
         link_bandwidth_(link_bandwidth) {
-    remote_routing_info_ =
+    	remote_routing_info_ =
         is_client() ? &server_.routing_info_ : &client_.routing_info_;
 
     if (is_client())

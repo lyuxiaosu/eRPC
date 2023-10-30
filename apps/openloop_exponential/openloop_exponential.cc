@@ -225,7 +225,9 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   std::vector<size_t> port_vec = flags_get_numa_ports(FLAGS_numa_node);
   uint8_t phy_port = port_vec.at(0);
-  double freq_ghz = erpc::measure_rdtsc_freq(); 
+  double freq_ghz = erpc::measure_rdtsc_freq();
+  uint32_t max_exp_value = 0; 
+  uint32_t min_exp_value = 0xFFFFFFFF; 
 
   ClientContext c;
   erpc::Rpc<erpc::CTransport> rpc(nexus, static_cast<void *>(&c), thread_id,
@@ -258,12 +260,23 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   while (tmp_counter != max_requests && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", req_parameter_array.at(static_cast<size_t>(req_type_array[thread_id] - 1)));
+	uint32_t exp_number = uint32_t(round(ran_expo(1.0) * 10)); 
+	if (exp_number == 0) {
+		exp_number = 1;
+	}
+
+	if (exp_number > max_exp_value) {
+		max_exp_value = exp_number;
+	} 
+	if (exp_number < min_exp_value) {
+		min_exp_value = exp_number;
+	}
+
+	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", exp_number);
 
 	send_req2(c, req_msgbuf, resp_msgbuf, thread_id, tmp_counter);
  	//sleep expanantional time
 	double ms = ran_expo(rps_array[thread_id]) * 1000;
-	//double ms = (1.0/rps_array[thread_id]) * 1000;
 	size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 	uint64_t begin, end;
 	begin = erpc::rdtsc();
@@ -312,6 +325,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   }
 
   printf("sending requests %u get responses is %zu sending rps %d service rps %d\n", tmp_counter, c.num_resps, rps, s_rps);
+  printf("max exp number %u min exp number %u\n", max_exp_value, min_exp_value);
   for (size_t i = 0; i < max_requests; i++) {
   	fprintf(perf_log, "%zu %d %f\n", thread_id, req_type_array[thread_id], c.latency_array[i]);
   }

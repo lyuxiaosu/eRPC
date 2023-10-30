@@ -24,8 +24,8 @@ def parse_file(file_path):
                 seperate_slow_down[r_type].append(round((float(latency) / 5)))
                 total_slow_down.append(round((float(latency) / 5)))
             else:
-                seperate_slow_down[r_type].append(round((float(latency) / 798)))
-                total_slow_down.append(round((float(latency) / 798)))
+                seperate_slow_down[r_type].append(round((float(latency) / 6428)))
+                total_slow_down.append(round((float(latency) / 6428)))
 
         if "total sending" in line:
             sending_rate = line.split(" ")[3]
@@ -44,6 +44,7 @@ if  __name__ == "__main__":
         sys.exit()
     parse_file(argv[0])
     total_time_array = np.array(total_time_list)
+    p_1 = np.percentile(total_time_array, 1)
     p_99 = np.percentile(total_time_array, 99)
     p_99_9 = np.percentile(total_time_array, 99.9)
     p_99_99 = np.percentile(total_time_array, 99.99)
@@ -51,6 +52,7 @@ if  __name__ == "__main__":
     print("99 percentile latency is ", p_99)
     print("99.9 percentile latency is ", p_99_9)
     print("99.99 percentile latency is ", p_99_99)
+    print("1 percentile latency is ", p_1)
 
     total_slow_down_array = np.array(total_slow_down)
     p_99 = np.percentile(total_slow_down_array, 99)
