@@ -64,6 +64,8 @@ class ClientContext : public BasicAppContext {
   size_t thread_id;
   erpc::ChronoTimer *start_time = NULL;
   double *latency_array = NULL;
+  int *pure_cpu_time = NULL;
+  uint32_t *exp_nums = NULL;
   erpc::Latency latency;
   erpc::MsgBuffer req_msgbuf[kAppMaxWindowSize], resp_msgbuf[kAppMaxWindowSize];
   ~ClientContext() {
@@ -74,6 +76,14 @@ class ClientContext : public BasicAppContext {
 	if (latency_array) {
 		free(latency_array);
 		latency_array = NULL;
+	}
+	if (pure_cpu_time) {
+		free(pure_cpu_time);
+		pure_cpu_time = NULL;
+	}
+	if (exp_nums) {
+		free(exp_nums);
+		exp_nums = NULL;
 	}
   }
 };
@@ -142,6 +152,7 @@ void app_cont_func2(void *_context, void *_tag) {
   c->latency_array[tag->ws_i] = req_lat_us;
   //printf("%s\n", resp_msgbuf->buf_);
   //printf("%f\n", req_lat_us);
+  c->pure_cpu_time[tag->ws_i] = atoi(reinterpret_cast<const char*>(&(resp_msgbuf->buf_[2])));
   c->num_resps++;
    
   c->rpc_->free_msg_buffer_pointer(req_msgbuf);
@@ -254,6 +265,10 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   c.start_time = new erpc::ChronoTimer[max_requests];
   c.latency_array = static_cast<double*> (malloc(max_requests * sizeof(double)));
   memset(c.latency_array, 0, max_requests * sizeof(double));
+  c.pure_cpu_time = static_cast<int*> (malloc(max_requests * sizeof(int)));
+  memset(c.pure_cpu_time, 0, max_requests * sizeof(int));
+  c.exp_nums = static_cast<uint32_t*> (malloc(max_requests * sizeof(uint32_t)));
+  memset(c.exp_nums, 0, max_requests * sizeof(uint32_t));
 
   struct timespec startT, endT, endT2;
   clock_gettime(CLOCK_MONOTONIC, &startT); 
@@ -271,6 +286,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 	if (exp_number < min_exp_value) {
 		min_exp_value = exp_number;
 	}
+
+	c.exp_nums[tmp_counter] = exp_number;
 
 	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", exp_number);
 
@@ -327,7 +344,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   printf("sending requests %u get responses is %zu sending rps %d service rps %d\n", tmp_counter, c.num_resps, rps, s_rps);
   printf("max exp number %u min exp number %u\n", max_exp_value, min_exp_value);
   for (size_t i = 0; i < max_requests; i++) {
-  	fprintf(perf_log, "%zu %d %f\n", thread_id, req_type_array[thread_id], c.latency_array[i]);
+  	fprintf(perf_log, "%zu %d %f %d %u\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i], c.exp_nums[i]);
   }
 }
 
@@ -348,7 +365,7 @@ perf_log_init()
                 printf("Client Performance Log %s\n", perf_log_path);
                 perf_log = fopen(perf_log_path, "w");
                 if (perf_log == NULL) perror("perf_log_init\n");
-		fprintf(perf_log, "thread id, type id, latency\n");
+		fprintf(perf_log, "thread id, type id, latency, pure-cpu-time, exp-num\n");
         }
 }
 
