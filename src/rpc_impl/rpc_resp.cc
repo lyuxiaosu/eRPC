@@ -104,6 +104,9 @@ void Rpc<TTr>::process_resp_one_st(SSlot *sslot, const pkthdr_t *pkthdr,
     // runs in a background thread.
     memcpy(resp_msgbuf->get_pkthdr_0()->ehdrptr(), pkthdr->ehdrptr(),
            pkthdr->msg_size_ + sizeof(pkthdr_t) - kHeadroom);
+    // Add by Xiaosu Lyu: Append the null charactor at the end of the string;
+    // otherwise, the response content is not consistent with the original
+    memset(resp_msgbuf->get_pkthdr_0()->ehdrptr() + pkthdr->msg_size_ + sizeof(pkthdr_t) - kHeadroom, 0, 1);
 
     // Fall through to invoke continuation
   } else {
