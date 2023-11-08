@@ -25,6 +25,8 @@ int sending_rps[100]; // each client thread sending rps
 int service_rps[100]; // each client thread obtained the service rate
 size_t responses[100]; // each client thread get the number of responses
 uint32_t requests[100]; // each client thread sends out the number of requests
+uint32_t dropped[100] = {0};
+
 std::unordered_map<int, int> seperate_sending_rps; // key is request type, value is the sending rps
 std::unordered_map<int, int> seperate_service_rps; 
 
@@ -96,6 +98,11 @@ double ran_expo(double lambda){
     return -log(1- u) / lambda;
 }
 
+double ran_expo2(std::mt19937& generator, double lambda) {
+    std::exponential_distribution<double> distribution(lambda);
+    return distribution(generator);
+}
+
 void req_handler(erpc::ReqHandle *req_handle, void *_context) {
   auto *c = static_cast<ServerContext *>(_context);
   c->num_resps++;
@@ -160,13 +167,13 @@ void app_cont_func2(void *_context, void *_tag) {
   delete(tag);
 }
 
-inline void send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuffer *resp_msgbuf, size_t thread_id, size_t ws_i) {
+inline int send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuffer *resp_msgbuf, size_t thread_id, size_t ws_i) {
 	c.start_time[ws_i].reset();
 	struct Tag *tag = new Tag();
 	tag->req_msgbuf = req_msgbuf;
 	tag->resp_msgbuf = resp_msgbuf;
 	tag->ws_i = ws_i;
-	c.rpc_->enqueue_request(c.fast_get_rand_session_num(), static_cast<size_t>(req_type_array[thread_id]), 
+	return c.rpc_->enqueue_request(c.round_robin_get_session_num(), static_cast<size_t>(req_type_array[thread_id]), 
 				req_msgbuf, resp_msgbuf, app_cont_func2, reinterpret_cast<void *>(tag)); 
 }
 
@@ -259,7 +266,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   //warm_up(c, thread_id, freq_ghz);
   /* set seed for this thread */
-  srand(thread_id);
+  std::mt19937 generator(thread_id);
+  uint32_t success_sent = 0;
   uint32_t tmp_counter = 0;
   uint64_t max_requests = (FLAGS_test_ms/1000) * static_cast<uint64_t>(rps_array[thread_id]);
   c.start_time = new erpc::ChronoTimer[max_requests];
@@ -275,7 +283,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   while (tmp_counter != max_requests && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-	uint32_t exp_number = uint32_t(round(ran_expo(1.0) * 10)); 
+	uint32_t exp_number = uint32_t(round(ran_expo2(generator, 1.0) * 10)); 
 	if (exp_number == 0) {
 		exp_number = 1;
 	}
@@ -290,10 +298,14 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 	c.exp_nums[tmp_counter] = exp_number;
 
 	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", exp_number);
-
-	send_req2(c, req_msgbuf, resp_msgbuf, thread_id, tmp_counter);
+	int ret = send_req2(c, req_msgbuf, resp_msgbuf, thread_id, tmp_counter);
+	if (ret == 0) {
+		success_sent++;
+	} else {
+		dropped[thread_id]++;
+	}
  	//sleep expanantional time
-	double ms = ran_expo(rps_array[thread_id]) * 1000;
+	double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
 	size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 	uint64_t begin, end;
 	begin = erpc::rdtsc();
@@ -303,7 +315,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         	end = erpc::rdtsc();
         }	
 	tmp_counter++;
-  } 
+  }
   clock_gettime(CLOCK_MONOTONIC, &endT);
   //wait for server sending back all responses
   while(c.num_resps != max_requests && ctrl_c_pressed != 1) {
@@ -319,10 +331,10 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   int64_t delta_ms = (endT.tv_sec - startT.tv_sec) * 1000 + (endT.tv_nsec - startT.tv_nsec) / 1000000; 
   int64_t delta_s = delta_ms / 1000;
-  int rps = tmp_counter / delta_s;
+  int rps = success_sent / delta_s;
   sending_rps[thread_id] = rps;
   responses[thread_id] = c.num_resps;
-  requests[thread_id] = tmp_counter;
+  requests[thread_id] = success_sent;
 
   if (seperate_sending_rps.count(req_type_array[thread_id]) > 0) {
         seperate_sending_rps[req_type_array[thread_id]] += rps;
@@ -422,8 +434,13 @@ int main(int argc, char **argv) {
   	total_requests += requests[i];
   }
 
-  printf("total sending rate %d, service rate %d total sent out requests %u total received response %zu\n", 
-	  sending_rate, service_rate, total_requests, total_responses);
+  uint32_t total_dropped = 0;
+  for (size_t i = 0; i < num_threads; i++) {
+       total_dropped += dropped[i];
+  }
+
+  printf("total sending rate %d, service rate %d total sent out requests %u total received response %zu dropped %u\n", 
+	  sending_rate, service_rate, total_requests, total_responses, total_dropped);
   fprintf(perf_log, "total sending rate %d, service rate %d total sent out requests %u total received response %zu\n",
           sending_rate, service_rate, total_requests, total_responses); 
   for (const auto& pair : seperate_sending_rps) {
