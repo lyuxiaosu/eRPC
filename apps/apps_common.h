@@ -135,6 +135,9 @@ class BasicAppContext {
   size_t num_sm_resps_ = 0;    // Number of SM responses
   bool ping_pending_ = false;  // Only one ping is allowed at a time
 
+ private:
+  uint32_t rr_idx = 0;
+ public:
   ~BasicAppContext() {
     if (tmp_stat_ != nullptr) delete tmp_stat_;
   }
@@ -145,6 +148,11 @@ class BasicAppContext {
     size_t rand_index =
         (static_cast<size_t>(x) * session_num_vec_.size()) >> 32;
     return session_num_vec_[rand_index];
+  }
+  inline int round_robin_get_session_num() {
+	size_t rr_index = rr_idx % session_num_vec_.size();
+	rr_idx++;
+  	return session_num_vec_[rr_index];
   }
 };
 
