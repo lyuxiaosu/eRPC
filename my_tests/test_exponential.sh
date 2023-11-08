@@ -13,14 +13,18 @@ chmod 400 ./id_rsa
 remote_ip="128.110.218.245"
 
 dispatcher_policy=$1
-base_throughput1=32344
-base_throughput2=32344
-#base_throughput1=16000
-#base_throughput2=2000
+#base_throughput1=32344
+#base_throughput2=32344
+base_throughput1=16000
+base_throughput2=16000
 
 #throughput_percentage=(10 20 30 40 50 60)
-throughput_percentage=(60)
-#throughput_percentage=(1)
+#throughput_percentage=(1 5 10 15)
+#for EDF_INTERRUPT
+#throughput_percentage=(1 5 10 15 20 25 30 35 40 42)
+#for shinjuku
+#throughput_percentage=(1 5 10 15 20 25 26 27 28 29 30)
+throughput_percentage=(28 29 30 35 40)
 
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -40,8 +44,8 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	./set_rps.sh /users/xiaosuGW/eRPC/apps/openloop_exponential/config "$replacement_rps" 	
 	total_throughput=$((base_throughput1 * 8 * throughput_percentage[i] + base_throughput2 * throughput_percentage[i]))
 	total_throughput=$((total_throughput / 100))
-	server_log="server-${total_throughput}.log"
-	client_log="client-${total_throughput}.log"
+	server_log="server-${total_throughput}-${throughput_percentage[i]}.log"
+	client_log="client-${total_throughput}-${throughput_percentage[i]}.log"
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 9 3 4 $dispatcher_policy  $server_log > 1.txt 2>&1 &"
         pushd ../

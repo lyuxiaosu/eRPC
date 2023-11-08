@@ -6,7 +6,6 @@ import numpy as np
 
 seperate_time_dist = defaultdict(list)
 seperate_slow_down = defaultdict(list)
-
 total_time_list = []
 total_slow_down = []
 
@@ -18,14 +17,13 @@ def parse_file(file_path):
         if "thread id" not in line and "total sending" not in line and "type" not in line:
             r_type = line.split(" ")[1]
             latency = line.split(" ")[2]
+            pure_cpu_time = line.split(" ")[3]
+            if pure_cpu_time == '0':
+                continue 
             seperate_time_dist[r_type].append(float(latency))
             total_time_list.append(float(latency))
-            if r_type == "1":
-                seperate_slow_down[r_type].append(round((float(latency) / 5)))
-                total_slow_down.append(round((float(latency) / 5)))
-            else:
-                seperate_slow_down[r_type].append(round((float(latency) / 6428)))
-                total_slow_down.append(round((float(latency) / 6428)))
+            seperate_slow_down[r_type].append(round((float(latency) / int(pure_cpu_time))))
+            total_slow_down.append(round((float(latency) / int(pure_cpu_time))))
 
         if "total sending" in line:
             sending_rate = line.split(" ")[3]
@@ -44,6 +42,8 @@ if  __name__ == "__main__":
         sys.exit()
     parse_file(argv[0])
     total_time_array = np.array(total_time_list)
+    min_latency = min(total_time_array)
+    print("min latency ", min_latency)
     p_1 = np.percentile(total_time_array, 1)
     p_99 = np.percentile(total_time_array, 99)
     p_99_9 = np.percentile(total_time_array, 99.9)
