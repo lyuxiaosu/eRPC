@@ -1,6 +1,6 @@
 #!/bin/bash
 function usage {
-        echo "$0 [application]"
+        echo "$0 [application, openloop_exponential or openloop_client]"
         exit 1
 }
 
@@ -10,14 +10,13 @@ if [ $# != 1 ] ; then
 fi
 
 app=$1
-base_throughput1=32344
-base_throughput2=2614
-#base_throughput2=32344
-#base_throughput1=16000
-#base_throughput2=2000
+base_throughput1=16177
+base_throughput2=650
+#base_throughput1=20
+#base_throughput2=20
 
-#throughput_percentage=(10 20 30 40 50 60)
-throughput_percentage=(90)
+#throughput_percentage=(1 5 10 15 20 25 30 35 40 45 50 55 60)
+throughput_percentage=(88)
 #throughput_percentage=(1)
 
 
