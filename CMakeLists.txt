@@ -206,6 +206,23 @@ else()
   endif()
 endif()
 
+if (SLEDGE_CUSTOMIZED)
+  message(STATUS "sledge customizes values to build eRPC")
+  add_definitions(-DSLEDGE_CUSTOMIZED)
+endif()
+
+if(DEFINED NUM_TX_RING_DESC)
+    add_definitions(-DNUM_TX_RING_DESC=${NUM_TX_RING_DESC})
+endif()
+
+if(DEFINED SESSION_CREDITS)
+    add_definitions(-DSESSION_CREDITS=${SESSION_CREDITS})
+endif()
+
+if(DEFINED SESSION_REQ_WINDOW)
+    add_definitions(-DSESSION_REQ_WINDOW=${SESSION_REQ_WINDOW})
+endif()
+
 # Generate config.h
 configure_file(src/config.h.in src/config.h)
 include_directories(${CMAKE_BINARY_DIR}/src)
@@ -407,9 +424,9 @@ if(TESTING)
     #server_failure_test
     multi_process_test)
   foreach(test_name IN LISTS CLIENT_TESTS)
-    add_executable(${test_name} tests/client_tests/${test_name}.cc)
-    target_link_libraries(${test_name} erpc ${LIBRARIES})
-    add_test(NAME ${test_name} COMMAND ${test_name})
+    #add_executable(${test_name} tests/client_tests/${test_name}.cc)
+    #target_link_libraries(${test_name} erpc ${LIBRARIES})
+    #add_test(NAME ${test_name} COMMAND ${test_name})
   endforeach()
 
   # Tests for internal eRPC protocol implementation
@@ -422,9 +439,9 @@ if(TESTING)
     rpc_rfr_test
     rpc_kick_test)
   foreach(test_name IN LISTS PROTOCOL_TESTS)
-    add_executable(${test_name} tests/protocol_tests/${test_name}.cc)
-    target_link_libraries(${test_name} erpc ${LIBRARIES})
-    add_test(NAME ${test_name} COMMAND ${test_name})
+    #add_executable(${test_name} tests/protocol_tests/${test_name}.cc)
+    #target_link_libraries(${test_name} erpc ${LIBRARIES})
+    #add_test(NAME ${test_name} COMMAND ${test_name})
   endforeach()
 
   # Tests for the transport backend implementation

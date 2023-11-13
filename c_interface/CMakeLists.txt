@@ -201,6 +201,23 @@ else()
   endif()
 endif()
 
+if (SLEDGE_CUSTOMIZED)
+  message(STATUS "sledge customizes values to build eRPC")
+  add_definitions(-DSLEDGE_CUSTOMIZED)
+endif()
+
+if(DEFINED NUM_TX_RING_DESC)
+    add_definitions(-DNUM_TX_RING_DESC=${NUM_TX_RING_DESC})
+endif()
+
+if(DEFINED SESSION_CREDITS)
+    add_definitions(-DSESSION_CREDITS=${SESSION_CREDITS})
+endif()
+
+if(DEFINED SESSION_REQ_WINDOW)
+    add_definitions(-DSESSION_REQ_WINDOW=${SESSION_REQ_WINDOW})
+endif()
+
 # Generate config.h
 configure_file(../src/config.h.in ../src/config.h)
 include_directories(${CMAKE_BINARY_DIR}/src)

@@ -189,8 +189,11 @@ class DpdkTransport : public Transport {
   // Transport-specific constants
   static constexpr TransportType kTransportType = TransportType::kDPDK;
   static constexpr size_t kMTU = 1024;
-
+#ifdef SLEDGE_CUSTOMIZED
+  static constexpr size_t kNumTxRingDesc = NUM_TX_RING_DESC;
+#else
   static constexpr size_t kNumTxRingDesc = 128;
+#endif
   static constexpr size_t kPostlist = 32;
 
   // For now, this is just for erpc::Rpc to size its array of control Msgbufs

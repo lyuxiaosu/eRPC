@@ -8,13 +8,21 @@ namespace erpc {
 
 /// Packet credits. This must be a power of two for fast matching of packet
 /// numbers to their position in the TX timestamp array.
+#ifdef SLEDGE_CUSTOMIZED
+static constexpr size_t kSessionCredits = SESSION_CREDITS;
+#else
 static constexpr size_t kSessionCredits = 32;
+#endif
 static_assert(is_power_of_two(kSessionCredits), "");
 
 /// Request window size. This must be a power of two for fast multiplication and
 /// modulo calculation during request number assignment and slot number
 /// decoding, respectively.
+#ifdef SLEDGE_CUSTOMIZED
+static constexpr size_t kSessionReqWindow = SESSION_REQ_WINDOW;
+#else
 static constexpr size_t kSessionReqWindow = 8;
+#endif
 static_assert(is_power_of_two(kSessionReqWindow), "");
 
 // Invalid metadata values for session endpoint initialization
