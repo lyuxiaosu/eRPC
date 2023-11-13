@@ -67,6 +67,7 @@ class ClientContext : public BasicAppContext {
   erpc::ChronoTimer *start_time = NULL;
   double *latency_array = NULL;
   int *pure_cpu_time = NULL;
+  struct timespec last_response_ts;
   erpc::Latency latency;
   erpc::MsgBuffer req_msgbuf[kAppMaxWindowSize], resp_msgbuf[kAppMaxWindowSize];
   ~ClientContext() {
@@ -156,7 +157,7 @@ void app_cont_func2(void *_context, void *_tag) {
   //printf("%s\n", resp_msgbuf->buf_);
   //printf("%f\n", req_lat_us);
   c->num_resps++;
-   
+  clock_gettime(CLOCK_MONOTONIC, &(c->last_response_ts));
   c->rpc_->free_msg_buffer_pointer(req_msgbuf);
   c->rpc_->free_msg_buffer_pointer(resp_msgbuf);
   delete(tag);
@@ -186,6 +187,9 @@ void app_cont_func(void *_context, void *_ws_i) {
 
 // Connect this client thread to all server threads
 void create_sessions(ClientContext &c) {
+  struct timespec startT, endT;
+  clock_gettime(CLOCK_MONOTONIC, &startT);
+
   std::string server_uri = erpc::get_uri_for_process(0);
   if (FLAGS_sm_verbose == 1) {
     printf("Process %zu: Creating %zu sessions to %s.\n", FLAGS_process_id,
@@ -199,6 +203,12 @@ void create_sessions(ClientContext &c) {
 
   while (c.num_sm_resps_ != FLAGS_num_server_threads) {
     c.rpc_->run_event_loop(kAppEvLoopMs);
+    clock_gettime(CLOCK_MONOTONIC, &endT);
+    int64_t delta_ms = (endT.tv_sec - startT.tv_sec) * 1000 + (endT.tv_nsec - startT.tv_nsec) / 1000000;
+    if (delta_ms >= 10000) {
+      printf("failed to connect to the server\n");	
+      exit(1);
+    }
     if (unlikely(ctrl_c_pressed == 1)) return;
   }
 }
@@ -318,7 +328,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   	seperate_sending_rps[req_type_array[thread_id]] = rps;
   }
 
-  delta_ms = (endT2.tv_sec - startT.tv_sec) * 1000 + (endT2.tv_nsec - startT.tv_nsec) / 1000000;
+  delta_ms = (c.last_response_ts.tv_sec - startT.tv_sec) * 1000 + (c.last_response_ts.tv_nsec - startT.tv_nsec) / 1000000;
   delta_s = delta_ms / 1000;
   int s_rps = static_cast<int>(c.num_resps) / delta_s;
   service_rps[thread_id] = s_rps;
