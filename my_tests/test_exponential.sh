@@ -22,9 +22,10 @@ base_throughput2=16000
 #throughput_percentage=(1 5 10 15)
 #for EDF_INTERRUPT
 #throughput_percentage=(1 5 10 15 20 25 30 35 40 42)
+throughput_percentage=(44 46 48 50 52)
 #for shinjuku
 #throughput_percentage=(1 5 10 15 20 25 26 27 28 29 30)
-throughput_percentage=(28 29 30 35 40)
+#throughput_percentage=(28 29 30 35 40)
 
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -51,6 +52,13 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
         pushd ../
         #scripts/do.sh 1 0 > client.txt
         scripts/do.sh 1 0 $client_log
+	return_value=$?
+	if [ "$return_value" -eq 1 ]; then
+		i=$((i - 1))
+		echo "failure, continue with i=$i"
+		popd
+		continue
+	fi
         popd
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
         sleep 10

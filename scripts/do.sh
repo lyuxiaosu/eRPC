@@ -49,6 +49,9 @@ if [ "$#" -eq 2 -o "$#" -eq 3 ]; then
     numactl --cpunodebind=$numa_node --membind=$numa_node \
     ./build/$autorun_app $(cat apps/$autorun_app/config) \
     --process_id $epid --numa_node $numa_node
+  app_return_value=$?
+  # Explicitly return the app's return value
+  exit $app_return_value
 fi
 
 # GDB mode
