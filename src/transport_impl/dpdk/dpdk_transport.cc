@@ -57,7 +57,11 @@ DpdkTransport::DpdkTransport(uint16_t sm_udp_port, uint8_t rpc_id,
       rt_assert(ret >= 0, "Failed to initialize DPDK");
 
       // rte_eal_init() sets process core affinity to only core #0, undo this
-      clear_affinity_for_process();
+      // Why undo core affinity for rte_eal_init() control threads to core #0?
+      // Keep control threads cpu affinity setting because clear this affinity 
+      // also clear our first listener thread to core #0 (only first listener
+      // thread will call rte_eal_init
+      //clear_affinity_for_process();
 
       dpdk_proc_type_ = ((rte_eal_process_type() == RTE_PROC_PRIMARY)
                              ? DpdkProcType::kPrimary
