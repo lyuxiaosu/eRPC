@@ -213,6 +213,13 @@ void create_sessions(ClientContext &c) {
   }
 }
 
+void close_sessions(ClientContext &c) {
+  auto it = c.session_num_vec_.begin();
+  for(; it != c.session_num_vec_.end(); it++) {
+    c.rpc_->destroy_session(*it);	
+  }	
+}
+
 void client_loop_fun(erpc::Rpc<erpc::CTransport> *rpc) {
 	while(ctrl_c_pressed != 1) {
 		rpc->run_event_loop(kAppEvLoopMs); 
@@ -343,6 +350,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   for (size_t i = 0; i < max_requests; i++) {
   	fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
   }
+  close_sessions(c);
 }
 
 void parse_string(std::string rps, std::vector<int>& result) {
