@@ -47,10 +47,14 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	total_throughput=$((total_throughput / 100))
 	server_log="server-${total_throughput}-${throughput_percentage[i]}.log"
 	client_log="client-${total_throughput}-${throughput_percentage[i]}.log"
+	cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
+        echo "start server for $dispatcher_policy ${throughput_percentage[i]} testing..."
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 9 3 4 $dispatcher_policy  $server_log > 1.txt 2>&1 &"
-        pushd ../
-        #scripts/do.sh 1 0 > client.txt
+	echo "start cpu monitoring"
+	ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
+	echo "start client..."
+	pushd ../
         scripts/do.sh 1 0 $client_log
 	return_value=$?
 	if [ "$return_value" -eq 1 ]; then
@@ -60,6 +64,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 		continue
 	fi
         popd
+	ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "$path/stop_monitor.sh"
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
         sleep 10
 done

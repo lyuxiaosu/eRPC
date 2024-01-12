@@ -1,4 +1,4 @@
---test_ms 10000
+--test_ms 20000
 --sm_verbose 0
 --num_server_threads 3 
 --window_size 10

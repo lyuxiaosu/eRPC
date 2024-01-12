@@ -370,7 +370,7 @@ perf_log_init()
                 printf("Client Performance Log %s\n", perf_log_path);
                 perf_log = fopen(perf_log_path, "w");
                 if (perf_log == NULL) perror("perf_log_init\n");
-		fprintf(perf_log, "thread id, type id, latency\n");
+		fprintf(perf_log, "thread id, type id, latency, cpu time\n");
         }
 }
 
