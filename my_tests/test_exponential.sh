@@ -1,18 +1,23 @@
 #!/bin/bash
 function usage {
-        echo "$0 [dispatcher policy, SHINJUKU or EDF_INTERRUPT or DARC]"
+        echo "$0 [dispatcher policy, SHINJUKU or EDF_INTERRUPT or DARC] [disable busy loop, true or false] [disable autoscaling] [worker count]"
         exit 1
 }
 
-if [ $# != 1 ] ; then
+if [ $# != 4 ] ; then
         usage
         exit 1;
 fi
 
 chmod 400 ./id_rsa
-remote_ip="128.110.218.245"
+remote_ip="128.110.219.8"
 
 dispatcher_policy=$1
+disable_busy_loop=$2
+disable_autoscaling=$3
+worker_count=$4
+
+flag="disable-busy-loop-$disable_busy_loop-disable-autoscaling-$disable_autoscaling-$worker_count"
 #base_throughput1=32344
 #base_throughput2=32344
 base_throughput1=16000
@@ -22,11 +27,15 @@ base_throughput2=16000
 #throughput_percentage=(1 5 10 15)
 #for EDF_INTERRUPT
 #throughput_percentage=(1 5 10 15 20 25 30 35 40 42)
-throughput_percentage=(44 46 48 50 52)
+#throughput_percentage=(44 46 48 50 52)
 #for shinjuku
 #throughput_percentage=(1 5 10 15 20 25 26 27 28 29 30)
 #throughput_percentage=(28 29 30 35 40)
 
+
+#for semaphore, no autoscaling, cpu conserved
+throughput_percentage=(1 5 10 15 20 25 30 35 40 41 42 43 44 46 48 50)
+#throughput_percentage=(46 48 50)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"
@@ -50,7 +59,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
         echo "start server for $dispatcher_policy ${throughput_percentage[i]} testing..."
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 9 3 4 $dispatcher_policy  $server_log > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh $worker_count 3 5 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling > 1.txt 2>&1 &"
 	echo "start cpu monitoring"
 	ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
 	echo "start client..."
@@ -68,7 +77,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
         sleep 10
 done
-folder_name=$dispatcher_policy
+folder_name=$dispatcher_policy"-$flag"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mkdir $path/$folder_name"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mv *.log $path/$folder_name"
 mkdir $folder_name

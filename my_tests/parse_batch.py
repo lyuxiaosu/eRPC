@@ -170,10 +170,11 @@ if __name__ == "__main__":
     #file_folders = ['SHINJUKU', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
     #file_folders = ['SHINJUKU_7', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
     #file_folders = ['SHINJUKU', 'DARC', 'EDF_SRSF_INTERRUPT']
-    file_folders = ['EDF_SRSF_INTERRUPT']
+    #file_folders = ['EDF_SRSF_INTERRUPT']
     #file_folders = ['EDF_INTERRUPT','EDF_SRSF_INTERRUPT_1']
     #file_folders = ['DARC', 'EDF_SRSF_INTERRUPT']
     #file_folders = ['SHINJUKU']
+    file_folders = ['EDF_INTERRUPT-disable-busy-loop-false-disable-autoscaling-true-9','EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-false-9', 'EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-true-27', 'EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-false-27']
     latency = defaultdict(list)
     slow_down = defaultdict(list)
     slow_down_99_9 = defaultdict(list)
