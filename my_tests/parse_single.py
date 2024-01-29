@@ -12,12 +12,19 @@ total_slow_down = []
 def parse_file(file_path):
     #key is request type, value is latency
     fo = open(file_path, "r+")
+    total_count = 0
+    deadline_miss_count = 0
     for line in fo:
         line = line.strip()
+        #latency log line
         if "thread id" not in line and "total sending" not in line and "type" not in line:
+            total_count = total_count + 1
             r_type = line.split(" ")[1]
             latency = line.split(" ")[2]
             pure_cpu_time = line.split(" ")[3]
+            deadline = float(pure_cpu_time) * 10
+            if float(latency) > deadline:
+                deadline_miss_count = deadline_miss_count + 1
             if pure_cpu_time == '0':
                 continue 
             seperate_time_dist[r_type].append(float(latency))
@@ -34,7 +41,9 @@ def parse_file(file_path):
             sending_rate = line.split(" ")[4] 
             service_rate = line.split(" ")[7] 
             print("type ", r_type, " sending rate", sending_rate, " service rate ", service_rate)
-
+    miss_rate = (deadline_miss_count / total_count) * 100
+    miss_rate_formatted = "{:.4f}".format(miss_rate)
+    print("miss rate ", miss_rate_formatted)
 if  __name__ == "__main__":
     argv = sys.argv[1:]
     if len(argv) < 1:
