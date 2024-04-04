@@ -60,6 +60,7 @@ class ServerContext : public BasicAppContext {
 class ClientContext : public BasicAppContext {
  public:
   size_t num_resps = 0;
+  size_t num_reqs = 0;
   size_t thread_id;
   erpc::ChronoTimer start_time;
   std::vector<double> latency_array;
@@ -127,6 +128,7 @@ inline void send_req(ClientContext &c, size_t ws_i) {
   c.rpc_->enqueue_request(c.round_robin_get_session_num(), static_cast<size_t>(req_type_array[c.thread_id]),
                          &c.req_msgbuf[ws_i], &c.resp_msgbuf[ws_i],
                          app_cont_func, reinterpret_cast<void *>(ws_i));
+  c.num_reqs++;
 }
 
 void app_cont_func2(void *_context, void *_tag) {
@@ -285,6 +287,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   int rps = static_cast<int>(c.num_resps) / delta_s;
   sending_rps[thread_id] = rps;
   responses[thread_id] = c.num_resps;
+  requests[thread_id] = c.num_reqs;
 
   if (seperate_sending_rps.count(req_type_array[thread_id]) > 0) {
         seperate_sending_rps[req_type_array[thread_id]] += rps;
@@ -353,13 +356,18 @@ int main(int argc, char **argv) {
   	sending_rate += sending_rps[i];
   }
 
-  uint32_t total_requests = 0;
+  uint32_t total_responses = 0;
   for (size_t i = 0; i < num_threads; i++) {
-  	total_requests += responses[i];
+  	total_responses += responses[i];
   }
 
-  printf("total sending rate %d, total sent out requests %u\n", 
-	  sending_rate, total_requests);
+  uint32_t total_requests = 0;
+  for (size_t i = 0; i < num_threads; i++) {
+  	total_requests += requests[i];
+  }
+
+  printf("total sending rate %d, total sent out requests %u total response %u\n", 
+	  sending_rate, total_requests, total_responses);
   fprintf(perf_log, "total sending rate %d, total sent out requests %u\n",
           sending_rate, total_requests); 
   for (const auto& pair : seperate_sending_rps) {
