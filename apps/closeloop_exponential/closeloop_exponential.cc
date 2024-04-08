@@ -67,6 +67,7 @@ class ClientContext : public BasicAppContext {
   erpc::ChronoTimer start_time;
   std::vector<double> latency_array;
   std::vector<int> pure_cpu_time;
+  //std::vector<double> exp_nums;
   struct timespec last_response_ts;
   erpc::Latency latency;
   erpc::MsgBuffer req_msgbuf[kAppMaxWindowSize], resp_msgbuf[kAppMaxWindowSize];
@@ -284,6 +285,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     send_req(c, 0);
     total_send_out++;
     double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
+    //c.exp_nums.push_back(ms);
     size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
     uint64_t begin_i, end_i;
     begin_i = erpc::rdtsc();
@@ -320,6 +322,10 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   	fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
   }
   close_sessions(c);
+  /*printf("thread %zu exp nums:\n", thread_id);
+  for (size_t i = 0; i < 100; i++) {
+    printf("%f\n", c.exp_nums[i]);
+  }*/
 }
 
 void parse_string(std::string rps, std::vector<int>& result) {
