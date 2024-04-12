@@ -14,7 +14,7 @@ remote_ip="128.110.219.0"
 
 repeat_count=$1
 
-> sledge.log
+sudo rm -rf ../sledge.log
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<$repeat_count;i++ )) do
