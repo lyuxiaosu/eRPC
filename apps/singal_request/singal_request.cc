@@ -202,11 +202,7 @@ void create_sessions(ClientContext &c) {
     c.session_num_vec_.push_back(session_num);
   }
   
-  struct timespec before_while;
-  clock_gettime(CLOCK_MONOTONIC, &before_while);
-  int64_t create_se = (before_while.tv_sec - start_conn.tv_sec) * 1000000 + (before_while.tv_nsec - start_conn.tv_nsec) / 1000;
   while (c.num_sm_resps_ != FLAGS_num_server_threads) {
-    //c.rpc_->run_event_loop(kAppEvLoopMs);
     c.rpc_->run_event_loop_once();
     clock_gettime(CLOCK_MONOTONIC, &endT);
     int64_t delta_ms = (endT.tv_sec - start_conn.tv_sec) * 1000 + (endT.tv_nsec - start_conn.tv_nsec) / 1000000;
@@ -220,9 +216,8 @@ void create_sessions(ClientContext &c) {
   
   clock_gettime(CLOCK_MONOTONIC, &end_conn);
   int64_t delta_conn_us = (end_conn.tv_sec - start_conn.tv_sec) * 1000000 + (end_conn.tv_nsec - start_conn.tv_nsec) / 1000;
-  int64_t delta_while_us = (end_conn.tv_sec - before_while.tv_sec) * 1000000 + (end_conn.tv_nsec - before_while.tv_nsec) / 1000;
 
-  printf("total connection time %ld us while %ld session_sendout %ld\n", delta_conn_us, delta_while_us, create_se);
+  printf("total connection time %ld\n", delta_conn_us);
 }
 
 void close_sessions(ClientContext &c) {
