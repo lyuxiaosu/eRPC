@@ -201,7 +201,9 @@ void create_sessions(ClientContext &c) {
     erpc::rt_assert(session_num >= 0, "Failed to create session");
     c.session_num_vec_.push_back(session_num);
   }
-  
+ 
+  struct timespec start_while;
+  clock_gettime(CLOCK_MONOTONIC, &start_while); 
   while (c.num_sm_resps_ != FLAGS_num_server_threads) {
     c.rpc_->run_event_loop_once();
     clock_gettime(CLOCK_MONOTONIC, &endT);
@@ -216,8 +218,9 @@ void create_sessions(ClientContext &c) {
   
   clock_gettime(CLOCK_MONOTONIC, &end_conn);
   int64_t delta_conn_us = (end_conn.tv_sec - start_conn.tv_sec) * 1000000 + (end_conn.tv_nsec - start_conn.tv_nsec) / 1000;
+  int64_t delta_while_us = (end_conn.tv_sec - start_while.tv_sec) * 1000000 + (end_conn.tv_nsec - start_while.tv_nsec) / 1000;
 
-  printf("total connection time %ld\n", delta_conn_us);
+  printf("total connection time %ld while %ld\n", delta_conn_us, delta_while_us);
 }
 
 void close_sessions(ClientContext &c) {
@@ -335,6 +338,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   for (size_t i = 0; i < max_requests; i++) {
   	fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
+  	printf("%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
   }
   close_sessions(c);
 }
@@ -418,15 +422,5 @@ int main(int argc, char **argv) {
        total_dropped += dropped[i];
   }
 
-  printf("total sending rate %d, service rate %d total sent out requests %u total received response %zu dropped %u\n", 
-	  sending_rate, service_rate, total_requests, total_responses, total_dropped);
-  fprintf(perf_log, "total sending rate %d, service rate %d total sent out requests %u total received response %zu\n",
-          sending_rate, service_rate, total_requests, total_responses); 
-  for (const auto& pair : seperate_sending_rps) {
-        printf("type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
-        fprintf(perf_log, "type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
-  }
   fclose(perf_log);
 }
