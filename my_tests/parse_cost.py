@@ -23,8 +23,8 @@ while line_index < len(lines):
         time_value = int(match.group(1))
         total_cold_time += time_value
         total_cold_time += float(lines[line_index+1].split()[2])
-        total_warm_time += float(lines[line_index+2].split()[2])
-        line_index = line_index + 3
+        total_warm_time += float(lines[line_index+4].split()[2])
+        line_index = line_index + 5 
         count += 1
     else:
         line_index += 1
