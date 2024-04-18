@@ -26,7 +26,7 @@ for(( i=0;i<${#concurrency[@]};i++ )) do
 	echo "i is $i"
         per_rps1=$(($rps1 / $con1))
         per_rps2=$(($rps2 / $con2))
-        python3 ../generate_config.py $con1 $con2 $per_rps1 $per_rps2 1 32 
+        python3 ../generate_config.py $con1 $con2 $per_rps1 $per_rps2 1 32 1 1 
         cp config ../apps/closeloop_exponential/ 
 	client_log="client-${concurrency[i]}.log"
 	#cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"

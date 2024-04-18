@@ -64,9 +64,12 @@ class ClientContext : public BasicAppContext {
   size_t num_resps = 0;
   size_t num_reqs = 0;
   size_t thread_id;
+  int invoc_id = -1;
   erpc::ChronoTimer start_time;
   std::vector<double> latency_array;
+  std::vector<double> delayed_latency_array;
   std::vector<int> pure_cpu_time;
+  std::vector<std::chrono::time_point<std::chrono::high_resolution_clock>> should_starts;
   //std::vector<double> exp_nums;
   struct timespec last_response_ts;
   erpc::Latency latency;
@@ -139,15 +142,7 @@ void app_cont_func2(void *_context, void *_tag) {
   auto *tag = reinterpret_cast<Tag *>(_tag);
   erpc::MsgBuffer *req_msgbuf = tag->req_msgbuf;
   erpc::MsgBuffer *resp_msgbuf = tag->resp_msgbuf;
-  //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
   assert(resp_msgbuf->buf_[0] == '0');
-  const double req_lat_us = c->start_time.get_us();
-  c->latency_array.push_back(req_lat_us);
-  c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(resp_msgbuf->buf_[2]))));
-  //printf("%s\n", resp_msgbuf->buf_);
-  //printf("%f\n", req_lat_us);
-  c->num_resps++;
-  clock_gettime(CLOCK_MONOTONIC, &(c->last_response_ts));
   c->rpc_->free_msg_buffer_pointer(req_msgbuf);
   c->rpc_->free_msg_buffer_pointer(resp_msgbuf);
   delete(tag);
@@ -166,6 +161,12 @@ inline int send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuf
 void app_cont_func(void *_context, void *_ws_i) {
   auto *c = static_cast<ClientContext *>(_context);
   const double req_lat_us = c->start_time.get_us();
+  const double delayed_latency_ns = static_cast<size_t>(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::high_resolution_clock::now() - c->should_starts[static_cast<size_t>(c->invoc_id)])
+            .count());
+
+  c->delayed_latency_array.push_back(delayed_latency_ns / 1e3);
   const auto ws_i = reinterpret_cast<size_t>(_ws_i);
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
   assert(c->resp_msgbuf[ws_i].buf_[0] == '0');
@@ -217,15 +218,14 @@ void client_loop_fun(erpc::Rpc<erpc::CTransport> *rpc) {
 }
 
 void warm_up(ClientContext &c, size_t thread_id, double freq_ghz) {
-	int rps = warmup_rps[thread_id];
 	size_t count = FLAGS_warmup_count;
 	size_t sent_out = 0;
         while (ctrl_c_pressed != 1 && sent_out != count) {	
 		erpc::MsgBuffer *req_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
 		erpc::MsgBuffer *resp_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-		sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 15);
+		sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 1);
 		send_req2(c, req_msgbuf, resp_msgbuf, thread_id, sent_out);
-		double ms = (1.0/rps) * 1000;
+		double ms = (1.0/100) * 1000;
 		size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 		uint64_t begin, end;
 		begin = erpc::rdtsc();
@@ -256,7 +256,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   create_sessions(c);
 
-
+  warm_up(c, thread_id, freq_ghz);
   printf("Process %zu, thread %zu: Connected. Starting work.\n",
          FLAGS_process_id, thread_id);
   if (thread_id == 0) {
@@ -280,9 +280,11 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   //begin = erpc::rdtsc();
   //end = begin;  
 
+  c.should_starts.push_back(std::chrono::high_resolution_clock::now());
   while (c.num_resps != max_requests) {
   //while ((end - begin) < total_cycles && ctrl_c_pressed != 1) {
     send_req(c, 0);
+    c.invoc_id++;
     total_send_out++;
     double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
     //c.exp_nums.push_back(ms);
@@ -295,6 +297,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
       rpc.run_event_loop_once();
       end_i = erpc::rdtsc();
     }
+
+    c.should_starts.push_back(std::chrono::high_resolution_clock::now());
 
     while(c.num_resps != total_send_out) {
       rpc.run_event_loop_once();
@@ -319,7 +323,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   printf("sending requests %zu exepected rps %d actual rps %d\n", c.num_resps, rps_array[thread_id], rps);
   for (size_t i = 0; i < c.num_resps; i++) {
-  	fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
+  	//fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
+  	fprintf(perf_log, "%zu %d %f %f\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.delayed_latency_array[i]);
   }
   close_sessions(c);
   /*printf("thread %zu exp nums:\n", thread_id);
@@ -345,7 +350,7 @@ perf_log_init()
                 printf("Client Performance Log %s\n", perf_log_path);
                 perf_log = fopen(perf_log_path, "w");
                 if (perf_log == NULL) perror("perf_log_init\n");
-		fprintf(perf_log, "thread id, type id, latency, cpu time\n");
+		fprintf(perf_log, "thread id, type id, true latency, delayed_latency\n");
         }
 }
 

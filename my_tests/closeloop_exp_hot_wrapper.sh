@@ -20,7 +20,7 @@ concurrency=(1 2 6 8 10 12 14 16)
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#concurrency[@]};i++ )) do
 	echo "i is $i"
-        python3 ../generate_config.py ${concurrency[i]} 0 $(($rps / ${concurrency[i]})) 0 1 1
+        python3 ../generate_config.py ${concurrency[i]} 0 $(($rps / ${concurrency[i]})) 0 1 1 1
         cp config ../apps/closeloop_exponential/ 
 	client_log="client-${concurrency[i]}.log"
 	#cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"

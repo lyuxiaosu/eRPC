@@ -36,6 +36,7 @@ std::vector<int> req_parameter_array;
 DEFINE_uint64(num_server_threads, 1, "Number of threads at the server machine");
 DEFINE_uint64(num_client_threads, 1, "Number of threads per client machine");
 DEFINE_uint64(warmup_count, 100, "Number of packets to send during the warmup phase");
+DEFINE_string(rps, "100", "Number of requests per second that client sends to the server");
 DEFINE_string(req_type, "1", "Request type for each thread to send");
 DEFINE_string(req_parameter, "15", "Request parameters of each type request");
 DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmup phase");
@@ -277,7 +278,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   while ((end - begin) < total_cycles && ctrl_c_pressed != 1) {
     //rpc.run_event_loop_once(); 
-    rpc.run_event_loop(FLAGS_test_ms);
+    rpc.run_event_loop(1000);
     end = erpc::rdtsc();
   }
   clock_gettime(CLOCK_MONOTONIC, &endT);
@@ -295,7 +296,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   	seperate_sending_rps[req_type_array[thread_id]] = rps;
   }
 
-  printf("sending requests %zu rps %d\n", c.num_resps, rps);
+  printf("sending requests %zu rps %d test time %ld seconds\n", c.num_resps, rps, delta_s);
   for (size_t i = 0; i < c.num_resps; i++) {
   	fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
   }

@@ -1,15 +1,15 @@
 import sys
 import os
 
-def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, type2_param):
+def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, type2_param, window_size, num_listener):
     type1 = "1"
     type2 = "2"
     
     config = []
     config.append("--test_ms 10000")
     config.append("--sm_verbose 0")
-    config.append("--num_server_threads 1")
-    config.append("--window_size 1")
+    config.append("--num_server_threads {}".format(num_listener))
+    config.append("--window_size {}".format(window_size))
     config.append("--req_size 4")
     config.append("--resp_size 32")
     config.append("--num_processes 2")
@@ -39,8 +39,8 @@ def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, typ
         config.append("--req_parameter " + type1_param + "," + type2_param)
     return "\n".join(config)
 
-if len(sys.argv) != 7:
-    print("Usage: <type1_concurrency> <type2_concurrency> <type1_rps> <type2_rps> <type1_param> <type2_param>")
+if len(sys.argv) != 9:
+    print("Usage: <type1_concurrency> <type2_concurrency> <type1_rps> <type2_rps> <type1_param> <type2_param> <window_size> <num_listener>")
     sys.exit(1)
 
 type1_con = int(sys.argv[1])
@@ -49,8 +49,10 @@ type1_rps = sys.argv[3]
 type2_rps = sys.argv[4]
 type1_param = sys.argv[5]
 type2_param = sys.argv[6]
+window_size = sys.argv[7]
+num_listener = sys.argv[8]
 
-config_content = generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, type2_param)
+config_content = generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, type2_param, window_size, num_listener)
 with open("config", "w") as f:
     f.write(config_content)
 
