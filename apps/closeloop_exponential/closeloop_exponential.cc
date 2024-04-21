@@ -6,7 +6,6 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
-#include <iostream>
 
 #include "../apps_common.h"
 #include "rpc.h"
@@ -64,17 +63,14 @@ class ClientContext : public BasicAppContext {
  public:
   size_t num_resps = 0;
   size_t num_reqs = 0;
-  uint64_t max_requests = 0;
   size_t thread_id;
-  int rps;
   erpc::ChronoTimer start_time;
   std::vector<double> latency_array;
-  std::vector<double> total_delayed_latency_array;
-  std::chrono::time_point<std::chrono::high_resolution_clock> next_should_send_ts;
+  std::vector<double> delayed_latency_array;
   std::vector<int> pure_cpu_time;
+  std::chrono::time_point<std::chrono::high_resolution_clock> next_should_send_ts;
   //std::vector<double> exp_nums;
   struct timespec last_response_ts;
-  std::mt19937 generator;
   erpc::Latency latency;
   erpc::MsgBuffer req_msgbuf[kAppMaxWindowSize], resp_msgbuf[kAppMaxWindowSize];
   ~ClientContext() {
@@ -162,31 +158,20 @@ inline int send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuf
 }
 
 void app_cont_func(void *_context, void *_ws_i) {
-  auto current = std::chrono::high_resolution_clock::now();
   auto *c = static_cast<ClientContext *>(_context);
   const double req_lat_us = c->start_time.get_us();
-  
+  const double delayed_latency_ns = static_cast<size_t>(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::high_resolution_clock::now() - c->next_should_send_ts)
+            .count());
+
+  c->delayed_latency_array.push_back(delayed_latency_ns / 1e3);
   const auto ws_i = reinterpret_cast<size_t>(_ws_i);
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
   assert(c->resp_msgbuf[ws_i].buf_[0] == '0');
   c->latency_array.push_back(req_lat_us);
   c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(c->resp_msgbuf[ws_i].buf_[2]))));
   c->num_resps++;
-
-  const double total_delayed_latency_us = static_cast<size_t>(
-        std::chrono::duration_cast<std::chrono::nanoseconds>(current - c->next_should_send_ts).count()) / 1e3;
-  c->total_delayed_latency_array.push_back(total_delayed_latency_us);
-
-  double ms = ran_expo2(c->generator, c->rps) * 1000;
-  std::chrono::duration<double, std::milli> interval(ms);
-  c->next_should_send_ts = std::chrono::time_point_cast<std::chrono::high_resolution_clock::duration>(c->next_should_send_ts + interval);
-  while (current < c->next_should_send_ts) {
-    current = std::chrono::high_resolution_clock::now();
-  }
-  
-  if (c->num_resps < c->max_requests) {
-    send_req(*c, 0);
-  }
 }
 
 // Connect this client thread to all server threads
@@ -267,8 +252,6 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   rpc.retry_connect_on_invalid_rpc_id_ = true;
   c.rpc_ = &rpc;
   c.thread_id = thread_id;
-  c.rps = rps_array[thread_id];
-  c.generator = std::mt19937(thread_id); 
 
   create_sessions(c);
 
@@ -287,25 +270,69 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
  
   //size_t total_cycles = erpc::ms_to_cycles(FLAGS_test_ms, freq_ghz);
 
-  c.max_requests = (FLAGS_test_ms/1000) * static_cast<uint64_t>(rps_array[thread_id]);
+  std::mt19937 generator(thread_id);
+  uint64_t max_requests = (FLAGS_test_ms/1000) * static_cast<uint64_t>(rps_array[thread_id]);
+  uint32_t total_send_out = 0;
   struct timespec startT, endT;
   clock_gettime(CLOCK_MONOTONIC, &startT);
   //uint64_t begin, end;
   //begin = erpc::rdtsc();
   //end = begin;  
-
   c.next_should_send_ts = std::chrono::high_resolution_clock::now();
-  send_req(c, 0);
+  std::chrono::duration<double, std::milli> interval(0);
 
-  while (c.num_resps < c.max_requests && ctrl_c_pressed != 1) {
-    rpc.run_event_loop_once();
+  while (c.num_resps != max_requests) {
+    
+    //wait for the interval to send next request.
+    auto current = std::chrono::high_resolution_clock::now();
+    c.next_should_send_ts = std::chrono::time_point_cast<std::chrono::high_resolution_clock::duration>(c.next_should_send_ts + interval);
+
+    while ( current < c.next_should_send_ts ) {
+        rpc.run_event_loop_once();
+        current = std::chrono::high_resolution_clock::now();
+    }
+
+    //send the request.
+    send_req(c, 0);
+    total_send_out++;
+
+    //wait for the request response.
+    while (c.num_resps < total_send_out) {
+        rpc.run_event_loop_once();
+    }
+
+    //generate next request interval.
+    double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
+    interval = std::chrono::duration<double, std::milli>( ms );
+
   }
 
+  
+
+  /*c.next_should_send_ts = std::chrono::high_resolution_clock::now();
+  while (c.num_resps != max_requests) {
+    send_req(c, 0);
+    total_send_out++;
+    double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
+    //c.exp_nums.push_back(ms);
+    std::chrono::duration<double, std::milli> interval(ms);
+    auto current = std::chrono::high_resolution_clock::now();
+    auto should_send = current + interval;
+  
+    while((current < should_send) && ctrl_c_pressed != 1) {
+      rpc.run_event_loop_once();
+      current = std::chrono::high_resolution_clock::now();
+    }
+
+    while(c.num_resps != total_send_out) {
+      rpc.run_event_loop_once();
+    }
+    c.next_should_send_ts = std::chrono::time_point_cast<std::chrono::high_resolution_clock::duration>(c.next_should_send_ts + interval);
+  }*/
   clock_gettime(CLOCK_MONOTONIC, &endT);
 
   int64_t delta_ms = (endT.tv_sec - startT.tv_sec) * 1000 + (endT.tv_nsec - startT.tv_nsec) / 1000000; 
   int64_t delta_s = delta_ms / 1000;
-  printf("delta_s is %ld\n", delta_s);
   int rps = static_cast<int>(c.num_resps) / delta_s;
   sending_rps[thread_id] = rps;
   responses[thread_id] = c.num_resps;
@@ -320,7 +347,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   printf("sending requests %zu exepected rps %d actual rps %d\n", c.num_resps, rps_array[thread_id], rps);
   for (size_t i = 0; i < c.num_resps; i++) {
   	//fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
-  	fprintf(perf_log, "%zu %d %f %f\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.total_delayed_latency_array[i]);
+  	fprintf(perf_log, "%zu %d %f %f\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.delayed_latency_array[i]);
   }
   close_sessions(c);
   /*printf("thread %zu exp nums:\n", thread_id);
