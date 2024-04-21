@@ -275,19 +275,17 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   uint32_t total_send_out = 0;
   struct timespec startT, endT;
   clock_gettime(CLOCK_MONOTONIC, &startT);
-  //uint64_t begin, end;
-  //begin = erpc::rdtsc();
-  //end = begin;  
+  
   c.next_should_send_ts = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> interval(0);
 
-  while (c.num_resps != max_requests) {
+  while (c.num_resps != max_requests && ctrl_c_pressed != 1) {
     
     //wait for the interval to send next request.
     auto current = std::chrono::high_resolution_clock::now();
     c.next_should_send_ts = std::chrono::time_point_cast<std::chrono::high_resolution_clock::duration>(c.next_should_send_ts + interval);
 
-    while ( current < c.next_should_send_ts ) {
+    while (current < c.next_should_send_ts && ctrl_c_pressed != 1) {
         rpc.run_event_loop_once();
         current = std::chrono::high_resolution_clock::now();
     }
@@ -297,7 +295,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     total_send_out++;
 
     //wait for the request response.
-    while (c.num_resps < total_send_out) {
+    while (c.num_resps < total_send_out && ctrl_c_pressed != 1) {
         rpc.run_event_loop_once();
     }
 
@@ -307,28 +305,6 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   }
 
-  
-
-  /*c.next_should_send_ts = std::chrono::high_resolution_clock::now();
-  while (c.num_resps != max_requests) {
-    send_req(c, 0);
-    total_send_out++;
-    double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
-    //c.exp_nums.push_back(ms);
-    std::chrono::duration<double, std::milli> interval(ms);
-    auto current = std::chrono::high_resolution_clock::now();
-    auto should_send = current + interval;
-  
-    while((current < should_send) && ctrl_c_pressed != 1) {
-      rpc.run_event_loop_once();
-      current = std::chrono::high_resolution_clock::now();
-    }
-
-    while(c.num_resps != total_send_out) {
-      rpc.run_event_loop_once();
-    }
-    c.next_should_send_ts = std::chrono::time_point_cast<std::chrono::high_resolution_clock::duration>(c.next_should_send_ts + interval);
-  }*/
   clock_gettime(CLOCK_MONOTONIC, &endT);
 
   int64_t delta_ms = (endT.tv_sec - startT.tv_sec) * 1000 + (endT.tv_nsec - startT.tv_nsec) / 1000000; 
