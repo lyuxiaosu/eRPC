@@ -36,7 +36,7 @@ std::vector<int> req_parameter_array;
 
 DEFINE_uint64(num_server_threads, 1, "Number of threads at the server machine");
 DEFINE_uint64(num_client_threads, 1, "Number of threads per client machine");
-DEFINE_uint64(warmup_count, 100, "Number of packets to send during the warmup phase");
+DEFINE_uint64(warmup_count, 1000, "Number of packets to send during the warmup phase");
 DEFINE_string(req_type, "1", "Request type for each thread to send");
 DEFINE_string(req_parameter, "15", "Request parameters of each type request");
 DEFINE_string(rps, "100", "Number of requests per second that client sends to the server");
@@ -69,7 +69,7 @@ class ClientContext : public BasicAppContext {
   std::vector<double> delayed_latency_array;
   std::vector<int> pure_cpu_time;
   std::chrono::time_point<std::chrono::high_resolution_clock> next_should_send_ts;
-  //std::vector<double> exp_nums;
+  std::vector<double> exp_nums;
   struct timespec last_response_ts;
   erpc::Latency latency;
   erpc::MsgBuffer req_msgbuf[kAppMaxWindowSize], resp_msgbuf[kAppMaxWindowSize];
@@ -224,7 +224,7 @@ void warm_up(ClientContext &c, size_t thread_id, double freq_ghz) {
 		erpc::MsgBuffer *resp_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
 		sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 1);
 		send_req2(c, req_msgbuf, resp_msgbuf, thread_id, sent_out);
-		double ms = (1.0/100) * 1000;
+		double ms = (1.0/400) * 1000;
 		size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 		uint64_t begin, end;
 		begin = erpc::rdtsc();
@@ -301,7 +301,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
     //generate next request interval.
     double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
-    interval = std::chrono::duration<double, std::milli>( ms );
+    //c.exp_nums.push_back(ms);
+    interval = std::chrono::duration<double, std::milli>(ms);
 
   }
 
