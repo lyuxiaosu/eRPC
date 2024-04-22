@@ -28,7 +28,13 @@ namespace erpc {
 
 class DpdkTransport : public Transport {
  public:
+  //static constexpr size_t kMaxQueuesPerPort = kIsWindows ? 1 : 32;
+#ifdef SLEDGE_CUSTOMIZED
+  static constexpr size_t kMaxQueuesPerPort = kIsWindows ? 1 : MAX_QUEUE_PER_PORT;
+#else
   static constexpr size_t kMaxQueuesPerPort = kIsWindows ? 1 : 16;
+#endif
+
   static constexpr size_t kInvalidQpId = SIZE_MAX;
 
   /// Contents of the memzone created by the eRPC DPDK daemon process

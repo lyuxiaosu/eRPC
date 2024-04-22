@@ -215,6 +215,14 @@ if(DEFINED NUM_TX_RING_DESC)
     add_definitions(-DNUM_TX_RING_DESC=${NUM_TX_RING_DESC})
 endif()
 
+if(DEFINED NUM_RX_RING_ENTRIES)
+    add_definitions(-DNUM_RX_RING_ENTRIES=${NUM_RX_RING_ENTRIES})
+endif()
+
+if(DEFINED MAX_QUEUE_PER_PORT)
+    add_definitions(-DMAX_QUEUE_PER_PORT=${MAX_QUEUE_PER_PORT})
+endif()
+
 if(DEFINED SESSION_CREDITS)
     add_definitions(-DSESSION_CREDITS=${SESSION_CREDITS})
 endif()

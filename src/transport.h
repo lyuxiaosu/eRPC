@@ -23,7 +23,11 @@ enum class TransportType { kInfiniBand, kRaw, kDPDK, kFake, kInvalid };
 /// Generic unreliable transport
 class Transport {
  public:
+#ifdef SLEDGE_CUSTOMIZED
+  static constexpr size_t kNumRxRingEntries = NUM_RX_RING_ENTRIES;
+#else
   static constexpr size_t kNumRxRingEntries = 4096;
+#endif
   static_assert(is_power_of_two<size_t>(kNumRxRingEntries), "");
 
   static constexpr size_t kMaxRoutingInfoSize = 48;  ///< Space for routing info
