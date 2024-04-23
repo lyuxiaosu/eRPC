@@ -45,6 +45,7 @@ DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmu
 DEFINE_uint64(window_size, 1, "Outstanding requests per client");
 DEFINE_uint64(req_size, 64, "Size of request message in bytes");
 DEFINE_uint64(resp_size, 32, "Size of response message in bytes ");
+DEFINE_int32(true_openloop, 1, "True openloop or not");
 
 struct Tag {
 	erpc::MsgBuffer *req_msgbuf;
@@ -308,9 +309,11 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     send_req(c, total_send_out);
     total_send_out++;
 
-    //wait for the request response.
-    while (c.num_resps < total_send_out && ctrl_c_pressed != 1) {
+    if (FLAGS_true_openloop == 0) {
+      //wait for the request response.
+      while (c.num_resps < total_send_out && ctrl_c_pressed != 1) {
         rpc.run_event_loop_once();
+      }
     }
 
     //generate next request interval.
@@ -323,9 +326,12 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     send_req(c, total_send_out);
     total_send_out++;
     next_send_begin_ts = std::chrono::high_resolution_clock::now();
-    //wait for the request response.
-    while (c.num_resps < total_send_out && ctrl_c_pressed != 1) {
+
+    if (FLAGS_true_openloop == 0)
+      //wait for the request response.
+      while (c.num_resps < total_send_out && ctrl_c_pressed != 1) {
         rpc.run_event_loop_once();
+      }
     }
 
     //generate next request interval.
@@ -389,7 +395,11 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   printf("sending requests %zu get response %zu exepected rps %d actual rps %d\n", c.num_reqs, c.num_resps, rps_array[thread_id], rps);
   for (size_t i = 0; i < c.num_resps; i++) {
   	//fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
-  	fprintf(perf_log, "%zu %d %f %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.delayed_latency_array[i], c.pure_cpu_time[i]);
+        if (FLAGS_true_openloop == 0) {
+  	  fprintf(perf_log, "%zu %d %f %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.delayed_latency_array[i], c.pure_cpu_time[i]);
+        } else {
+          fprintf(perf_log, "%zu %d %f %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.latency_array[i], c.pure_cpu_time[i]);
+        }
   }
   close_sessions(c);
   /*printf("thread %zu exp nums:\n", thread_id);
