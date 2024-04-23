@@ -65,7 +65,7 @@ class ClientContext : public BasicAppContext {
   size_t num_resps = 0;
   size_t num_reqs = 0;
   size_t thread_id;
-  erpc::ChronoTimer start_time;
+  erpc::ChronoTimer *start_time;
   std::vector<double> latency_array;
   std::vector<double> delayed_latency_array;
   std::vector<int> pure_cpu_time;
@@ -73,8 +73,12 @@ class ClientContext : public BasicAppContext {
   std::vector<double> exp_nums;
   std::chrono::time_point<std::chrono::high_resolution_clock> last_response_ts;
   erpc::Latency latency;
-  erpc::MsgBuffer req_msgbuf[kAppMaxWindowSize], resp_msgbuf[kAppMaxWindowSize];
+  std::vector<erpc::MsgBuffer*> req_msgbuf, resp_msgbuf;
   ~ClientContext() {
+    if(start_time) {
+      delete[] start_time;
+      start_time = NULL;
+    }
   }
 };
 
@@ -130,9 +134,9 @@ void server_func(erpc::Nexus *nexus, size_t thread_id) {
 void app_cont_func(void *, void *);
 
 inline void send_req(ClientContext &c, size_t ws_i) {
-  c.start_time.reset();
+  c.start_time[ws_i].reset();
   c.rpc_->enqueue_request(c.round_robin_get_session_num(), static_cast<size_t>(req_type_array[c.thread_id]),
-                         &c.req_msgbuf[ws_i], &c.resp_msgbuf[ws_i],
+                         c.req_msgbuf[ws_i], c.resp_msgbuf[ws_i],
                          app_cont_func, reinterpret_cast<void *>(ws_i));
   c.num_reqs++;
 }
@@ -149,7 +153,7 @@ void app_cont_func2(void *_context, void *_tag) {
 }
 
 inline int send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuffer *resp_msgbuf, size_t thread_id, size_t ws_i) {
-	c.start_time.reset();
+	c.start_time[ws_i].reset();
 	struct Tag *tag = new Tag();
 	tag->req_msgbuf = req_msgbuf;
 	tag->resp_msgbuf = resp_msgbuf;
@@ -160,7 +164,8 @@ inline int send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuf
 
 void app_cont_func(void *_context, void *_ws_i) {
   auto *c = static_cast<ClientContext *>(_context);
-  const double req_lat_us = c->start_time.get_us();
+  const auto ws_i = reinterpret_cast<size_t>(_ws_i);
+  const double req_lat_us = c->start_time[ws_i].get_us();
   std::chrono::time_point<std::chrono::high_resolution_clock> current = std::chrono::high_resolution_clock::now();
   const double delayed_latency_ns = static_cast<size_t>(
         std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -168,12 +173,13 @@ void app_cont_func(void *_context, void *_ws_i) {
             .count());
   c->last_response_ts = current;
   c->delayed_latency_array.push_back(delayed_latency_ns / 1e3);
-  const auto ws_i = reinterpret_cast<size_t>(_ws_i);
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
-  assert(c->resp_msgbuf[ws_i].buf_[0] == '0');
+  assert(c->resp_msgbuf[ws_i]->buf_[0] == '0');
   c->latency_array.push_back(req_lat_us);
-  c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(c->resp_msgbuf[ws_i].buf_[2]))));
+  c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(c->resp_msgbuf[ws_i]->buf_[2]))));
   c->num_resps++;
+  //c->rpc_->free_msg_buffer_pointer(c->req_msgbuf[ws_i]);
+  //c->rpc_->free_msg_buffer_pointer(c->resp_msgbuf[ws_i]);
 }
 
 // Connect this client thread to all server threads
@@ -257,23 +263,27 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   create_sessions(c);
 
-  warm_up(c, thread_id, freq_ghz);
+  uint64_t max_requests = (FLAGS_test_ms/1000) * static_cast<uint64_t>(rps_array[thread_id]);
+  c.start_time = new erpc::ChronoTimer[max_requests];
+  
   printf("Process %zu, thread %zu: Connected. Starting work.\n",
          FLAGS_process_id, thread_id);
   if (thread_id == 0) {
     printf("thread_id: median_us 5th_us 99th_us 999th_us Mops\n");
   }
-  
-  for (size_t i = 0; i < FLAGS_window_size; i++) {
-    c.req_msgbuf[i] = rpc.alloc_msg_buffer_or_die(FLAGS_req_size);
-    c.resp_msgbuf[i] = rpc.alloc_msg_buffer_or_die(FLAGS_resp_size);
-    sprintf(reinterpret_cast<char *>(c.req_msgbuf[i].buf_), "%u", req_parameter_array.at(static_cast<size_t>(req_type_array[thread_id] - 1)));
+  c.req_msgbuf.resize(max_requests);  
+  c.resp_msgbuf.resize(max_requests);
+
+  for (size_t i = 0; i < max_requests; i++) {
+    
+    c.req_msgbuf[i] = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
+    c.resp_msgbuf[i] = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
+    sprintf(reinterpret_cast<char *>(c.req_msgbuf[i]->buf_), "%u", req_parameter_array.at(static_cast<size_t>(req_type_array[thread_id] - 1)));
   }
  
   //size_t total_cycles = erpc::ms_to_cycles(FLAGS_test_ms, freq_ghz);
 
   std::mt19937 generator(thread_id);
-  uint64_t max_requests = (FLAGS_test_ms/1000) * static_cast<uint64_t>(rps_array[thread_id]);
   uint32_t total_send_out = 0;
   struct timespec startT, endT;
   clock_gettime(CLOCK_MONOTONIC, &startT);
@@ -283,9 +293,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   test_start = c.next_should_send_ts;
   std::chrono::duration<double, std::milli> interval(0);
   
-  uint32_t tmp_counter = 0;
-  while (tmp_counter != max_requests && ctrl_c_pressed != 1) {
-    
+  while (total_send_out != max_requests && ctrl_c_pressed != 1) {
+   
     //wait for the interval to send next request.
     auto current = std::chrono::high_resolution_clock::now();
     c.next_should_send_ts = std::chrono::time_point_cast<std::chrono::high_resolution_clock::duration>(c.next_should_send_ts + interval);
@@ -296,7 +305,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     }
 
     //send the request.
-    send_req(c, 0);
+    send_req(c, total_send_out);
     total_send_out++;
 
     //wait for the request response.
@@ -308,11 +317,10 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     double ms = ran_expo2(generator, rps_array[thread_id]) * 1000;
     //c.exp_nums.push_back(ms);
     interval = std::chrono::duration<double, std::milli>(ms);
-    tmp_counter++;
-
-    /*
+    
+    /* 
     //send the request.
-    send_req(c, 0);
+    send_req(c, total_send_out);
     total_send_out++;
     next_send_begin_ts = std::chrono::high_resolution_clock::now();
     //wait for the request response.
@@ -333,7 +341,6 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         rpc.run_event_loop_once();
         current = std::chrono::high_resolution_clock::now();
     }
-    tmp_counter++;
     */
   }
 
@@ -382,7 +389,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   printf("sending requests %zu get response %zu exepected rps %d actual rps %d\n", c.num_reqs, c.num_resps, rps_array[thread_id], rps);
   for (size_t i = 0; i < c.num_resps; i++) {
   	//fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
-  	fprintf(perf_log, "%zu %d %f %f\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.delayed_latency_array[i]);
+  	fprintf(perf_log, "%zu %d %f %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.delayed_latency_array[i], c.pure_cpu_time[i]);
   }
   close_sessions(c);
   /*printf("thread %zu exp nums:\n", thread_id);
