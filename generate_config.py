@@ -15,6 +15,8 @@ def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, typ
     config.append("--num_processes 2")
     config.append("--numa_0_ports 0")
     config.append("--numa_1_ports 1,3")
+    config.append("--true_openloop 0")
+
     if func_types != 0:
         config.append("--func_types {}".format(func_types))
 
