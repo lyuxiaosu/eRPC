@@ -126,7 +126,7 @@ index fba4391f..8adfde2b 100644
    uint16_t dest_session_num_;  /// Session number of the destination endpoint
  
 diff --git a/src/rpc.h b/src/rpc.h
-index a51ae726..0162eca3 100644
+index a51ae726..526cf74d 100644
 --- a/src/rpc.h
 +++ b/src/rpc.h
 @@ -84,9 +84,11 @@ class Rpc {
@@ -142,6 +142,43 @@ index a51ae726..0162eca3 100644
    static_assert((1 << kMsgSizeBits) >= kMaxMsgSize, "");
    static_assert((1 << kPktNumBits) * TTr::kMaxDataPerPkt > 2 * kMaxMsgSize, "");
  
+@@ -286,9 +288,9 @@ class Rpc {
+    * internal use by eRPC (i.e., user calls must ignore it).
+    */
+ #ifdef SLEDGE_CUSTOMIZED
+-  int enqueue_request(int session_num, uint8_t req_type, MsgBuffer *req_msgbuf,
++  int enqueue_request(int session_num, uint16_t req_type, MsgBuffer *req_msgbuf,
+ #else
+-  void enqueue_request(int session_num, uint8_t req_type, MsgBuffer *req_msgbuf,
++  void enqueue_request(int session_num, uint16_t req_type, MsgBuffer *req_msgbuf,
+ #endif
+                        MsgBuffer *resp_msgbuf, erpc_cont_func_t cont_func,
+                        void *tag, size_t cont_etid = kInvalidBgETid);
+diff --git a/src/rpc_impl/rpc_req.cc b/src/rpc_impl/rpc_req.cc
+index c1f1d532..1702169e 100644
+--- a/src/rpc_impl/rpc_req.cc
++++ b/src/rpc_impl/rpc_req.cc
+@@ -8,9 +8,9 @@ namespace erpc {
+ // background threads' queue of enqueue_request calls.
+ template <class TTr>
+ #ifdef SLEDGE_CUSTOMIZED
+-int Rpc<TTr>::enqueue_request(int session_num, uint8_t req_type,
++int Rpc<TTr>::enqueue_request(int session_num, uint16_t req_type,
+ #else
+-void Rpc<TTr>::enqueue_request(int session_num, uint8_t req_type,
++void Rpc<TTr>::enqueue_request(int session_num, uint16_t req_type,
+ #endif
+                                MsgBuffer *req_msgbuf, MsgBuffer *resp_msgbuf,
+                                erpc_cont_func_t cont_func, void *tag,
+@@ -164,7 +164,7 @@ void Rpc<TTr>::process_small_req_st(SSlot *sslot, pkthdr_t *pkthdr) {
+ 
+     if (req_func.req_func_ == NULL) {
+ 	//TODO return a error message to client, call enqueue_reponse directly, first papameter is static_cast<ReqHandle *>(sslot)
+-    	printf("request a not existing function\n");
++    	printf("request a not existing function, req type %u\n", pkthdr->req_type_);
+ 	erpc::ReqHandle * rh = reinterpret_cast<erpc::ReqHandle*>(sslot);
+ 	auto &resp = rh->pre_resp_msgbuf_;
+ 	this->resize_msg_buffer(&resp, strlen(SERVICE_NON_EXISTENT) + 2);
 diff --git a/src/rpc_types.h b/src/rpc_types.h
 index e381b384..6b59e811 100644
 --- a/src/rpc_types.h
