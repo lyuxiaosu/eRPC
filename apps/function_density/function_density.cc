@@ -45,7 +45,7 @@ DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmu
 DEFINE_uint64(window_size, 1, "Outstanding requests per client");
 DEFINE_uint64(req_size, 64, "Size of request message in bytes");
 DEFINE_uint64(resp_size, 32, "Size of response message in bytes ");
-DEFINE_int32(true_openloop, 1, "True openloop or not");
+DEFINE_int32(true_openloop, 0, "True openloop or not");
 DEFINE_int32(func_types, 1, "Function types per threads");
 
 struct Tag {
