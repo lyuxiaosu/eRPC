@@ -45,7 +45,7 @@ def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, typ
         config.append("--req_parameter " + type1_param + "," + type2_param)
     return "\n".join(config)
 
-if len(sys.argv) < 10 or len(sys.argv) > 11:
+if len(sys.argv) < 9 or len(sys.argv) > 11:
     print("Usage: <type1_concurrency> <type2_concurrency> <type1_rps> <type2_rps> <type1_param> <type2_param> <window_size> <num_listener> <optional_func_types> <optional_true_openloop>")
     sys.exit(1)
 
