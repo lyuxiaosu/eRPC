@@ -18,7 +18,7 @@ def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, typ
     if true_openloop != 0:
         config.append("--true_openloop {}".format(true_openloop))
 
-    if func_types != 0:
+    if func_types != "0":
         config.append("--func_types {}".format(func_types))
 
     if type1_con == 0:
@@ -58,7 +58,7 @@ type2_param = sys.argv[6]
 window_size = sys.argv[7]
 num_listener = sys.argv[8]
 
-func_types = sys.argv[9] if len(sys.argv) == 10 else 0
+func_types = sys.argv[9] if len(sys.argv) == 10 else "0"
 true_openloop = sys.argv[10] if len(sys.argv) == 11 else 0
 
 config_content = generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, type2_param, window_size, num_listener, func_types, true_openloop)
