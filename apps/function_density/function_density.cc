@@ -311,8 +311,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     }
 
     //send the request.
-    uint16_t random_func_type = dist(generator);
-    //uint32_t random_func_type = 21;
+    uint32_t random_func_type = FLAGS_func_types == 1 ? thread_id + 1 : dist(generator);
     assert(random_con_id >= lower_bound && random_con_id <= upper_bound);
     c.type_array.push_back(random_func_type);
     send_req(c, random_func_type, total_send_out);
