@@ -38,12 +38,13 @@ def file_name(file_dir, key_str):
                 print("rps---------", rps)
                 rps=rps.split(".")[0]
                 file_list.append(full_path)
-                rps_list.append(rps)
+                rps_list.append(int(rps))
 
-    file_list = sorted(file_list, key = lambda x: int(x.split('-')[-1].split(".")[0]))
+    #file_list = sorted(file_list, key = lambda x: int(x.split('-')[-1].split(".")[0]))
+    file_list = sorted(file_list, key = lambda x: int(x.split('-')[1].split(".")[0]))
     rps_list = sorted(rps_list)
     print(file_list)
-    print(rps_list)
+    print("--------------------------------", rps_list)
     return file_list, rps_list
 
 def get_values(key, files_list, latency_dict, slow_down_dict, deadline_miss_rate_dict, slow_down_99_9_dict, latency_99_9_dict, slow_down_99_99_dict, latency_99_99_dict):
@@ -181,7 +182,7 @@ if __name__ == "__main__":
     #file_folders = ['DARC', 'EDF_SRSF_INTERRUPT']
     #file_folders = ['SHINJUKU']
     #file_folders = ['EDF_INTERRUPT-disable-busy-loop-false-disable-autoscaling-true-9','EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-false-9', 'EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-true-27', 'EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-false-27']
-    file_folders = ['EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-true-27', 'EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-false-27']
+    file_folders = ['SHINJUKU_exponential','sledge_exponential']
     latency = defaultdict(list)
     slow_down = defaultdict(list)
     slow_down_99_9 = defaultdict(list)
