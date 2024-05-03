@@ -20,26 +20,29 @@ worker_count=$4
 flag="disable-busy-loop-$disable_busy_loop-disable-autoscaling-$disable_autoscaling-$worker_count"
 #base_throughput1=32344
 #base_throughput2=32344
-base_throughput1=16000
-base_throughput2=16000
+base_throughput1=300
+base_throughput2=300
 
 #throughput_percentage=(10 20 30 40 50 60)
 #throughput_percentage=(1 5 10 15)
-#for shinjuku 15
-throughput_percentage=(1 5 10 15 20 25 26 27 28 29 30 35 36 37 38 39 40 42 43 44)
+#for EDF_INTERRUPT
+#throughput_percentage=(1 5 10 15 20 25 30 35 40 42)
+#throughput_percentage=(44 46 48 50 52)
+#for shinjuku
+throughput_percentage=(1 5 10 15 20 21 22 23 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 54)
+#throughput_percentage=(48 50 52 54 56 58)
 
-#for EDF_INTERRUPT 
-#throughput_percentage=(1 5 10 15 20 25 30 35 40 41 42 43 44 46 46.5 46.6)
+
+#for sledge 
+#throughput_percentage=(1 5 10 15 20 25 30 35 40 41 42 43 44 46 48 50)
+#throughput_percentage=(55 56 57 58)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/edf_interrupt/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#throughput_percentage[@]};i++ )) do
-        #per_throughput1=$(( (${throughput_percentage[i]} * base_throughput1) / 100 ))
-	#per_throughput2=$(( (${throughput_percentage[i]} * base_throughput2) / 100 ))
-        per_throughput1=$(echo "(${throughput_percentage[i]} * $base_throughput1) / 100" | bc)
-        per_throughput2=$(echo "(${throughput_percentage[i]} * $base_throughput2) / 100" | bc)
-
+        per_throughput1=$(( (${throughput_percentage[i]} * base_throughput1) / 100 ))
+	per_throughput2=$(( (${throughput_percentage[i]} * base_throughput2) / 100 ))
 	echo ${throughput_percentage[i]} $per_throughput1 $per_throughput2
 	replacement_rps=${per_throughput1}
 	for ((j=2; j<=8; j++))
@@ -48,17 +51,16 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	done
 	replacement_rps="--rps ${replacement_rps},${per_throughput2}"
 	echo $replacement_rps
-	./set_rps.sh /my_mount/eRPC/apps/openloop_exponential/config "$replacement_rps" 	
-	#total_throughput=$((base_throughput1 * 8 * throughput_percentage[i] + base_throughput2 * throughput_percentage[i]))
-	#total_throughput=$((total_throughput / 100))
-        total_throughput=$(echo "($base_throughput1 * 8 * ${throughput_percentage[i]} + $base_throughput2 * ${throughput_percentage[i]}) / 100" | bc)
+	./set_rps.sh /my_mount/eRPC/apps/openloop_log_normal/config "$replacement_rps" 	
+	total_throughput=$((base_throughput1 * 8 * throughput_percentage[i] + base_throughput2 * throughput_percentage[i]))
+	total_throughput=$((total_throughput / 100))
 	server_log="server-${total_throughput}-${throughput_percentage[i]}.log"
 	client_log="client-${total_throughput}-${throughput_percentage[i]}.log"
 	cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
         echo "start server for $dispatcher_policy ${throughput_percentage[i]} testing..."
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "likwid-powermeter sudo $path/start_test.sh $worker_count 3 5 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling > $cpu_log 2>&1 &"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh $worker_count 3 5 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling false hash.json > $cpu_log 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh $worker_count 3 5 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling "false" "hash.json" > $cpu_log 2>&1 &"
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
 	echo "start client..."
