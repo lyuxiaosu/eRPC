@@ -50,7 +50,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
         echo "start server for $dispatcher_policy ${throughput_percentage[i]} testing..."
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 9 3 4 $dispatcher_policy  $server_log > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 9 3 5 $dispatcher_policy  $server_log > 1.txt 2>&1 &"
         echo "start cpu monitoring"
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
         echo "start client..."
