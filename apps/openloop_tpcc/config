@@ -1,0 +1,14 @@
+--test_ms 20000
+--sm_verbose 0
+--num_server_threads 1 
+--window_size 1
+--req_size 4 
+--resp_size 32
+--num_processes 2
+--numa_0_ports 0
+--numa_1_ports 1,3
+--is_darc=true 
+--req_type 1,1,2,2,3,3,4,4,5,5
+--rps 22000,22000,2000,2000,22000,22000,2000,2000,2000,2000
+--req_parameter 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 
+--warmup_rps 200,200,200,200,200,200,200,200,200
