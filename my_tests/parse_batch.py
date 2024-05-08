@@ -146,18 +146,18 @@ def get_values(key, files_list, latency_dict, slow_down_dict, deadline_miss_rate
                 for match in re.finditer(seperate_99_slow_down_rule, rt):
                     r_type, slow_down = match.groups()
                     print("type:", r_type, "99th slow down:", slow_down)
-                    seperate_99_slow_down[key][r_type].append(float(latency))
+                    seperate_99_slow_down[key][r_type].append(float(slow_down))
 
 
                 for match in re.finditer(seperate_99_9_slow_down_rule, rt):
                     r_type, slow_down = match.groups()
                     print("type:", r_type, "99.9th slow down:", slow_down)
-                    seperate_99_9_slow_down[key][r_type].append(float(latency))
+                    seperate_99_9_slow_down[key][r_type].append(float(slow_down))
 
                 for match in re.finditer(seperate_99_99_slow_down_rule, rt):
                     r_type, slow_down = match.groups()
                     print("type:", r_type, "99.99th slow down:", slow_down)
-                    seperate_99_99_slow_down[key][r_type].append(float(latency))
+                    seperate_99_99_slow_down[key][r_type].append(float(slow_down))
 
                 for match in re.finditer(seperate_sending_service_rate_rule, rt):
                     r_type, sending_rate, service_rate = match.groups()
