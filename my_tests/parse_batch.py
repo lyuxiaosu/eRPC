@@ -13,6 +13,7 @@ seperate_99_99_slow_down = defaultdict(lambda: defaultdict(list))
 
 sending_rate_dict = defaultdict(list)
 service_rate_dict = defaultdict(list)
+load_dict = defaultdict(int)
 
 seperate_sending_rate_dict = defaultdict(lambda: defaultdict(list))
 seperate_service_rate_dict = defaultdict(lambda: defaultdict(list))
@@ -176,13 +177,14 @@ if __name__ == "__main__":
     import json
     #file_folders = ['SHINJUKU', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
     #file_folders = ['SHINJUKU_7', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
-    #file_folders = ['SHINJUKU', 'DARC', 'EDF_SRSF_INTERRUPT']
+    file_folders = ['SHINJUKU', 'EDF_INTERRUPT','DARC']
+    #file_folders = ['SHINJUKU1', 'EDF_INTERRUPT1','DARC1']
     #file_folders = ['EDF_SRSF_INTERRUPT']
     #file_folders = ['EDF_INTERRUPT','EDF_SRSF_INTERRUPT_1']
     #file_folders = ['DARC', 'EDF_SRSF_INTERRUPT']
     #file_folders = ['SHINJUKU']
     #file_folders = ['EDF_INTERRUPT-disable-busy-loop-false-disable-autoscaling-true-9','EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-false-9', 'EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-true-27', 'EDF_INTERRUPT-disable-busy-loop-true-disable-autoscaling-false-27']
-    file_folders = ['SHINJUKU_exponential','sledge_exponential']
+    #file_folders = ['SHINJUKU_exponential','sledge_exponential']
     latency = defaultdict(list)
     slow_down = defaultdict(list)
     slow_down_99_9 = defaultdict(list)
@@ -200,8 +202,8 @@ if __name__ == "__main__":
 
     for key in file_folders:
         files_list, rps_list = file_name(key, argv[0])
+        load_dict[key] = rps_list
         get_values(key, files_list, latency, slow_down, deadline_miss_rate, slow_down_99_9, latency_99_9, slow_down_99_99, latency_99_99)
-
     print("99 latency:")
     for key, value in latency.items():
         print(key, ":", value)
@@ -264,12 +266,12 @@ if __name__ == "__main__":
     f11.write(js11)
     f11.close()
 
-    js12 = json.dumps(seperate_99_9_latency)
+    js12 = json.dumps(seperate_99_9_slow_down)
     f12 = open("seperate_99_9_slow_down.txt", 'w')
     f12.write(js12)
     f12.close()
 
-    js13 = json.dumps(seperate_99_99_latency)
+    js13 = json.dumps(seperate_99_99_slow_down)
     f13 = open("seperate_99_99_slow_down.txt", 'w')
     f13.write(js13)
     f13.close()
@@ -299,3 +301,7 @@ if __name__ == "__main__":
     f18.write(js18)
     f18.close()
 
+    js19 = json.dumps(load_dict)
+    f19 = open("load.txt", 'w')
+    f19.write(js19)
+    f19.close()

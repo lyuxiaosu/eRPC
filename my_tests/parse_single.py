@@ -72,7 +72,9 @@ if  __name__ == "__main__":
     print("99.9 percentile total slow down is ", p_99_9)
     print("99.99 percentile total slow down is ", p_99_99)
 
+    total_requests = 0
     for key, value in seperate_time_dist.items():
+        total_requests += len(value)
         seperate_time_array = np.array(value)
         p_99 = np.percentile(seperate_time_array, 99)
         p_99_9 = np.percentile(seperate_time_array, 99.9)
@@ -81,6 +83,9 @@ if  __name__ == "__main__":
         print("type ", key, " 99.9 percentile latency is ", p_99_9)
         print("type ", key, " 99.99 percentile latency is ", p_99_99)
 
+    for key, value in seperate_time_dist.items():
+        ratio = len(value) / total_requests
+        print("type ", key, " constitues ", ratio)
     for key, value in seperate_slow_down.items():
         seperate_slow_down_array = np.array(value)
         p_99 = np.percentile(seperate_slow_down_array, 99)
