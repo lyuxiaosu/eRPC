@@ -1,3 +1,5 @@
+#server starts 5 workers and client starts 10 threads
+
 #!/bin/bash
 function usage {
         echo "$0 [dispatcher policy, SHINJUKU or EDF_INTERRUPT or DARC] [disable busy loop, true or false] [disable autoscaling] [client threads count]"
