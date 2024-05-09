@@ -14,6 +14,7 @@
 #include "util/numautils.h"
 #include "util/timer.h"
 
+std::atomic<uint64_t> warmup_completes(0);
 /* type 1: Payment 5.7us -- pass parameter 8
  * type 2: OrderStatus 6us -- pass parameter 9
  * type 3: NewOrder 20us -- pass parameter 35 
@@ -77,6 +78,7 @@ class ServerContext : public BasicAppContext {
 class ClientContext : public BasicAppContext {
  public:
   size_t num_resps = 0;
+  size_t warmup_resps = 0;
   size_t thread_id;
   int request_type;
   int grouped_type;
@@ -161,8 +163,7 @@ void server_func(erpc::Nexus *nexus, size_t thread_id) {
 void app_cont_func(void *, void *);
 
 inline void send_req(ClientContext &c, size_t ws_i) {
-  c.start_time[ws_i].reset();
-  c.rpc_->enqueue_request(c.fast_get_rand_session_num(), kAppReqType,
+  c.rpc_->enqueue_request(c.round_robin_get_session_num(), 1,
                          &c.req_msgbuf[ws_i], &c.resp_msgbuf[ws_i],
                          app_cont_func, reinterpret_cast<void *>(ws_i));
 }
@@ -202,11 +203,11 @@ void app_cont_func(void *_context, void *_ws_i) {
   const auto ws_i = reinterpret_cast<size_t>(_ws_i);
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
   assert(c->resp_msgbuf[ws_i].buf_[0] == '0');
+  c->warmup_resps++;
 
-  const double req_lat_us = c->start_time[ws_i].get_us();
-  c->latency.update(static_cast<size_t>(req_lat_us * kAppLatFac));
-  c->num_resps++;
-  send_req(*c, ws_i);  // Clock the used window slot
+  if (c->warmup_resps < 100) {
+      send_req(*c, ws_i);  // Clock the used window slot
+  }
 }
 
 // Connect this client thread to all server threads
@@ -252,16 +253,17 @@ void client_loop_fun(erpc::Rpc<erpc::CTransport> *rpc) {
 
 }
 
-void warm_up(ClientContext &c, size_t thread_id, double freq_ghz) {
-	int rps = warmup_rps[thread_id];
-	size_t count = FLAGS_warmup_count;
-	size_t sent_out = 0;
-        while (ctrl_c_pressed != 1 && sent_out != count) {	
-		erpc::MsgBuffer *req_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
-		erpc::MsgBuffer *resp_msgbuf = c.rpc_->alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-		sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", 15);
-		send_req2(c, req_msgbuf, resp_msgbuf, sent_out);
-		double ms = (1.0/rps) * 1000;
+void warm_up(ClientContext &c, double freq_ghz) {
+        for (size_t i = 0; i < FLAGS_window_size; i++) {
+    	    c.req_msgbuf[i] = c.rpc_->alloc_msg_buffer_or_die(FLAGS_req_size);
+            c.resp_msgbuf[i] = c.rpc_->alloc_msg_buffer_or_die(FLAGS_resp_size);
+            sprintf(reinterpret_cast<char *>(c.req_msgbuf[i].buf_), "%u", 1);
+        }
+
+	size_t count = 100;
+        while (ctrl_c_pressed != 1 && c.warmup_resps < count) {	
+		send_req(c, 0);
+		double ms = (1.0/50) * 1000;
 		size_t cycles = erpc::ms_to_cycles(ms, freq_ghz);
 		uint64_t begin, end;
 		begin = erpc::rdtsc();
@@ -271,7 +273,6 @@ void warm_up(ClientContext &c, size_t thread_id, double freq_ghz) {
                 	c.rpc_->run_event_loop_once();
                 	end = erpc::rdtsc();
         	}
-		sent_out++;
 	}
 }
 
@@ -304,8 +305,11 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     printf("thread_id: median_us 5th_us 99th_us 999th_us Mops\n");
   }
 
+  warm_up(c, freq_ghz);
+  warmup_completes.fetch_add(1);
 
-  //warm_up(c, thread_id, freq_ghz);
+  while (warmup_completes.load() < rps_array.size()) {}
+
   /* set seed for this thread */
   std::mt19937 generator(thread_id);
   std::lognormal_distribution<double> distribution(-0.38,2.36);
