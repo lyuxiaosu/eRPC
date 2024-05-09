@@ -35,7 +35,7 @@ disable_autoscaling=$3
 threads_count=$4
 group_size=$(($threads_count / 5))
 
-flag="disable-busy-loop-$disable_busy_loop-disable-autoscaling-$disable_autoscaling-$threads_count"
+flag="tpcc-$threads_count"
 base_throughput1=44000
 base_throughput2=4000
 base_throughput3=44000
@@ -43,25 +43,26 @@ base_throughput4=4000
 base_throughput5=4000
 
 #throughput_percentage=(10 20 30 40 50 60 65 70 75 80 81 82 83 84 85 86 87 88 89)
+#throughput_percentage=(0.05 0.08 0.1 0.5 0.8 1 4 8 10 20 30 40 50 60 70 80 90 100 110 120 122 123 124 125 126 128)
 
 #for shinjuku 15us quantum, 14 workers
 #throughput_percentage=(100 150 200 210 220 230 232 233)
 #for shinjuku 15us quantum, 5 workers
 #throughput_percentage=(10 20 30 40 50 60 65 70 75 80 81 82 83 84 85 87 89 90 100 110 120 124)
 #throughput_percentage=(124.828)
+#throughput_percentage=(0.08)
 
 #for EDF_INTERRUPT 14 workers
 #throughput_percentage=(100 150 200 210 220 230 232 234 236 238 239 240)
 #for EDF_INTERRUPT 5 workers
 #throughput_percentage=(10 20 30 40 50 60 70 80 90 100 110 120 130 140 141 142 143 144 145 146)
-
-#throughput_percentage=(10 20 30 40 50 60 70 80 90 100 110 120 130 140)
+#throughput_percentage=(148 150)
 
 #for DARC, 14 workers
 #throughput_percentage=(100 150 200 210 220 230 240 245 246)
 #for DARC, 5 workers
 #throughput_percentage=(10 20 30 40 50 60 65 70 75 80 81 82 83 84 85 86 87 88 88 90 100 110 120 126)
-throughput_percentage=(100)
+throughput_percentage=(126)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"

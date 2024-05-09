@@ -22,16 +22,17 @@ disable_busy_loop=$2
 disable_autoscaling=$3
 worker_count=$4
 
-flag="disable-busy-loop-$disable_busy_loop-disable-autoscaling-$disable_autoscaling-$worker_count"
+flag="exponential-$worker_count"
 base_throughput=4000
 
 #throughput_percentage=(10 20 30 40 50 60)
-throughput_percentage=(1 10 20 30 40 50 60 70 80 90 91 92 93 94 95 96)
+#throughput_percentage=(1 10 20 30 40 50 60 70 80 90 91 92 93 94 95 96)
 #for shinjuku 15
 #throughput_percentage=(1 5 10 15 20 25 26 27 28 29 30 35 36 37 38 39 40 42 43 44)
 
-#for EDF_INTERRUPT 
-#throughput_percentage=(1 5 10 15 20 25 30 35 40 41 42 43 44 46 46.5 46.6)
+#for EDF_INTERRUPT 5 workers 
+#throughput_percentage=(1 10 20 30 40 50 60 70 80 90 91 92 93 94 95 96)
+throughput_percentage=(97 98 100)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"

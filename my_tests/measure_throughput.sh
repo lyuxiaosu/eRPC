@@ -13,12 +13,14 @@ chmod 400 ./id_rsa
 remote_ip="128.110.219.0"
 
 dispatcher_policy="EDF_INTERRUPT"
-disable_busy_loop="false"
+disable_busy_loop="true"
 disable_autoscaling="true"
+disable_service_ts_simulation="true"
 
-listener_num=1
+listener_num=3
 
-worker_count=(1 3 6 9 12 15)
+#worker_count=(3 6 9 12 15)
+worker_count=(3)
 
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -26,7 +28,8 @@ for(( i=0;i<${#worker_count[@]};i++ )) do
         worker_group_size=$((${worker_count[i]} / listener_num))
 	echo "worker group size: $worker_group_size"
 
-        python3 ../generate_config.py $worker_group_size 0 1 0 1 1 $worker_group_size $listener_num
+        #python3 ../generate_config.py $worker_group_size 0 1 0 1 1 $worker_group_size $listener_num
+        python3 ../generate_config.py 10 0 1 0 1 1 $worker_group_size $listener_num
         #python3 ../generate_config.py $worker_group_size 0 1 0 1 1 10 $listener_num
         #python3 ../generate_config.py $listener_num 0 1 0 1 1 $worker_group_size $listener_num
         cp config ../apps/closeloop_client/
@@ -34,7 +37,7 @@ for(( i=0;i<${#worker_count[@]};i++ )) do
 	client_log="client-${listener_num}-${worker_group_size}-${worker_count[i]}.log"
 	#cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
         echo "start server with worker ${worker_count[i]} testing..."
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh ${worker_count[i]} $listener_num 5 $dispatcher_policy $server_log $disable_busy_loop $disable_autoscaling > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh ${worker_count[i]} $listener_num 5 $dispatcher_policy $server_log $disable_busy_loop $disable_autoscaling $disable_service_ts_simulation "fib.json" > 1.txt 2>&1 &"
         sleep 5
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
