@@ -56,13 +56,15 @@ base_throughput5=4000
 #throughput_percentage=(100 150 200 210 220 230 232 234 236 238 239 240)
 #for EDF_INTERRUPT 5 workers
 #throughput_percentage=(10 20 30 40 50 60 70 80 90 100 110 120 130 140 141 142 143 144 145 146)
-#throughput_percentage=(148 150)
+#for EDF_INTERRUPT 7 workers
+#throughput_percentage=(185)
 
 #for DARC, 14 workers
 #throughput_percentage=(100 150 200 210 220 230 240 245 246)
+#for DARC, 7 workers
+throughput_percentage=(184)
 #for DARC, 5 workers
 #throughput_percentage=(10 20 30 40 50 60 65 70 75 80 81 82 83 84 85 86 87 88 88 90 100 110 120 126)
-throughput_percentage=(126)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"
@@ -112,7 +114,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "likwid-powermeter sudo $path/start_test.sh $threads_count 3 5 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling > $cpu_log 2>&1 &"
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 14 1 3 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling false $json_file > $cpu_log 2>&1 &"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 5 1 3 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling false $json_file > $cpu_log 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 7 1 3 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling false $json_file > $cpu_log 2>&1 &"
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
 	echo "start client..."
