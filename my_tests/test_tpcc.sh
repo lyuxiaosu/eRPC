@@ -12,7 +12,7 @@ if [ $# != 4 ] ; then
 fi
 
 chmod 400 ./id_rsa
-remote_ip="128.110.219.0"
+remote_ip="128.110.218.253"
 
 echo "openloop_tpcc" > ../scripts/autorun_app_file
 pushd ../
@@ -57,12 +57,12 @@ base_throughput5=4000
 #for EDF_INTERRUPT 5 workers
 #throughput_percentage=(10 20 30 40 50 60 70 80 90 100 110 120 130 140 141 142 143 144 145 146)
 #for EDF_INTERRUPT 7 workers
-throughput_percentage=(185)
+throughput_percentage=(195)
 
 #for DARC, 14 workers
 #throughput_percentage=(100 150 200 210 220 230 240 245 246)
 #for DARC, 7 workers
-throughput_percentage=(184)
+#throughput_percentage=(185)
 #for DARC, 5 workers
 #throughput_percentage=(10 20 30 40 50 60 65 70 75 80 81 82 83 84 85 86 87 88 88 90 100 110 120 126)
 
