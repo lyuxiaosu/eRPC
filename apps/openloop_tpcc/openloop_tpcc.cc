@@ -17,11 +17,11 @@
 std::atomic<uint64_t> warmup_completes(0);
 /* type 1: Payment 5.7us -- pass parameter 8
  * type 2: OrderStatus 6us -- pass parameter 9
- * type 3: NewOrder 20us -- pass parameter 35 
- * type 4: Delivery 88us -- pass parameter 159
- * type 5: StockLevel 100us -- pass parameter 180
+ * type 3: NewOrder 20us -- pass parameter 37 
+ * type 4: Delivery 88us -- pass parameter 165
+ * type 5: StockLevel 100us -- pass parameter 188
  */
-int req_parameter_array[6] = {0, 8, 9, 35, 159, 180}; // index is type id
+int req_parameter_array[6] = {0, 8, 9, 37, 165, 188}; // index is type id
 
 /* grouped type 1: type 1 and type 2, core 1,2
  * grouped type 2: type 3,            core 3,4,5,6,7,8
