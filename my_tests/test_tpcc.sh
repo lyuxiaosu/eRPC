@@ -24,10 +24,10 @@ json_file=""
 
 if [ "$dispatcher_policy" == "DARC" ]; then
     sed -i 's/--is_darc=[^ ]*/--is_darc=true/g' /my_mount/eRPC/apps/openloop_tpcc/config
-    json_file="dummy_func_DARC.json"
+    json_file="dummy_tpcc_DARC.json"
 else
     sed -i 's/--is_darc=[^ ]*/--is_darc=false/g' /my_mount/eRPC/apps/openloop_tpcc/config
-    json_file="dummy_func_EDF_SHINJUKU.json"
+    json_file="dummy_tpcc_EDF_SHINJUKU.json"
 fi
 
 disable_busy_loop=$2
@@ -57,7 +57,7 @@ base_throughput5=4000
 #for EDF_INTERRUPT 5 workers
 #throughput_percentage=(10 20 30 40 50 60 70 80 90 100 110 120 130 140 141 142 143 144 145 146)
 #for EDF_INTERRUPT 7 workers
-#throughput_percentage=(185)
+throughput_percentage=(185)
 
 #for DARC, 14 workers
 #throughput_percentage=(100 150 200 210 220 230 240 245 246)
