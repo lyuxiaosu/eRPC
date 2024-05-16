@@ -25,13 +25,13 @@ def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, typ
         rps2 = [type2_rps] * type2_con
         config.append("--rps " + ",".join(rps2))
         req_type2 = [type2] * type2_con
-        config.append("--req-type " + ",".join(req_type2))
+        config.append("--req_type " + ",".join(req_type2))
         config.append("--req_parameter " + type2_param)
     elif type2_con == 0:
         rps1 = [type1_rps] * type1_con
         config.append("--rps " + ",".join(rps1))
         req_type1 = [type1] * type1_con
-        config.append("--req-type " + ",".join(req_type1))
+        config.append("--req_type " + ",".join(req_type1))
         config.append("--req_parameter " + type1_param)
     else:
         rps1 = [type1_rps] * type1_con
@@ -58,9 +58,10 @@ type2_param = sys.argv[6]
 window_size = sys.argv[7]
 num_listener = sys.argv[8]
 
-func_types = sys.argv[9] if len(sys.argv) == 10 else "0"
-true_openloop = sys.argv[10] if len(sys.argv) == 11 else 0
+func_types = sys.argv[9] if len(sys.argv) >= 10 else "0"
+true_openloop = sys.argv[10] if len(sys.argv) >= 11 else 0
 
+print("func_type:", func_types)
 config_content = generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, type2_param, window_size, num_listener, func_types, true_openloop)
 with open("config", "w") as f:
     f.write(config_content)

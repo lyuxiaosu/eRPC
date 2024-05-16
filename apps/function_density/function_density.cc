@@ -279,12 +279,12 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   c.resp_msgbuf.resize(max_requests);
 
   for (size_t i = 0; i < max_requests; i++) {
-    
     c.req_msgbuf[i] = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
     c.resp_msgbuf[i] = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-    sprintf(reinterpret_cast<char *>(c.req_msgbuf[i]->buf_), "%u", req_parameter_array.at(static_cast<size_t>(req_type_array[thread_id] - 1)));
+    sprintf(reinterpret_cast<char *>(c.req_msgbuf[i]->buf_), "%u", 1);
   }
  
+  // set lower and upper bound, each thread will generate a random type based on the boundary
   uint32_t lower_bound = static_cast<uint32_t>(FLAGS_func_types) * thread_id + 1;
   uint32_t upper_bound = lower_bound + static_cast<uint32_t>(FLAGS_func_types) - 1;
   std::uniform_int_distribution<uint16_t> dist(lower_bound, upper_bound);
@@ -311,6 +311,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
     }
 
     //send the request.
+    // if only one function type, then each thread will send the type id with its thread id + 1
     uint32_t random_func_type = FLAGS_func_types == 1 ? thread_id + 1 : dist(generator);
     assert(random_con_id >= lower_bound && random_con_id <= upper_bound);
     c.type_array.push_back(random_func_type);
