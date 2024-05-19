@@ -12,8 +12,13 @@ fi
 rps1=5000
 rps2=48
 
+echo "closeloop_exponential" > ../scripts/autorun_app_file
+pushd ../
+./build.sh
+popd
+
 chmod 400 ./id_rsa
-remote_ip="128.110.219.0"
+remote_ip="128.110.219.9"
 
 #concurrency=(2 6 8 10 12 14 16 32)
 #concurrency=(2 4 6 8 10 14 18 20 24 28 30 32)

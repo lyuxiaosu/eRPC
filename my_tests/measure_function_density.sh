@@ -21,8 +21,8 @@ per_rps=$(($rps / $threads))
 chmod 400 ./id_rsa
 remote_ip="128.110.219.9"
 
-concurrency=(40 60 80 100 120 140 160 180)
-#concurrency=(180)
+concurrency=(40 100 300 500 700 900 1100 1300 1500 1700 1900 2000)
+#concurrency=(2000)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#concurrency[@]};i++ )) do
