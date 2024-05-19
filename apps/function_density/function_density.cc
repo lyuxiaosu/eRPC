@@ -66,6 +66,7 @@ class ClientContext : public BasicAppContext {
  public:
   size_t num_resps = 0;
   size_t num_reqs = 0;
+  size_t num_dropped = 0;
   size_t thread_id;
   erpc::ChronoTimer *start_time;
   std::vector<double> latency_array;
@@ -138,10 +139,14 @@ void app_cont_func(void *, void *);
 
 inline void send_req(ClientContext &c, uint16_t func_type, size_t ws_i) {
   c.start_time[ws_i].reset();
-  c.rpc_->enqueue_request(c.round_robin_get_session_num(), static_cast<size_t>(func_type),
+  int ret = c.rpc_->enqueue_request(c.round_robin_get_session_num(), static_cast<size_t>(func_type),
                          c.req_msgbuf[ws_i], c.resp_msgbuf[ws_i],
                          app_cont_func, reinterpret_cast<void *>(ws_i));
-  c.num_reqs++;
+  if (ret == 0) {
+      c.num_reqs++;
+  } else {
+      c.num_dropped++;
+  }
 }
 
 void app_cont_func2(void *_context, void *_tag) {
@@ -340,7 +345,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         struct timespec end;
         clock_gettime(CLOCK_MONOTONIC, &end);
         int64_t delta_ms = (end.tv_sec - endT.tv_sec) * 1000 + (end.tv_nsec - endT.tv_nsec) / 1000000;
-        if (delta_ms >= 20000) {
+        if (delta_ms >= 10000) {
                 break;
         }
   }
@@ -352,6 +357,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   sending_rps[thread_id] = rps;
   responses[thread_id] = c.num_resps;
   requests[thread_id] = c.num_reqs;
+  dropped[thread_id] = c.num_dropped;
 
   double delta_resp_s = static_cast<size_t>(
         std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -454,8 +460,13 @@ int main(int argc, char **argv) {
   	total_requests += requests[i];
   }
 
-  printf("total sending rate %d, total sent out requests %u total response %u\n", 
-	  sending_rate, total_requests, total_responses);
+  uint32_t total_dropped = 0;
+  for (size_t i = 0; i < num_threads; i++) {
+        total_requests += dropped[i];
+  }
+
+  printf("total sending rate %d, total sent out requests %u total response %u dropped %u\n", 
+	  sending_rate, total_requests, total_responses, total_dropped);
   fprintf(perf_log, "total sending rate %d, total sent out requests %u\n",
           sending_rate, total_requests); 
   for (const auto& pair : seperate_sending_rps) {
