@@ -117,7 +117,8 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 7 1 3 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling false $json_file > $cpu_log 2>&1 &"
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
-	echo "start client..."
+	sleep 10
+        echo "start client..."
 	pushd ../
         scripts/do.sh 1 0 $client_log
 	return_value=$?
