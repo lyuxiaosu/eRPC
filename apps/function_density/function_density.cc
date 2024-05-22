@@ -290,7 +290,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   }
  
   // set lower and upper bound, each thread will generate a random type based on the boundary
-  uint32_t lower_bound = static_cast<uint32_t>(FLAGS_func_types) * thread_id + 1;
+  uint32_t lower_bound = 1;
   uint32_t upper_bound = lower_bound + static_cast<uint32_t>(FLAGS_func_types) - 1;
   std::uniform_int_distribution<uint16_t> dist(lower_bound, upper_bound);
   
