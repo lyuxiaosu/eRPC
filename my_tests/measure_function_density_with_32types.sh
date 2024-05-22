@@ -1,4 +1,4 @@
-#This script measure function density within 1 to 32 types
+#This script measure function density within 1 to 32 types with closeloop
 #!/bin/bash
 function usage {
         echo "$0"
@@ -32,9 +32,10 @@ for(( i=0;i<${#concurrency[@]};i++ )) do
         cp config ../apps/function_density/
 	client_log="client-${concurrency[i]}.log"
         echo "start sledge server for concurrency ${concurrency[i]} testing..."
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "python3 $path/generate_json.py ${concurrency[i]}"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "python3 $path/generate_json_with_replica_field.py ${concurrency[i]} config.json"
+        #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "python3 $path/generate_json.py ${concurrency[i]}"
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "mv config.json $path/"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_func_density_test.sh 1 1 4 > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_func_density_test.sh 1 1 4 config.json server.log > 1.txt 2>&1 &"
         sleep 10 
         #echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &" 
