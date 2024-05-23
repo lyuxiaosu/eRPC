@@ -138,7 +138,7 @@ void app_cont_func2(void *_context, void *_tag) {
   erpc::MsgBuffer *req_msgbuf = tag->req_msgbuf;
   erpc::MsgBuffer *resp_msgbuf = tag->resp_msgbuf;
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
-  assert(resp_msgbuf->buf_[0] == '0');
+  erpc::rt_assert(resp_msgbuf->buf_[0] == '0', "Response error");
   const double req_lat_us = c->start_time.get_us();
   c->latency_array.push_back(req_lat_us);
   c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(resp_msgbuf->buf_[2]))));
@@ -166,7 +166,7 @@ void app_cont_func(void *_context, void *_ws_i) {
   const double req_lat_us = c->start_time.get_us();
   const auto ws_i = reinterpret_cast<size_t>(_ws_i);
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
-  assert(c->resp_msgbuf[ws_i].buf_[0] == '0');
+  erpc::rt_assert(c->resp_msgbuf[ws_i].buf_[0] == '0', "Response error");
   c->latency_array.push_back(req_lat_us);
   c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(c->resp_msgbuf[ws_i].buf_[2]))));
   c->num_resps++;

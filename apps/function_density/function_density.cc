@@ -154,7 +154,7 @@ void app_cont_func2(void *_context, void *_tag) {
   auto *tag = reinterpret_cast<Tag *>(_tag);
   erpc::MsgBuffer *req_msgbuf = tag->req_msgbuf;
   erpc::MsgBuffer *resp_msgbuf = tag->resp_msgbuf;
-  assert(resp_msgbuf->buf_[0] == '0');
+  erpc::rt_assert(resp_msgbuf->buf_[0] == '0', "Response error");
   c->rpc_->free_msg_buffer_pointer(req_msgbuf);
   c->rpc_->free_msg_buffer_pointer(resp_msgbuf);
   delete(tag);
@@ -182,7 +182,7 @@ void app_cont_func(void *_context, void *_ws_i) {
   c->last_response_ts = current;
   c->delayed_latency_array.push_back(delayed_latency_ns / 1e3);
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
-  assert(c->resp_msgbuf[ws_i]->buf_[0] == '0');
+  erpc::rt_assert(c->resp_msgbuf[ws_i]->buf_[0] == '0', "Response error");
   //printf("%s\n", c->resp_msgbuf[ws_i]->buf_);
   c->latency_array.push_back(req_lat_us);
   c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(c->resp_msgbuf[ws_i]->buf_[2]))));
@@ -317,8 +317,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
     //send the request.
     // if only one function type, then each thread will send the type id with its thread id + 1
-    uint32_t random_func_type = FLAGS_func_types == 1 ? thread_id + 1 : dist(generator);
-    assert(random_con_id >= lower_bound && random_con_id <= upper_bound);
+    uint32_t random_func_type = dist(generator);
+    erpc::rt_assert(random_func_type >= lower_bound && random_func_type <= upper_bound, "Generate wrong random number");
     c.type_array.push_back(random_func_type);
     send_req(c, random_func_type, total_send_out);
     total_send_out++;

@@ -147,7 +147,7 @@ void app_cont_func2(void *_context, void *_tag) {
   auto *tag = reinterpret_cast<Tag *>(_tag);
   erpc::MsgBuffer *req_msgbuf = tag->req_msgbuf;
   erpc::MsgBuffer *resp_msgbuf = tag->resp_msgbuf;
-  assert(resp_msgbuf->buf_[0] == '0');
+  erpc::rt_assert(resp_msgbuf->buf_[0] == '0', "Response error");
   c->rpc_->free_msg_buffer_pointer(req_msgbuf);
   c->rpc_->free_msg_buffer_pointer(resp_msgbuf);
   delete(tag);
@@ -175,7 +175,7 @@ void app_cont_func(void *_context, void *_ws_i) {
   c->last_response_ts = current;
   c->delayed_latency_array.push_back(delayed_latency_ns / 1e3);
   //assert(c->resp_msgbuf[ws_i].get_data_size() == FLAGS_resp_size);
-  assert(c->resp_msgbuf[ws_i]->buf_[0] == '0');
+  erpc::rt_assert(c->resp_msgbuf[ws_i]->buf_[0] == '0', "Response error");
   c->latency_array.push_back(req_lat_us);
   c->pure_cpu_time.push_back(atoi(reinterpret_cast<const char*>(&(c->resp_msgbuf[ws_i]->buf_[2]))));
   c->num_resps++;
