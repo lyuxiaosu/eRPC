@@ -25,7 +25,7 @@ chmod 400 ./id_rsa
 remote_ip="128.110.219.9"
 
 #concurrency=(1 10 20 24 28 30 32 40 100 300 500 700 900 1100 1300 1500 1700 1900 2000)
-concurrency=(2000)
+concurrency=(12000)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#concurrency[@]};i++ )) do
@@ -34,10 +34,11 @@ for(( i=0;i<${#concurrency[@]};i++ )) do
         python3 ../generate_config.py $threads 0 $per_rps 0 1 0 1 1 $func_types 1
         cp config ../apps/function_density/
 	client_log="client-${concurrency[i]}.log"
+	server_log="server-${concurrency[i]}.log"
         echo "start sledge server for concurrency ${concurrency[i]} testing..."
 	ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "python3 $path/generate_json_with_replica_field.py ${concurrency[i]} config.json"
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "mv config.json $path/"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_func_density_test.sh $worker_count $listener_count $worker_core_start_idx config.json server.log > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_func_density_test.sh $worker_count $listener_count $worker_core_start_idx config.json $server_log > 1.txt 2>&1 &"
         sleep 10 
         #echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &" 
@@ -58,5 +59,8 @@ for(( i=0;i<${#concurrency[@]};i++ )) do
         sleep 4 
 done
 folder_name="Sledge"
+ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mkdir $path/$folder_name"
+ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mv *.log $path/$folder_name"
+
 mkdir $folder_name
 mv ../client-*.log $folder_name
