@@ -1,3 +1,4 @@
+#This script is used to test function scalibilty with 1 core, 2 cores and 6 cores
 #!/bin/bash
 function usage {
         echo "$0"
