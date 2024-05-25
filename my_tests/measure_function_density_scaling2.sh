@@ -18,21 +18,6 @@ pushd ../
 ./build.sh
 popd
 
-
-#throughput_percentage=(1 10 20 30 40 50 60 70 80 90 92 94 96 98 100 102 104 106 108 110 122 123 124)
-#1 core 1 function
-#throughput_percentage=(125)
-#2 cores 1 function
-#throughput_percentage=(126)
-#1 core 10000 function
-#throughput_percentage=(1 10 20 30 32 34 36 38 40)
-#throughput_percentage=(42)
-#2 core 10000 function
-#throughput_percentage=(42)
-#6 cores 10000 function
-#throughput_percentage=(1 10 20 30 32 34 36 38 40 42 44)
-throughput_percentage=(45)
-
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/edf_interrupt/sledge-serverless-framework/runtime/tests"
@@ -88,4 +73,25 @@ function run_tests() {
     mv ../client-*.log $folder_name
 }
 
-run_tests "throughput_percentage[@]" 1 1 10000
+throughput_percentage1=(1 10 20 30 40 50 60 70 80 90 100 110 120 122 123 124 125)
+#1 core 1 function
+run_tests "throughput_percentage1[@]" 1 1 1
+#1 core 10000 functions
+throughput_percentage2=(1 10 20 30 32 34 36 38 40 41 42)
+run_tests "throughput_percentage2[@]" 1 1 10000
+
+#2 cores 1 function
+throughput_percentage3=(1 10 20 30 40 50 60 70 80 90 100 110 120 122 123 124 125 126)
+run_tests "throughput_percentage3[@]" 2 1 1
+
+#2 cores 10000 functions
+throughput_percentage4=(1 10 20 30 32 34 36 38 40 41 42)
+run_tests "throughput_percentage4[@]" 2 1 10000
+
+#6 cores 1 function
+throughput_percentage5=(1 10 20 30 40 50 60 70 80 90 100 110 120 122 123 124 125)
+run_tests "throughput_percentage5[@]" 6 3 1
+
+#6 cores 10000 functions
+throughput_percentage6=(1 10 20 30 32 34 36 38 40 42 43 44)
+run_tests "throughput_percentage6[@]" 6 3 10000
