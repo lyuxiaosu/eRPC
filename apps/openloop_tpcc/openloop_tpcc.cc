@@ -282,8 +282,6 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   std::vector<size_t> port_vec = flags_get_numa_ports(FLAGS_numa_node);
   uint8_t phy_port = port_vec.at(0);
   double freq_ghz = erpc::measure_rdtsc_freq();
-  uint32_t max_log_normal_value = 0; 
-  uint32_t min_log_normal_value = 0xFFFFFFFF; 
 
   ClientContext c;
   erpc::Rpc<erpc::CTransport> rpc(nexus, static_cast<void *>(&c), thread_id,
@@ -389,7 +387,6 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   }
 
   printf("sending requests %u get responses is %zu sending rps %d service rps %d\n", tmp_counter, c.num_resps, rps, s_rps);
-  printf("max exp number %u min exp number %u\n", max_log_normal_value, min_log_normal_value);
   for (size_t i = 0; i < max_requests; i++) {
   	fprintf(perf_log, "%zu %d %f %d %u\n", thread_id, c.request_type, c.latency_array[i], c.pure_cpu_time[i], c.request_parameter);
   }
