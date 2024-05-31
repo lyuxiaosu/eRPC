@@ -10,7 +10,7 @@ if [ $# != 4 ] ; then
 fi
 
 chmod 400 ./id_rsa
-remote_ip="128.110.219.0"
+remote_ip="128.110.219.9"
 
 echo "openloop_exponential" > ../scripts/autorun_app_file
 pushd ../
@@ -25,6 +25,12 @@ worker_count=$4
 flag="exponential-$worker_count"
 base_throughput=4000
 
+if [ "$dispatcher_policy" == "SHINJUKU" ]; then
+    throughput_percentage=(1 10 20 30 40 50 60 70 80 82 84 86 88 90) 
+else
+    throughput_percentage=(1 10 20 30 40 50 60 70 80 90 91 92 93 94 95 96 98 100 102 104 106)
+fi
+ 
 #throughput_percentage=(10 20 30 40 50 60)
 #throughput_percentage=(1 10 20 30 40 50 60 70 80 90 91 92 93 94 95 96)
 #for shinjuku 15
@@ -32,7 +38,7 @@ base_throughput=4000
 
 #for EDF_INTERRUPT 5 workers 
 #throughput_percentage=(1 10 20 30 40 50 60 70 80 90 91 92 93 94 95 96)
-throughput_percentage=(97 98 100)
+#throughput_percentage=(97 98 100)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"
