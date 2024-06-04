@@ -46,6 +46,7 @@ DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmu
 DEFINE_uint64(window_size, 1, "Outstanding requests per client");
 DEFINE_uint64(req_size, 64, "Size of request message in bytes");
 DEFINE_uint64(resp_size, 32, "Size of response message in bytes ");
+DEFINE_bool(is_darc, false, "is DARC or not ");
 
 struct Tag {
 	erpc::MsgBuffer *req_msgbuf;
@@ -170,13 +171,13 @@ void app_cont_func2(void *_context, void *_tag) {
   delete(tag);
 }
 
-inline int send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuffer *resp_msgbuf, size_t thread_id, size_t ws_i) {
+inline int send_req2(ClientContext &c, erpc::MsgBuffer *req_msgbuf, erpc::MsgBuffer *resp_msgbuf, size_t ws_i, size_t req_type) {
 	c.start_time[ws_i].reset();
 	struct Tag *tag = new Tag();
 	tag->req_msgbuf = req_msgbuf;
 	tag->resp_msgbuf = resp_msgbuf;
 	tag->ws_i = ws_i;
-	return c.rpc_->enqueue_request(c.round_robin_get_session_num(), static_cast<size_t>(req_type_array[thread_id]), 
+	return c.rpc_->enqueue_request(c.round_robin_get_session_num(), req_type, 
 				req_msgbuf, resp_msgbuf, app_cont_func2, reinterpret_cast<void *>(tag)); 
 }
 
@@ -301,12 +302,23 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   c.exp_nums = static_cast<uint32_t*> (malloc(max_requests * sizeof(uint32_t)));
   memset(c.exp_nums, 0, max_requests * sizeof(uint32_t));
 
+  size_t request_type = 0;
+  double median_x = 0.69315;
   struct timespec startT, endT, endT2;
   clock_gettime(CLOCK_MONOTONIC, &startT); 
   while (tmp_counter != max_requests && ctrl_c_pressed != 1) {
 	erpc::MsgBuffer *req_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_req_size);
   	erpc::MsgBuffer *resp_msgbuf = rpc.alloc_msg_buffer_pointer_or_die(FLAGS_resp_size);
-	uint32_t exp_number = uint32_t(round(ran_expo2(generator, 1.0) * 10)); 
+	double random_exp = ran_expo2(generator, 1.0);
+	
+	if (!FLAGS_is_darc) {
+		//split requests to two groups
+		request_type = static_cast<size_t>(req_type_array[thread_id]);
+	} else {
+		request_type = random_exp >= median_x ? 2 : 1;
+	}
+
+	uint32_t exp_number = uint32_t(round(random_exp) * 10); 
 	if (exp_number == 0) {
 		exp_number = 1;
 	}
@@ -321,7 +333,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 	c.exp_nums[tmp_counter] = exp_number;
 
 	sprintf(reinterpret_cast<char *>(req_msgbuf->buf_), "%u", exp_number);
-	int ret = send_req2(c, req_msgbuf, resp_msgbuf, thread_id, tmp_counter);
+	int ret = send_req2(c, req_msgbuf, resp_msgbuf, tmp_counter, request_type);
 	if (ret == 0) {
 		success_sent++;
 	} else {
