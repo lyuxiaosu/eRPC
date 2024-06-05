@@ -303,7 +303,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   memset(c.exp_nums, 0, max_requests * sizeof(uint32_t));
 
   size_t request_type = 0;
-  double median_x = 0.69315;
+  double median_x = 0.69315;//ln(2)
   struct timespec startT, endT, endT2;
   clock_gettime(CLOCK_MONOTONIC, &startT); 
   while (tmp_counter != max_requests && ctrl_c_pressed != 1) {
@@ -312,9 +312,9 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 	double random_exp = ran_expo2(generator, 1.0);
 	
 	if (!FLAGS_is_darc) {
-		//split requests to two groups
 		request_type = static_cast<size_t>(req_type_array[thread_id]);
 	} else {
+		//split requests to two groups
 		request_type = random_exp >= median_x ? 2 : 1;
 	}
 

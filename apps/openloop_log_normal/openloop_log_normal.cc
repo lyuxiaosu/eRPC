@@ -318,7 +318,6 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         } else {
                 //split requests to two groups
                 request_type = random_log_normal >= median_x ? 2 : 1;
-		printf("this is darc\n");
         }
 	
 	uint32_t log_normal_num = uint32_t(round(random_log_normal * 100)); 
