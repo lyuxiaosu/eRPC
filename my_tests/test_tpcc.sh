@@ -2,11 +2,11 @@
 
 #!/bin/bash
 function usage {
-        echo "$0 [dispatcher policy, SHINJUKU or EDF_INTERRUPT or DARC] [disable busy loop, true or false] [disable autoscaling] [client threads count]"
+        echo "$0 [dispatcher policy, SHINJUKU or EDF_INTERRUPT or DARC] [client threads count]"
         exit 1
 }
 
-if [ $# != 4 ] ; then
+if [ $# != 2 ] ; then
         usage
         exit 1;
 fi
@@ -36,9 +36,9 @@ else
     fi
 fi
 
-disable_busy_loop=$2
-disable_autoscaling=$3
-threads_count=$4
+disable_busy_loop="true"
+disable_autoscaling="true"
+threads_count=$2
 group_size=$(($threads_count / 5))
 
 flag="tpcc-$threads_count"
