@@ -10,22 +10,23 @@ if [ $# != 1 ] ; then
 fi
 
 chmod 400 ./id_rsa
-remote_ip="128.110.218.245"
+remote_ip="128.110.219.9"
+
+echo "openloop_fixed" > ../scripts/autorun_app_file
+pushd ../
+./build.sh
+popd
 
 dispatcher_policy=$1
-#base_throughput1=32344
-#base_throughput2=32344
-base_throughput1=32000
-base_throughput2=32000
+base_throughput1=24000
+base_throughput2=24000
 
 #throughput_percentage=(10 20 30 40 50 60)
 #throughput_percentage=(1 5 10 15)
 #for EDF_INTERRUPT
-#throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100)
-throughput_percentage=(50 60 70 80 90 100 110 115)
-#for shinjuku
-#throughput_percentage=(1 5 10 15 20 25 26 27 28 29 30)
-#throughput_percentage=(28 29 30 35 40)
+#throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100 102 104 106 108 110 112 114 116 118 120 122 124 126)
+#for shinjuku and DARC
+throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100 102 104)
 
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -42,17 +43,17 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	done
 	replacement_rps="--rps ${replacement_rps},${per_throughput2}"
 	echo $replacement_rps
-	./set_rps.sh /users/xiaosuGW/eRPC/apps/openloop_fixed/config "$replacement_rps" 	
+	./set_rps.sh /my_mount/eRPC/apps/openloop_fixed/config "$replacement_rps" 
 	total_throughput=$((base_throughput1 * 8 * throughput_percentage[i] + base_throughput2 * throughput_percentage[i]))
 	total_throughput=$((total_throughput / 100))
 	server_log="server-${total_throughput}-${throughput_percentage[i]}.log"
 	client_log="client-${total_throughput}-${throughput_percentage[i]}.log"
 	cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
         echo "start server for $dispatcher_policy ${throughput_percentage[i]} testing..."
-	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 9 3 5 $dispatcher_policy  $server_log > 1.txt 2>&1 &"
-        echo "start cpu monitoring"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/sed_json.sh $path/hash.json 6 0"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 6 1 3 $dispatcher_policy  $server_log true true false hash.json > 1.txt 2>&1 &"
+        #echo "start cpu monitoring"
+        #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
         echo "start client..."
 	pushd ../
         sleep 10
@@ -66,11 +67,11 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 		continue
 	fi
         popd
-	ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "$path/stop_monitor.sh"
+	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "$path/stop_monitor.sh"
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
         sleep 10
 done
-folder_name=$dispatcher_policy
+folder_name="fixed_${dispatcher_policy}"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mkdir $path/$folder_name"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mv *.log $path/$folder_name"
 mkdir $folder_name
