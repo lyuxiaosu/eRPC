@@ -26,7 +26,8 @@ base_throughput2=24000
 #for EDF_INTERRUPT
 #throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100 102 104 106 108 110 112 114 116 118 120 122 124 126)
 #for shinjuku and DARC
-throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100 102 104)
+#throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100 102 104)
+throughput_percentage=(80)
 
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
