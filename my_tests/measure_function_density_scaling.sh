@@ -1,4 +1,4 @@
-#this script measure function density scaling with worker cores 
+#this script measure function density scaling with worker cores. Deprecated, using measure_function_density_scaling2.sh 
 #!/bin/bash
 function usage {
         echo "$0"
