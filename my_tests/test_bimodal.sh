@@ -33,7 +33,8 @@ base_throughput2=320
 #throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100 102 104 106 108 112 114 116 118 120)
 #throughput_percentage=(70 80 82 86)
 #throughput_percentage=(92 94 96 98 100)
-throughput_percentage=(70 90 108)
+#this is for show deatial latency CDF 
+throughput_percentage=(99)
 
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"

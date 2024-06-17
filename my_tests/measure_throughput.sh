@@ -69,9 +69,9 @@ function run_tests() {
 }
 
 #worker_count1=(1 3 6 9 12 15)
-worker_count1=(6)
+worker_count1=(5 10 15)
 #worker_count2=(3 6 9 12 15)
 
-run_tests "worker_count1[@]" 1
+run_tests "worker_count1[@]" 5
 #run_tests "worker_count2[@]" 3 
 

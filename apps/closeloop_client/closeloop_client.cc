@@ -19,7 +19,7 @@ static constexpr size_t kAppEvLoopMs = 1000;     // Duration of event loop
 static constexpr bool kAppVerbose = false;       // Print debug info on datapath
 static constexpr double kAppLatFac = 10.0;       // Precision factor for latency
 static size_t kAppReqType = 1;         // eRPC request type
-static constexpr size_t kAppMaxWindowSize = 32;  // Max pending reqs per client
+static constexpr size_t kAppMaxWindowSize = 64;  // Max pending reqs per client
 
 int sending_rps[100]; // each client thread sending rps
 size_t responses[100]; // each client thread get the number of responses

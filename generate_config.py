@@ -6,7 +6,7 @@ def generate_config(type1_con, type2_con, type1_rps, type2_rps, type1_param, typ
     type2 = "2"
     
     config = []
-    config.append("--test_ms 10000")
+    config.append("--test_ms 20000")
     config.append("--sm_verbose 0")
     config.append("--num_server_threads {}".format(num_listener))
     config.append("--window_size {}".format(window_size))
