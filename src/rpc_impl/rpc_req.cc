@@ -195,8 +195,14 @@ template <class TTr>
 void Rpc<TTr>::process_large_req_one_st(SSlot *sslot, const pkthdr_t *pkthdr) {
   assert(in_dispatch());
 
+  /*-------add by xiaosu-----------//
+   This has a potential bug that if the pkdhdr has more than one packet, then 
+   is_next_pkt_same_req or is_first_pkt_next_req will be false causing all packets
+   are dropping. This bug only happend a big packet is splited to several small
+   packets, so just simply commend this two lines for testing
+  */
   // Handle reordering
-  bool is_next_pkt_same_req =  // Is this the next packet in this request?
+  /*bool is_next_pkt_same_req =  // Is this the next packet in this request?
       (pkthdr->req_num_ == sslot->cur_req_num_) &&
       (pkthdr->pkt_num_ == sslot->server_info_.num_rx_);
   bool is_first_pkt_next_req =  // Is this the first packet in the next request?
@@ -204,6 +210,8 @@ void Rpc<TTr>::process_large_req_one_st(SSlot *sslot, const pkthdr_t *pkthdr) {
       (pkthdr->pkt_num_ == 0);
 
   bool in_order = is_next_pkt_same_req || is_first_pkt_next_req;
+  */
+  bool in_order = true;
   if (unlikely(!in_order)) {
     char issue_msg[kMaxIssueMsgLen];
     // XXX: The static_cast for pkt_num_ is a hack for compiling with clang
