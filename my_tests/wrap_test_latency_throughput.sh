@@ -7,13 +7,17 @@
 #./test_high_bimodal.sh SHINJUKU
 #./test_high_bimodal.sh DARC
 
+./test_high_bimodal_realapp.sh EDF_INTERRUPT
+./test_high_bimodal_realapp.sh SHINJUKU
+./test_high_bimodal_realapp.sh DARC
+
 #./test_bimodal.sh EDF_INTERRUPT
 #./test_bimodal.sh DARC
 #./test_bimodal.sh SHINJUKU 
 
-./test_tpcc.sh DARC 10
-./test_tpcc.sh SHINJUKU 10
-./test_tpcc.sh EDF_INTERRUPT 10
+#./test_tpcc.sh DARC 10
+#./test_tpcc.sh SHINJUKU 10
+#./test_tpcc.sh EDF_INTERRUPT 10
 #./test_exponential.sh SHINJUKU 10
 #./test_exponential.sh EDF_INTERRUPT 10
 #./test_exponential.sh DARC 10

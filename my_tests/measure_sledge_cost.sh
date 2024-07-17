@@ -9,8 +9,13 @@ if [ $# != 1 ] ; then
         exit 1;
 fi
 
+echo "singal_request" > ../scripts/autorun_app_file
+pushd ../
+./build.sh
+popd
+
 chmod 400 ./id_rsa
-remote_ip="128.110.219.0"
+remote_ip="128.110.219.10"
 
 repeat_count=$1
 
@@ -20,7 +25,7 @@ path="/my_mount/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<$repeat_count;i++ )) do
     echo "i is $i"
     echo "start server..."
-    ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start.sh 1 1 5 > 1.txt 2>&1 &"
+    ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start.sh 1 1 3 > 1.txt 2>&1 &"
     sleep 2 
     echo "start client..."
     pushd ../

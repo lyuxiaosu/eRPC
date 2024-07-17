@@ -1,0 +1,1200 @@
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+24:140327 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+24:804418 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 221 while 176
+0 1 185.989000 0
+0 1 16.963000 0
+0 1 14.027000 0
+0 1 14.058000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+32:068481 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+32:737979 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 228 while 174
+0 1 186.972000 0
+0 1 13.717000 0
+0 1 11.062000 0
+0 1 11.282000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+40:002296 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+40:669009 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 220 while 176
+0 1 188.384000 0
+0 1 17.093000 0
+0 1 13.856000 0
+0 1 14.037000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+47:941387 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+48:613255 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 216 while 174
+0 1 183.224000 0
+0 1 16.572000 0
+0 1 11.322000 0
+0 1 11.432000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+55:868332 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+56:538411 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 229 while 177
+0 1 188.775000 0
+0 1 17.875000 0
+0 1 14.167000 0
+0 1 14.378000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+63:794678 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+64:461884 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 208 while 158
+0 1 179.858000 0
+0 1 15.450000 0
+0 1 13.967000 0
+0 1 13.726000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+71:726470 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+72:400057 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 213 while 170
+0 1 178.275000 0
+0 1 16.282000 0
+0 1 14.218000 0
+0 1 14.037000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+79:689280 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+80:349632 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 213 while 164
+0 1 182.052000 0
+0 1 16.232000 0
+0 1 11.702000 0
+0 1 11.963000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+87:639801 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+88:308250 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 201 while 155
+0 1 181.861000 0
+0 1 16.561000 0
+0 1 14.688000 0
+0 1 14.067000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+95:630051 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+96:294371 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 208 while 162
+0 1 182.843000 0
+0 1 17.263000 0
+0 1 11.473000 0
+0 1 11.502000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+3:564503 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+4:232753 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 195 while 149
+0 1 189.406000 0
+0 1 16.702000 0
+0 1 14.218000 0
+0 1 13.747000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+11:516435 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+12:199342 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 205 while 153
+0 1 188.915000 0
+0 1 17.384000 0
+0 1 11.783000 0
+0 1 11.192000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+19:465966 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+20:138535 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 221 while 176
+0 1 188.013000 0
+0 1 14.177000 0
+0 1 10.991000 0
+0 1 11.572000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+27:408397 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+28:080554 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 236 while 190
+0 1 187.822000 0
+0 1 18.035000 0
+0 1 14.238000 0
+0 1 14.227000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+35:349891 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+36:024387 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 183 while 132
+0 1 192.642000 0
+0 1 17.905000 0
+0 1 11.582000 0
+0 1 11.162000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+43:286353 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+43:954081 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 213 while 168
+0 1 184.266000 0
+0 1 17.023000 0
+0 1 13.857000 0
+0 1 14.017000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+51:210323 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+51:878960 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 253 while 208
+0 1 190.548000 0
+0 1 16.602000 0
+0 1 13.797000 0
+0 1 14.037000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+59:195560 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+59:870814 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 234 while 189
+0 1 189.215000 0
+0 1 17.213000 0
+0 1 13.997000 0
+0 1 13.636000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+67:174220 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+67:847474 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 223 while 174
+0 1 184.216000 0
+0 1 16.853000 0
+0 1 13.907000 0
+0 1 13.817000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+75:127428 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+75:794084 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 212 while 167
+0 1 186.199000 0
+0 1 17.514000 0
+0 1 14.288000 0
+0 1 14.378000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+83:072898 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+83:742116 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 214 while 167
+0 1 193.454000 0
+0 1 16.843000 0
+0 1 14.478000 0
+0 1 14.398000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+91:025250 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+91:694726 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 217 while 168
+0 1 186.329000 0
+0 1 16.592000 0
+0 1 13.906000 0
+0 1 14.288000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+98:957004 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+99:630868 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 203 while 160
+0 1 185.769000 0
+0 1 17.093000 0
+0 1 13.726000 0
+0 1 14.067000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+6:910201 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+7:588092 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 206 while 160
+0 1 185.298000 0
+0 1 16.663000 0
+0 1 13.596000 0
+0 1 13.997000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+14:854191 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+15:525917 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 216 while 170
+0 1 200.437000 0
+0 1 14.267000 0
+0 1 11.432000 0
+0 1 11.422000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+22:798483 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+23:472081 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 205 while 161
+0 1 193.834000 0
+0 1 17.083000 0
+0 1 11.172000 0
+0 1 11.352000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+30:763914 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+31:431541 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 221 while 177
+0 1 192.462000 0
+0 1 13.667000 0
+0 1 11.462000 0
+0 1 11.983000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+38:714282 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+39:387865 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 211 while 168
+0 1 180.108000 0
+0 1 14.067000 0
+0 1 11.402000 0
+0 1 11.272000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+46:659833 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+47:343565 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 206 while 163
+0 1 180.720000 0
+0 1 16.923000 0
+0 1 11.813000 0
+0 1 11.382000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+54:625417 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+55:292534 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 214 while 165
+0 1 183.575000 0
+0 1 18.636000 0
+0 1 11.312000 0
+0 1 11.713000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+62:555615 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+63:220852 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 214 while 168
+0 1 184.807000 0
+0 1 16.502000 0
+0 1 13.686000 0
+0 1 14.568000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+70:481341 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+71:147060 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 213 while 167
+0 1 187.783000 0
+0 1 16.582000 0
+0 1 14.168000 0
+0 1 14.077000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+78:428105 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+79:094013 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 182 while 137
+0 1 181.260000 0
+0 1 16.682000 0
+0 1 11.302000 0
+0 1 11.672000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+86:373067 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+87:044309 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 206 while 161
+0 1 192.752000 0
+0 1 17.764000 0
+0 1 14.056000 0
+0 1 14.929000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+94:327440 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+95:000327 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 213 while 166
+0 1 193.634000 0
+0 1 17.403000 0
+0 1 11.151000 0
+0 1 11.672000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+2:275696 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+2:955325 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 185 while 141
+0 1 179.958000 0
+0 1 17.524000 0
+0 1 13.726000 0
+0 1 13.897000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+10:230436 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+10:894325 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 226 while 180
+0 1 192.472000 0
+0 1 16.472000 0
+0 1 13.997000 0
+0 1 13.997000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+18:175234 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+18:842185 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 227 while 181
+0 1 184.997000 0
+0 1 16.292000 0
+0 1 14.358000 0
+0 1 14.488000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+26:123612 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+26:792401 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 228 while 179
+0 1 189.155000 0
+0 1 17.564000 0
+0 1 14.158000 0
+0 1 14.258000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+34:061413 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+34:729474 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 223 while 179
+0 1 185.699000 0
+0 1 17.313000 0
+0 1 14.087000 0
+0 1 13.817000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+42:000289 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+42:676796 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 206 while 162
+0 1 189.076000 0
+0 1 17.334000 0
+0 1 13.927000 0
+0 1 13.956000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+49:968261 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+50:634496 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 227 while 183
+0 1 185.008000 0
+0 1 16.192000 0
+0 1 13.937000 0
+0 1 14.078000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+57:921110 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+58:596292 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 206 while 158
+0 1 189.787000 0
+0 1 16.983000 0
+0 1 13.506000 0
+0 1 13.967000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+65:872757 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+66:539710 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 220 while 176
+0 1 189.096000 0
+0 1 18.105000 0
+0 1 14.147000 0
+0 1 11.874000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+73:815423 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+74:485379 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 208 while 165
+0 1 183.174000 0
+0 1 16.632000 0
+0 1 14.167000 0
+0 1 14.157000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+81:758068 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+82:434250 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 228 while 180
+0 1 189.997000 0
+0 1 16.311000 0
+0 1 11.492000 0
+0 1 11.512000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+89:689435 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+90:356957 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 211 while 161
+0 1 185.339000 0
+0 1 19.057000 0
+0 1 14.208000 0
+0 1 14.267000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+97:640242 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+98:311282 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 220 while 176
+0 1 195.699000 0
+0 1 16.822000 0
+0 1 14.358000 0
+0 1 14.528000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+5:581240 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+6:254621 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 202 while 153
+0 1 191.620000 0
+0 1 18.336000 0
+0 1 14.278000 0
+0 1 14.608000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+13:527515 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+14:193768 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 199 while 154
+0 1 190.438000 0
+0 1 17.805000 0
+0 1 13.897000 0
+0 1 14.078000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+21:469037 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+22:132573 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 235 while 189
+0 1 191.229000 0
+0 1 16.482000 0
+0 1 14.258000 0
+0 1 13.887000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+29:429856 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+30:093586 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 212 while 168
+0 1 185.208000 0
+0 1 16.412000 0
+0 1 13.837000 0
+0 1 13.676000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+37:381430 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+38:064091 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 189 while 139
+0 1 175.949000 0
+0 1 17.745000 0
+0 1 14.147000 0
+0 1 14.077000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+45:346044 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+46:012658 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 230 while 180
+0 1 186.140000 0
+0 1 16.442000 0
+0 1 14.128000 0
+0 1 14.047000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+53:277192 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+53:946028 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 206 while 161
+0 1 184.838000 0
+0 1 20.971000 0
+0 1 14.087000 0
+0 1 14.208000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+61:210661 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+61:878264 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 204 while 157
+0 1 186.109000 0
+0 1 16.482000 0
+0 1 11.432000 0
+0 1 11.472000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+69:163896 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+69:833945 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 209 while 164
+0 1 190.388000 0
+0 1 16.612000 0
+0 1 14.098000 0
+0 1 14.067000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+77:100441 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+77:789864 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 182 while 138
+0 1 181.030000 0
+0 1 17.283000 0
+0 1 14.138000 0
+0 1 14.177000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+85:058863 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+85:723670 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 241 while 191
+0 1 187.311000 0
+0 1 16.472000 0
+0 1 14.017000 0
+0 1 14.217000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+93:016239 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+93:683504 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 211 while 166
+0 1 191.801000 0
+0 1 17.163000 0
+0 1 11.472000 0
+0 1 11.602000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+0:963527 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+1:630342 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 228 while 185
+0 1 188.113000 0
+0 1 16.371000 0
+0 1 14.718000 0
+0 1 14.098000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+8:915630 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+9:583267 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 202 while 167
+0 1 190.207000 0
+0 1 16.552000 0
+0 1 13.887000 0
+0 1 14.197000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+16:851612 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+17:526123 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 180 while 137
+0 1 179.968000 0
+0 1 17.674000 0
+0 1 13.926000 0
+0 1 13.847000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+24:802897 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+25:470951 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 214 while 169
+0 1 186.309000 0
+0 1 16.201000 0
+0 1 14.498000 0
+0 1 14.157000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+32:748386 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+33:429283 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 214 while 165
+0 1 183.264000 0
+0 1 17.834000 0
+0 1 14.187000 0
+0 1 11.723000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+40:710247 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+41:379451 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 208 while 162
+0 1 185.258000 0
+0 1 16.202000 0
+0 1 14.578000 0
+0 1 14.027000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+48:655070 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+49:323595 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 230 while 185
+0 1 185.338000 0
+0 1 16.261000 0
+0 1 13.958000 0
+0 1 14.237000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+56:598030 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+57:258929 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 217 while 173
+0 1 182.953000 0
+0 1 16.752000 0
+0 1 13.957000 0
+0 1 14.047000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+64:523986 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+65:188736 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 219 while 171
+0 1 186.421000 0
+0 1 13.877000 0
+0 1 11.191000 0
+0 1 11.643000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+72:455243 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+73:137833 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 211 while 171
+0 1 180.699000 0
+0 1 13.797000 0
+0 1 11.312000 0
+0 1 11.793000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+80:404582 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+81:073073 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 226 while 182
+0 1 183.665000 0
+0 1 13.947000 0
+0 1 11.452000 0
+0 1 11.703000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+88:345482 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+89:015257 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 230 while 185
+0 1 181.941000 0
+0 1 13.696000 0
+0 1 11.351000 0
+0 1 11.702000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+96:311669 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+96:979282 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 223 while 180
+0 1 182.633000 0
+0 1 15.139000 0
+0 1 11.422000 0
+0 1 11.492000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+4:246662 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+4:916546 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 214 while 171
+0 1 182.763000 0
+0 1 16.732000 0
+0 1 14.318000 0
+0 1 14.708000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+12:190238 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+12:865607 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 243 while 193
+0 1 191.540000 0
+0 1 13.787000 0
+0 1 11.432000 0
+0 1 11.373000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+20:135408 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+20:809935 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 207 while 164
+0 1 179.277000 0
+0 1 18.636000 0
+0 1 13.866000 0
+0 1 14.187000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+28:083809 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+28:763889 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 218 while 174
+0 1 186.790000 0
+0 1 13.777000 0
+0 1 11.563000 0
+0 1 11.422000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+36:038391 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+36:707975 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 217 while 173
+0 1 195.538000 0
+0 1 17.934000 0
+0 1 14.227000 0
+0 1 13.676000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+43:980517 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+44:654375 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 227 while 180
+0 1 196.319000 0
+0 1 14.638000 0
+0 1 11.914000 0
+0 1 11.442000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+51:918424 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+52:583718 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 217 while 174
+0 1 188.775000 0
+0 1 13.887000 0
+0 1 11.132000 0
+0 1 11.623000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+59:843612 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+60:507252 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 206 while 161
+0 1 184.937000 0
+0 1 13.997000 0
+0 1 11.232000 0
+0 1 11.462000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+67:763344 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+68:436333 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 242 while 196
+0 1 185.438000 0
+0 1 16.652000 0
+0 1 14.078000 0
+0 1 14.087000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+75:721007 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+76:393783 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 218 while 170
+0 1 184.176000 0
+0 1 17.023000 0
+0 1 13.827000 0
+0 1 14.018000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+83:690915 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+84:363153 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 205 while 160
+0 1 184.406000 0
+0 1 17.434000 0
+0 1 14.377000 0
+0 1 13.898000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+91:635842 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+92:301879 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 200 while 156
+0 1 184.566000 0
+0 1 13.777000 0
+0 1 11.262000 0
+0 1 11.653000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+99:562799 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+0:229829 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 225 while 184
+0 1 189.086000 0
+0 1 17.695000 0
+0 1 11.933000 0
+0 1 11.893000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+7:505047 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+8:185941 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 218 while 170
+0 1 192.943000 0
+0 1 14.308000 0
+0 1 11.101000 0
+0 1 11.953000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+15:451229 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+16:118009 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 204 while 159
+0 1 179.536000 0
+0 1 16.422000 0
+0 1 14.208000 0
+0 1 13.646000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+23:401191 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+24:075777 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 212 while 166
+0 1 187.702000 0
+0 1 15.530000 0
+0 1 12.123000 0
+0 1 11.142000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+31:347131 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+32:016752 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 199 while 151
+0 1 178.686000 0
+0 1 16.401000 0
+0 1 11.372000 0
+0 1 11.463000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+39:298034 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+39:964687 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 229 while 184
+0 1 186.480000 0
+0 1 13.626000 0
+0 1 11.291000 0
+0 1 11.773000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+47:245809 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+47:914642 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 229 while 179
+0 1 186.861000 0
+0 1 16.953000 0
+0 1 11.873000 0
+0 1 11.652000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+55:191301 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+55:857302 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 221 while 176
+0 1 185.819000 0
+0 1 22.253000 0
+0 1 11.793000 0
+0 1 11.582000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+63:135479 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+63:816994 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 180 while 134
+0 1 183.154000 0
+0 1 17.043000 0
+0 1 11.633000 0
+0 1 11.803000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+71:105257 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+71:773027 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 226 while 180
+0 1 188.474000 0
+0 1 16.702000 0
+0 1 11.832000 0
+0 1 11.542000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+79:037060 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+79:714102 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 203 while 157
+0 1 191.169000 0
+0 1 16.742000 0
+0 1 14.397000 0
+0 1 14.037000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+86:995593 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+87:666243 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 211 while 166
+0 1 188.895000 0
+0 1 16.773000 0
+0 1 14.047000 0
+0 1 13.967000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+94:941136 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+95:616472 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 207 while 161
+0 1 183.896000 0
+0 1 16.441000 0
+0 1 14.237000 0
+0 1 13.827000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+2:901036 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+3:585259 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 187 while 136
+0 1 178.645000 0
+0 1 17.735000 0
+0 1 14.097000 0
+0 1 11.222000 0
+close session
+[33mdo.sh: Launching process 1 on NUMA node 0(B[m
+Client Performance Log client.log
+10:850438 WARNG: Running as primary DPDK process. eRPC DPDK daemon is not running.
+11:520015 WARNG: DpdkTransport created for Rpc ID 0, queue 0, datapath UDP port 10000
+Process 1, thread 0: Connected. Starting work.
+thread_id: median_us 5th_us 99th_us 999th_us Mops
+total connection time 203 while 161
+0 1 183.074000 0
+0 1 18.565000 0
+0 1 14.128000 0
+0 1 14.077000 0
+close session

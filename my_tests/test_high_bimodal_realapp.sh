@@ -23,16 +23,16 @@ remote_ip="128.110.219.10"
 req_parameter="--req_parameter 1,120"
 sed -i "s/^--req_parameter.*/$req_parameter/" /my_mount/eRPC/apps/openloop_realapps/config
 
-req_type="--req_type 1,1,1,1,1,2,2,2,2,2"
+req_type="--req_type 1,1,1,2,2,2"
 sed -i "s/^--req_type.*/$req_type/" /my_mount/eRPC/apps/openloop_realapps/config
 
 dispatcher_policy=$1
-base_throughput=434
+base_throughput=710
 #base_throughput1=16000
 #base_throughput2=2000
 
-throughput_percentage=(1 10 20 30 40 50 60 70 80 90 100)
-#throughput_percentage=(82 84 86 88 90)
+#throughput_percentage=(1 10 20 30 40 50 60 70 80 86 87 88 90 92 94 96 98 99 100)
+#throughput_percentage=(86)
 #throughput_percentage=(100)
 
 
@@ -41,18 +41,19 @@ path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/edf_interrupt/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	echo "i is $i"
-        per_throughput=$(( (${throughput_percentage[i]} * base_throughput) / 100 ))
+        #per_throughput=$(( (${throughput_percentage[i]} * base_throughput) / 100 ))
+	per_throughput=$(echo "(${throughput_percentage[i]} * $base_throughput) / 100" | bc)
 	echo ${throughput_percentage[i]} $per_throughput
 	replacement_rps=${per_throughput}
-	for ((j=2; j<=10; j++))
+	for ((j=2; j<=6; j++))
 	do
   		replacement_rps="${replacement_rps},${per_throughput}"
 	done
 	replacement_rps="--rps ${replacement_rps}"
-	echo $replacement_rps
+	echo "$replacement_rps"
 	./set_rps.sh /my_mount/eRPC/apps/openloop_realapps/config "$replacement_rps" 	
-        total_throughput=$((base_throughput * 10 * throughput_percentage[i]))
-	total_throughput=$((total_throughput / 100))
+        #total_throughput=$((base_throughput * 10 * throughput_percentage[i]))
+        total_throughput=$(echo "${base_throughput} * 10 * ${throughput_percentage[i]} / 100" | bc)
 	server_log="server-${total_throughput}-${throughput_percentage[i]}.log"
 	client_log="client-${total_throughput}-${throughput_percentage[i]}.log"
 	cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"

@@ -12,6 +12,7 @@ with open(filename, "r") as file:
 
 total_cold_time = 0
 total_warm_time = 0
+total_conn_time = 0
 
 count=0
 line_index = 0
@@ -21,6 +22,7 @@ while line_index < len(lines):
     match = re.search(r"total connection time (\d+)", line)
     if match:
         time_value = int(match.group(1))
+        total_conn_time += time_value
         total_cold_time += time_value
         total_cold_time += float(lines[line_index+1].split()[2])
         total_warm_time += float(lines[line_index+4].split()[2])
@@ -31,9 +33,10 @@ while line_index < len(lines):
 
 avg_cold_time = total_cold_time / count
 avg_warm_time = total_warm_time / count
-
+avg_conn_time = total_conn_time / count
 
 print("avg cold time ", avg_cold_time)
 print("avg warm time ", avg_warm_time)
+print("avg conn time ", avg_conn_time)
 print("count ", count)
 
