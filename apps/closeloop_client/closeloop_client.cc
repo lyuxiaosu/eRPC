@@ -373,9 +373,9 @@ int main(int argc, char **argv) {
           sending_rate, total_requests); 
   for (const auto& pair : seperate_sending_rps) {
         printf("type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
+		pair.second, pair.second); 
         fprintf(perf_log, "type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
+		pair.second, pair.second); 
   
   }
   fclose(perf_log);
