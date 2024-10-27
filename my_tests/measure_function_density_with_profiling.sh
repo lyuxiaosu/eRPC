@@ -1,11 +1,11 @@
 #this script measure function density with openloop to compare with rFaaS 
 #!/bin/bash
 function usage {
-        echo "$0 <server worker count> <listener_count>"
+        echo "$0 <server worker count> <listener_count> <pool_per_module, no_memory_pool or empty>"
         exit 1
 }
 
-if [ $# != 2 ] ; then
+if [ $# -lt 2 ] ; then
         usage
         exit 1;
 fi
@@ -20,17 +20,19 @@ threads=10
 per_rps=$(($rps / $threads))
 worker_count=$1
 listener_count=$2
+server_type=$3
 worker_core_start_idx=$((2 + $listener_count + 1))
 chmod 400 ./id_rsa
-remote_ip="128.110.218.250"
+remote_ip="128.110.218.251"
 
 #concurrency=(1 10 20 24 28 30 32 40 100 300 500 700 900 1100 1300 1500 1700 1900 2000)
 #concurrency=(2000)
-concurrency=(64)
+concurrency=(32)
 
 #path="/my_mount/sledge-serverless-framework/runtime/tests"
-path="/my_mount/pool_per_module/sledge-serverless-framework/runtime/tests"
+#path="/my_mount/pool_per_module/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/no_memory_pool/sledge-serverless-framework/runtime/tests"
+path="/my_mount/$server_type/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#concurrency[@]};i++ )) do
 	echo "i is $i"
         func_types=${concurrency[i]}
@@ -67,7 +69,7 @@ for(( i=0;i<${#concurrency[@]};i++ )) do
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
         sleep 4 
 done
-folder_name="Sledge"
+folder_name="Sledge_$server_type"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mkdir $path/$folder_name"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mv *.log $path/$folder_name"
 
