@@ -435,24 +435,23 @@ int main(int argc, char **argv) {
   perf_log_init();
  
   size_t data_size;
-  //data_bufs[1] = (read_file_to_array("./large.bmp", &data_size)); 
-  data_bufs[1] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size)); 
-  data_sizes[1] = data_size;
-
-  data_bufs[2] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  //data_bufs[2] = (read_file_to_array("./large.bmp", &data_size));
-  data_sizes[2] = (data_size);
-
-  //data_bufs[3] = (read_file_to_array("./large.bmp", &data_size));
-  data_bufs[3] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  data_sizes[3] = (data_size);
-
-  data_bufs[4] = (read_file_to_array("./tracking_seq.bmp", &data_size));
+  //mser
+  data_bufs[3] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size)); 
+  data_sizes[3] = data_size;
+  //sift
+  data_bufs[4] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
   data_sizes[4] = (data_size);
 
-  data_bufs[5] = (read_file_to_array("./disparity_seq.bmp", &data_size));
+  //multi_ncut
+  data_bufs[5] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
   data_sizes[5] = (data_size);
-
+  //tracking
+  data_bufs[1] = (read_file_to_array("./tracking_seq.bmp", &data_size));
+  data_sizes[1] = (data_size);
+  //disparity
+  data_bufs[2] = (read_file_to_array("./disparity_seq.bmp", &data_size));
+  data_sizes[2] = (data_size);
+  //cifar10
   data_bufs[6] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
   data_sizes[6] = (data_size);
 
