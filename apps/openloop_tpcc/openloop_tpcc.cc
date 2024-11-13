@@ -28,7 +28,6 @@ int req_parameter_array[6] = {0, 8, 9, 37, 165, 188}; // index is type id
  * grouped type 3: type 4 and type 5, core 9,10,11,12,13,14
  */
 
-int grouped_type_array[6] = {0, 1, 1, 2, 3, 3}; // index is type id
 FILE *perf_log = NULL;
 static constexpr size_t kAppEvLoopMs = 1000;     // Duration of event loop
 static constexpr bool kAppVerbose = false;       // Print debug info on datapath
@@ -59,7 +58,6 @@ DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmu
 DEFINE_uint64(window_size, 1, "Outstanding requests per client");
 DEFINE_uint64(req_size, 64, "Size of request message in bytes");
 DEFINE_uint64(resp_size, 32, "Size of response message in bytes ");
-DEFINE_bool(is_darc, false, "This is DARC algorithm or not");
 
 struct Tag {
 	erpc::MsgBuffer *req_msgbuf;
@@ -81,7 +79,6 @@ class ClientContext : public BasicAppContext {
   size_t warmup_resps = 0;
   size_t thread_id;
   int request_type;
-  int grouped_type;
   int send_type; //the type to be sent to the server 
   erpc::ChronoTimer *start_time = NULL;
   double *latency_array = NULL;
@@ -291,8 +288,7 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   c.rpc_ = &rpc;
   c.thread_id = thread_id;
   c.request_type = req_type_array[thread_id];
-  c.grouped_type = grouped_type_array[c.request_type];
-  c.send_type = FLAGS_is_darc ? c.grouped_type : c.request_type;
+  c.send_type = c.request_type;
   c.request_parameter = req_parameter_array[c.request_type]; 
 
   create_sessions(c);

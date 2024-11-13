@@ -12,7 +12,7 @@ if [ $# != 2 ] ; then
 fi
 
 chmod 400 ./id_rsa
-remote_ip="128.110.219.9"
+remote_ip="128.110.218.252"
 
 echo "openloop_tpcc" > ../scripts/autorun_app_file
 pushd ../
@@ -23,11 +23,9 @@ dispatcher_policy=$1
 json_file=""
 
 if [ "$dispatcher_policy" == "DARC" ]; then
-    sed -i 's/--is_darc=[^ ]*/--is_darc=true/g' /my_mount/eRPC/apps/openloop_tpcc/config
     json_file="dummy_tpcc_DARC.json"
     throughput_percentage=(10 20 30 40 50 60 65 70 75 80 90 100 104 108 110 112 114)
 else
-    sed -i 's/--is_darc=[^ ]*/--is_darc=false/g' /my_mount/eRPC/apps/openloop_tpcc/config
     json_file="dummy_tpcc_EDF_SHINJUKU.json"
     if [ "$dispatcher_policy" == "EDF_INTERRUPT" ]; then
         throughput_percentage=(10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 152 154 156 158 160 162)
@@ -73,6 +71,7 @@ base_throughput5=4000
 #throughput_percentage=(10 20 30 40 50 60 65 70 75 80 81 82 83 84 85 86 87 88 88 90 100 110 120 126)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
+#path="/my_mount/clean_sledge/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/edf_interrupt/sledge-serverless-framework/runtime/tests"
 
