@@ -20,13 +20,11 @@ pushd ../
 popd
 
 dispatcher_policy=$1
-json_file=""
+json_file="dummy_tpcc.json"
 
 if [ "$dispatcher_policy" == "DARC" ]; then
-    json_file="dummy_tpcc_DARC.json"
     throughput_percentage=(10 20 30 40 50 60 65 70 75 80 90 100 104 108 110 112 114)
 else
-    json_file="dummy_tpcc_EDF_SHINJUKU.json"
     if [ "$dispatcher_policy" == "EDF_INTERRUPT" ]; then
         throughput_percentage=(10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 152 154 156 158 160 162)
     else
