@@ -194,11 +194,7 @@ class DpdkTransport : public Transport {
 
   // Transport-specific constants
   static constexpr TransportType kTransportType = TransportType::kDPDK;
-#ifdef SLEDGE
-  static constexpr size_t kMTU = 1064;
-#else
   static constexpr size_t kMTU = 1024;
-#endif
 
 #ifdef SLEDGE_CUSTOMIZED
   static constexpr size_t kNumTxRingDesc = NUM_TX_RING_DESC;
