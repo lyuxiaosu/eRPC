@@ -164,7 +164,7 @@ void Rpc<TTr>::process_small_req_st(SSlot *sslot, pkthdr_t *pkthdr) {
 
     if (req_func.req_func_ == NULL) {
 	//TODO return a error message to client, call enqueue_reponse directly, first papameter is static_cast<ReqHandle *>(sslot)
-    	printf("request a not existing function\n");
+    	printf("request a not existing function type %u\n", pkthdr->req_type_);
 	erpc::ReqHandle * rh = reinterpret_cast<erpc::ReqHandle*>(sslot);
 	auto &resp = rh->pre_resp_msgbuf_;
 	this->resize_msg_buffer(&resp, strlen(SERVICE_NON_EXISTENT) + 2);
