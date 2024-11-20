@@ -280,6 +280,14 @@ void Rpc<TTr>::process_large_req_one_st(SSlot *sslot, const pkthdr_t *pkthdr) {
     enqueue_cr_st(sslot, pkthdr);
   }
 
+  // added by xiaosu. This is a bug that a request msg has already been freed when 
+  // its repsonse packet was received but it wasn't removed from the retransmission 
+  // ring, so here it tried to post a freed request msg to application layer, causing
+  // a segmentfault. Add this check to avoid this case
+  if (req_msgbuf.buf_ == NULL) {
+      return;
+  }
+
   copy_data_to_msgbuf(&req_msgbuf, pkthdr->pkt_num_, pkthdr);  // Omits header
 
   // Invoke the request handler iff we have all the request packets
