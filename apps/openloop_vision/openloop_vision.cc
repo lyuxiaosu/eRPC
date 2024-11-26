@@ -32,6 +32,7 @@ uint32_t dropped[100] = {0};
 
 std::unordered_map<int, int> seperate_sending_rps; // key is request type, value is the sending rps
 std::unordered_map<int, int> seperate_service_rps; 
+std::unordered_map<int, uint32_t> seperate_total_sending; 
 
 std::vector<int> rps_array;
 std::vector<int> req_type_array;
@@ -356,6 +357,12 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   } else {
         seperate_service_rps[req_type_array[thread_id]] = s_rps;
   }
+ 
+  if (seperate_total_sending.count(req_type_array[thread_id]) > 0) {
+	seperate_total_sending[req_type_array[thread_id]] += success_sent;
+  } else {
+	seperate_total_sending[req_type_array[thread_id]] = success_sent;
+  }
 
   printf("sending requests %u get responses is %zu sending rps %d service rps %d\n", tmp_counter, c.num_resps, rps, s_rps);
   for (size_t i = 0; i < max_requests; i++) {
@@ -436,24 +443,28 @@ int main(int argc, char **argv) {
  
   size_t data_size;
   //mser
-  data_bufs[3] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size)); 
-  data_sizes[3] = data_size;
+  //data_bufs[3] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size)); 
+  //data_sizes[3] = data_size;
   //sift
-  data_bufs[4] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  data_sizes[4] = (data_size);
+  data_bufs[1] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
+  data_sizes[1] = (data_size);
 
   //multi_ncut
-  data_bufs[5] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  data_sizes[5] = (data_size);
-  //tracking
-  data_bufs[1] = (read_file_to_array("./tracking_seq.bmp", &data_size));
-  data_sizes[1] = (data_size);
-  //disparity
-  data_bufs[2] = (read_file_to_array("./disparity_seq.bmp", &data_size));
+  //data_bufs[5] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
+  data_bufs[2] = (read_file_to_array("./lake.bmp", &data_size));
   data_sizes[2] = (data_size);
+  //tracking
+  //data_bufs[1] = (read_file_to_array("./tracking_seq.bmp", &data_size));
+  //data_bufs[1] = (read_file_to_array("./tracking_large.bmp", &data_size));
+  //data_sizes[1] = (data_size);
+  //disparity
+  //data_bufs[2] = (read_file_to_array("./disparity_seq.bmp", &data_size));
+  //data_sizes[2] = (data_size);
   //cifar10
-  data_bufs[6] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  data_sizes[6] = (data_size);
+  data_bufs[3] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
+  //data_bufs[6] = (read_file_to_array("./test.bmp", &data_size));
+  printf("data size %zu\n", data_size);
+  data_sizes[3] = (data_size);
 
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
@@ -514,11 +525,11 @@ int main(int argc, char **argv) {
   fprintf(perf_log, "total sending rate %d, service rate %d total sent out requests %u total received response %zu dropped %u\n",
           sending_rate, service_rate, total_requests, total_responses, total_dropped); 
   for (const auto& pair : seperate_sending_rps) {
-        printf("type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
-        fprintf(perf_log, "type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
-  
+        printf("type %d sending rate %d service rate %d total sending %u\n", pair.first, 
+		pair.second, seperate_service_rps[pair.first], seperate_total_sending[pair.first]); 
+        fprintf(perf_log, "type %d sending rate %d service rate %d total sending %u\n", pair.first, 
+		pair.second, seperate_service_rps[pair.first], seperate_total_sending[pair.first]); 
+      
   }
   fclose(perf_log);
 }

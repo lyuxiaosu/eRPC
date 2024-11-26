@@ -3,6 +3,12 @@ import os
 import sys
 from collections import defaultdict
 
+seperate_meet_dict = defaultdict(lambda: defaultdict(list))
+total_meet_dict = defaultdict(list)
+
+seperate_miss_rate_dict = defaultdict(lambda: defaultdict(list))
+total_miss_rate_dict = defaultdict(list)
+
 seperate_99_latency = defaultdict(lambda: defaultdict(list))
 seperate_99_9_latency = defaultdict(lambda: defaultdict(list))
 seperate_99_99_latency = defaultdict(lambda: defaultdict(list))
@@ -49,6 +55,7 @@ def file_name(file_dir, key_str):
     return file_list, rps_list
 
 def get_values(key, files_list, latency_dict, slow_down_dict, deadline_miss_rate_dict, slow_down_99_9_dict, latency_99_9_dict, slow_down_99_99_dict, latency_99_99_dict):
+    index = 0;
     for file_i in files_list:
                 cmd='sudo python3 ./parse_single.py %s' % file_i
                 rt=os.popen(cmd).read().strip()
@@ -71,9 +78,9 @@ def get_values(key, files_list, latency_dict, slow_down_dict, deadline_miss_rate
                 seperate_99_9_slow_down_rule = r'type\s*(\d+)\s*99.9\s*percentile\s*slow down\s*is\s*([\d.]+)'
                 seperate_99_99_slow_down_rule = r'type\s*(\d+)\s*99.99\s*percentile\s*slow down\s*is\s*([\d.]+)'
 
-                sending_service_rate_rule = r'sending rate: (\d+),\s*service rate: (\d+)'
+                sending_service_rate_rule = r'sending rate: (\d+),\s*service rate: (\d+)\s*total requests: (\d+)'
 
-                seperate_sending_service_rate_rule = r"type\s+(\d+)\s+sending rate\s+(\d+)\s+service rate\s+(\d+)" 
+                seperate_sending_service_rate_rule = r"type\s+(\d+)\s+sending rate\s+(\d+)\s+service rate\s+(\d+)\s+total sending\s+(\d+)" 
 
                 # Use the regular expressions to find the values
                 latency_match = re.search(latency_rule, rt)
@@ -160,24 +167,68 @@ def get_values(key, files_list, latency_dict, slow_down_dict, deadline_miss_rate
                     seperate_99_99_slow_down[key][r_type].append(float(slow_down))
 
                 for match in re.finditer(seperate_sending_service_rate_rule, rt):
-                    r_type, sending_rate, service_rate = match.groups()
-                    print("type ", r_type, " sending rate ", sending_rate, " service rate ", service_rate)
+                    r_type, sending_rate, service_rate, total_sending = match.groups()
                     seperate_sending_rate_dict[key][r_type].append(int(sending_rate))
                     seperate_service_rate_dict[key][r_type].append(int(service_rate))
+                    if seperate_meet_dict:
+                        miss_number = int(total_sending) - int(seperate_meet_dict[key][r_type][index])
+                        miss_rate = (miss_number / int(total_sending)) * 100
+                        miss_rate = round(miss_rate, 2)
+                        seperate_miss_rate_dict[key][r_type].append(miss_rate)       
+                    print("type ", r_type, " sending rate ", sending_rate, " service rate ", service_rate, " total sending ", total_sending)
+                    
                 if sending_service_rate_match:
                     sending_rate = int(sending_service_rate_match.group(1))
                     service_rate = int(sending_service_rate_match.group(2))
+                    total_requests = int(sending_service_rate_match.group(3))
                     sending_rate_dict[key].append(sending_rate)
                     service_rate_dict[key].append(service_rate)
+                    if total_meet_dict:
+                        total_miss = int(total_requests) - int(total_meet_dict[key][index])
+                        total_miss_rate = (total_miss / int(total_requests)) * 100
+                        total_miss_rate = round(total_miss_rate, 2)
+                        total_miss_rate_dict[key].append(total_miss_rate)
+                        print("total miss rate:", total_miss_rate)
                     print("Sending Rate:", sending_rate)
                     print("Service Rate:", service_rate)
+                index = index + 1
 
+def load_files(file1, file2):
+    """
+    Check if both files exist. If they do, read and return their contents.
+    
+    Args:
+        file1 (str): Path to the first file.
+        file2 (str): Path to the second file.
+    
+    Returns:
+        tuple: total miss dictionary and seperate miss dictionary if both exist, otherwise None.
+    """
+    seperate_miss_dict = None
+    total_miss_dict = None
+    if os.path.exists(file1) and os.path.exists(file2):
+        try:
+            with open(file1, 'r') as f1, open(file2, 'r') as f2:
+                content1 = f1.read()
+                total_miss_dict = json.loads(content1)
+                content2 = f2.read()
+                seperate_miss_dict = json.loads(content2)
+            return total_miss_dict, seperate_miss_dict 
+        except Exception as e:
+            print(f"Error reading files: {e}")
+    else:
+        if not os.path.exists(file1):
+            print(f"File not found: {file1}")
+        if not os.path.exists(file2):
+            print(f"File not found: {file2}")
+    return total_miss_dict, seperate_miss_dict
  
 if __name__ == "__main__":
     import json
     #file_folders = ['SHINJUKU', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
     #file_folders = ['SHINJUKU_7', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
     file_folders = ['SHINJUKU', 'EDF_INTERRUPT','DARC']
+    #file_folders = ['DARC']
     #file_folders = ['SHINJUKU1', 'EDF_INTERRUPT1','DARC1']
     #file_folders = ['EDF_SRSF_INTERRUPT']
     #file_folders = ['EDF_INTERRUPT','EDF_SRSF_INTERRUPT_1']
@@ -200,6 +251,7 @@ if __name__ == "__main__":
         print("usage ", sys.argv[0], "[file key]")
         sys.exit()
 
+    total_meet_dict, seperate_meet_dict = load_files("./total_meet.txt", "./seperate_meet.txt")
     for key in file_folders:
         files_list, rps_list = file_name(key, argv[0])
         load_dict[key] = rps_list
@@ -305,3 +357,13 @@ if __name__ == "__main__":
     f19 = open("load.txt", 'w')
     f19.write(js19)
     f19.close()
+
+    js20 = json.dumps(seperate_miss_rate_dict)
+    f20 = open("seperate_miss_rate.txt", 'w')
+    f20.write(js20)
+    f20.close()
+
+    js21 = json.dumps(total_miss_rate_dict)
+    f21 = open("total_miss_rate.txt", 'w')
+    f21.write(js21)
+    f21.close()

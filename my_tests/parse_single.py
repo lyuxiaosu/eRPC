@@ -32,15 +32,17 @@ def parse_file(file_path):
             seperate_slow_down[r_type].append(round((float(latency) / int(pure_cpu_time))))
             total_slow_down.append(round((float(latency) / int(pure_cpu_time))))
 
-        if "total sending" in line:
+        if "total sending rate" in line:
             sending_rate = line.split(" ")[3]
             service_rate = line.split(" ")[6]
-            print("sending rate:", sending_rate, " service rate:", service_rate)
+            total_requests = line.split(" ")[11]
+            print("sending rate:", sending_rate, " service rate:", service_rate, " total requests:", total_requests)
         if "type" in line and "sending rate" in line:
             r_type = line.split(" ")[1] 
             sending_rate = line.split(" ")[4] 
-            service_rate = line.split(" ")[7] 
-            print("type ", r_type, " sending rate", sending_rate, " service rate ", service_rate)
+            service_rate = line.split(" ")[7]
+            total_sending = line.split(" ")[10]  
+            print("type ", r_type, " sending rate", sending_rate, " service rate ", service_rate, " total sending ", total_sending)
     miss_rate = (deadline_miss_count / total_count) * 100
     miss_rate_formatted = "{:.4f}".format(miss_rate)
     print("miss rate ", miss_rate_formatted)
