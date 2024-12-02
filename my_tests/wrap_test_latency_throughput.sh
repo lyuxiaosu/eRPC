@@ -18,6 +18,38 @@
 #./test_tpcc.sh DARC 10
 #./test_tpcc.sh SHINJUKU 10
 #./test_tpcc.sh EDF_INTERRUPT 10
+#./test_vision_same_6apps.sh DARC 12
+#./test_vision_same_6apps.sh EDF_INTERRUPT 12
+#./test_vision_same_6apps.sh SHINJUKU 12
+
+#./test_vision_more_shorters_6apps.sh DARC 12
+#./test_vision_more_shorters_6apps.sh EDF_INTERRUPT 12
+#./test_vision_more_shorters_6apps.sh SHINJUKU 12
+
+#./test_vision_more_shorters_5apps.sh DARC 10
+#./test_vision_more_shorters_5apps.sh EDF_INTERRUPT 10
+#./test_vision_more_shorters_5apps.sh SHINJUKU 10
+
+#./test_vision_3apps.sh DARC 12
+#./test_vision_3apps.sh EDF_INTERRUPT 12
+#./test_vision_3apps.sh SHINJUKU 12
+
+#./test_vision_3apps_loose3.sh DARC 12
+#./test_vision_3apps_loose3.sh EDF_INTERRUPT 12
+#./test_vision_3apps_loose3.sh SHINJUKU 12
+
+#./test_vision_3apps_strict.sh DARC 12
+#./test_vision_3apps_strict.sh EDF_INTERRUPT 12
+#./test_vision_3apps_strict.sh SHINJUKU 12
+
+#./test_vision_3apps_loose2.sh DARC 12
+#./test_vision_3apps_loose2.sh EDF_INTERRUPT 12
+#./test_vision_3apps_loose2.sh SHINJUKU 12
+
+#./test_vision_3apps_loose.sh DARC 12
+#./test_vision_3apps_loose.sh EDF_INTERRUPT 12
+#./test_vision_3apps_loose.sh SHINJUKU 12
+
 #./test_exponential.sh SHINJUKU 10
 #./test_exponential.sh EDF_INTERRUPT 10
 #./test_exponential.sh DARC 10
