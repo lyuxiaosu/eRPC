@@ -32,6 +32,7 @@ uint32_t dropped[100] = {0};
 
 std::unordered_map<int, int> seperate_sending_rps; // key is request type, value is the sending rps
 std::unordered_map<int, int> seperate_service_rps; 
+std::unordered_map<int, uint32_t> seperate_total_sending;
 
 std::vector<int> rps_array;
 std::vector<int> req_type_array;
@@ -357,6 +358,12 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
         seperate_service_rps[req_type_array[thread_id]] = s_rps;
   }
 
+  if (seperate_total_sending.count(req_type_array[thread_id]) > 0) {
+        seperate_total_sending[req_type_array[thread_id]] += success_sent;
+  } else {
+        seperate_total_sending[req_type_array[thread_id]] = success_sent;
+  }
+
   printf("sending requests %u get responses is %zu sending rps %d service rps %d\n", tmp_counter, c.num_resps, rps, s_rps);
   for (size_t i = 0; i < max_requests; i++) {
   	fprintf(perf_log, "%zu %d %f %d\n", thread_id, req_type_array[thread_id], c.latency_array[i], c.pure_cpu_time[i]);
@@ -507,10 +514,10 @@ int main(int argc, char **argv) {
   fprintf(perf_log, "total sending rate %d, service rate %d total sent out requests %u total received response %zu dropped %u\n",
           sending_rate, service_rate, total_requests, total_responses, total_dropped); 
   for (const auto& pair : seperate_sending_rps) {
-        printf("type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
-        fprintf(perf_log, "type %d sending rate %d service rate %d\n", pair.first, 
-		pair.second, seperate_service_rps[pair.first]); 
+        printf("type %d sending rate %d service rate %d total sending %u\n", pair.first, 
+		pair.second, seperate_service_rps[pair.first], seperate_total_sending[pair.first]); 
+        fprintf(perf_log, "type %d sending rate %d service rate %d total sending %u\n", pair.first, 
+		pair.second, seperate_service_rps[pair.first], seperate_total_sending[pair.first]); 
   
   }
   fclose(perf_log);
