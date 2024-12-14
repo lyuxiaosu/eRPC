@@ -29,6 +29,7 @@ def file_name(file_dir, key_str):
     print(file_dir, key_str)
     file_list = []
     rps_list = []
+    last_num_list = []
 
     for root, dirs, files in os.walk(file_dir):
         print("file:", files)
@@ -46,13 +47,17 @@ def file_name(file_dir, key_str):
                 rps=rps.split(".")[0]
                 file_list.append(full_path)
                 rps_list.append(int(rps))
+                last_num=segs[2]
+                last_num=last_num.split(".")[0]
+                last_num_list.append(int(last_num))
 
-    #file_list = sorted(file_list, key = lambda x: int(x.split('-')[-1].split(".")[0]))
-    file_list = sorted(file_list, key = lambda x: int(x.split('-')[1].split(".")[0]))
+    file_list_based_last_num =   sorted(file_list, key = lambda x: int(x.split('-')[-1].split('.')[0]))
+    last_num_list = sorted(last_num_list)
+    file_list_based_throughput = sorted(file_list, key = lambda x: int(x.split('-')[1].split(".")[0]))
     rps_list = sorted(rps_list)
-    print(file_list)
+    #print(file_list_based_last_num)
     print("--------------------------------", rps_list)
-    return file_list, rps_list
+    return file_list_based_last_num, file_list_based_throughput, rps_list, last_num_list
 
 def get_values(key, files_list, latency_dict, slow_down_dict, deadline_miss_rate_dict, slow_down_99_9_dict, latency_99_9_dict, slow_down_99_99_dict, latency_99_99_dict):
     index = 0;
@@ -225,8 +230,8 @@ def load_files(file1, file2):
  
 if __name__ == "__main__":
     import json
-    #file_folders = ['SHINJUKU', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
-    #file_folders = ['SHINJUKU_7', 'SHINJUKU_25', 'DARC', 'EDF_SRSF_INTERRUPT']
+    #file_folders = ['EDF_INTERRUPT']
+    #file_folders = ['DARC', 'EDF_INTERRUPT']
     file_folders = ['SHINJUKU', 'EDF_INTERRUPT','DARC']
     #file_folders = ['DARC']
     #file_folders = ['SHINJUKU1', 'EDF_INTERRUPT1','DARC1']
@@ -247,15 +252,20 @@ if __name__ == "__main__":
     rps_list = []
 
     argv = sys.argv[1:]
-    if len(argv) < 1:
-        print("usage ", sys.argv[0], "[file key]")
+    if len(argv) < 2:
+        print("usage ", sys.argv[0], "[file key] [file order, 1 is throughput, 2 is last number]")
         sys.exit()
 
+    file_order = argv[1]
     total_meet_dict, seperate_meet_dict = load_files("./total_meet.txt", "./seperate_meet.txt")
     for key in file_folders:
-        files_list, rps_list = file_name(key, argv[0])
+        files_list_based_last_num, files_list_based_throughput, rps_list, last_num_list = file_name(key, argv[0])
         load_dict[key] = rps_list
-        get_values(key, files_list, latency, slow_down, deadline_miss_rate, slow_down_99_9, latency_99_9, slow_down_99_99, latency_99_99)
+        if file_order == "1":
+            get_values(key, files_list_based_throughput, latency, slow_down, deadline_miss_rate, slow_down_99_9, latency_99_9, slow_down_99_99, latency_99_99)
+        else:
+            get_values(key, files_list_based_last_num, latency, slow_down, deadline_miss_rate, slow_down_99_9, latency_99_9, slow_down_99_99, latency_99_99)
+
     print("99 latency:")
     for key, value in latency.items():
         print(key, ":", value)
@@ -367,3 +377,9 @@ if __name__ == "__main__":
     f21 = open("total_miss_rate.txt", 'w')
     f21.write(js21)
     f21.close()
+
+    js22 = json.dumps(last_num_list)
+    f22 = open("last_num.txt", 'w')
+    f22.write(js22)
+    f22.close()
+
