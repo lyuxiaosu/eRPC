@@ -26,6 +26,7 @@ size_t responses[100]; // each client thread get the number of responses
 uint32_t requests[100]; // each client thread sends out the number of requests
 uint32_t dropped[100] = {0};
 
+std::mutex rps_mutex;
 std::unordered_map<int, int> seperate_sending_rps; // key is request type, value is the sending rps
 std::unordered_map<int, int> seperate_service_rps; 
 
@@ -290,11 +291,8 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
   responses[thread_id] = c.num_resps;
   requests[thread_id] = c.num_reqs;
 
-  if (seperate_sending_rps.count(req_type_array[thread_id]) > 0) {
-        seperate_sending_rps[req_type_array[thread_id]] += rps;
-  } else {
-  	seperate_sending_rps[req_type_array[thread_id]] = rps;
-  }
+  std::lock_guard<std::mutex> lock(rps_mutex);
+  seperate_sending_rps[req_type_array[thread_id]] += rps;  
 
   printf("sending requests %zu rps %d test time %ld seconds\n", c.num_resps, rps, delta_s);
   for (size_t i = 0; i < c.num_resps; i++) {
