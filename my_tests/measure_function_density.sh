@@ -28,8 +28,8 @@ worker_core_start_idx=$((2 + $listener_count + 1))
 chmod 400 ./id_rsa
 remote_ip="128.110.218.253"
 
-#concurrency=(1 10 20 24 28 30 32 40 100 300 500 700 900 1100 1300 1500 1700 1900 2000)
-concurrency=(50 60 64)
+concurrency=(1 10 20 24 28 30 32 40 50 60 64 100 300 500 700 900 1100 1300 1500 1700 1900 2000)
+#concurrency=(50 60 64)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#concurrency[@]};i++ )) do
@@ -65,6 +65,7 @@ for(( i=0;i<${#concurrency[@]};i++ )) do
 
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "$path/stop_monitor.sh"
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_perf.sh"
         sleep 4 
 done
 
