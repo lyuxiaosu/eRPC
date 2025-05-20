@@ -232,7 +232,7 @@ if __name__ == "__main__":
     import json
     #file_folders = ['EDF_INTERRUPT']
     #file_folders = ['DARC', 'EDF_INTERRUPT']
-    file_folders = ['SHINJUKU', 'EDF_INTERRUPT','DARC']
+    file_folders = ['EDF_INTERRUPT', 'RR','JSQ', 'LLD']
     #file_folders = ['DARC']
     #file_folders = ['SHINJUKU1', 'EDF_INTERRUPT1','DARC1']
     #file_folders = ['EDF_SRSF_INTERRUPT']
