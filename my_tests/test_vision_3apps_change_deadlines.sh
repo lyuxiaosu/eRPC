@@ -94,6 +94,8 @@ req_type=${req_type%,}
 echo $req_type
 
 sed -i "s/^--req_type.*/$req_type/" /my_mount/eRPC/apps/openloop_vision/config
+sed -i -E 's#--inputs[[:space:]]+[^-]+#--inputs ./frog5_12_cropped.bmp, ./lake.bmp ./frog5_12_cropped.bmp#' /my_mount/eRPC/apps/openloop_vision/config
+
 for(( i=0;i<${#deadline_multiplier[@]};i++ )) do
 	throughput1=$(echo "($throughput_percentage * $base_throughput1) / 100" | bc)
 	throughput2=$(echo "($throughput_percentage * $base_throughput2) / 100" | bc)
