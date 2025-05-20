@@ -1,4 +1,5 @@
 --test_ms 20000
+--inputs ./frog5_12_cropped.bmp, ./frog5_12_cropped.bmp
 --sm_verbose 0
 --num_server_threads 1 
 --window_size 10
@@ -7,7 +8,7 @@
 --num_processes 2
 --numa_0_ports 0
 --numa_1_ports 3,3
---req_type 1,1,1,1,1,1,1,1,1,1
---rps 10,10,10,10,10,10,10,10,10,10
+--req_type 1,1,1,1,1,1,2,2,2,2,2,2
+--rps 1100,1100,1100,1100,1100,1100,275,275,275,275,275,275
 --req_parameter 3,120
 --warmup_rps 200,200,200,200,200,200,200,200,200

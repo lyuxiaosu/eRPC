@@ -14,6 +14,7 @@
 #include "util/numautils.h"
 #include "util/timer.h"
 
+std::mutex rps_mutex;
 std::map<int, uint8_t*> data_bufs;
 std::map<int, size_t> data_sizes;
 std::atomic<uint64_t> warmup_completes(0);
@@ -38,11 +39,13 @@ std::vector<int> rps_array;
 std::vector<int> req_type_array;
 std::vector<int> warmup_rps;
 std::vector<int> req_parameter_array;
+std::vector<std::string> inputs_array;
 
 DEFINE_uint64(num_server_threads, 1, "Number of threads at the server machine");
 DEFINE_uint64(num_client_threads, 1, "Number of threads per client machine");
 DEFINE_uint64(warmup_count, 100, "Number of packets to send during the warmup phase");
 DEFINE_string(rps, "100", "Number of requests per second that client sends to the server");
+DEFINE_string(inputs, "./frog5_12_cropped.bmp", "Input files per type");
 DEFINE_string(req_type, "1", "Request type for each thread to send");
 DEFINE_string(req_parameter, "15", "Request parameters of each type request");
 DEFINE_string(warmup_rps, "200", "Number of requests per second during the warmup phase");
@@ -336,19 +339,28 @@ void client_func(erpc::Nexus *nexus, size_t thread_id) {
 
   int64_t delta_ms = (endT.tv_sec - startT.tv_sec) * 1000 + (endT.tv_nsec - startT.tv_nsec) / 1000000; 
   int64_t delta_s = delta_ms / 1000;
+  assert(delta_s != 0);
   int rps = success_sent / delta_s;
   sending_rps[thread_id] = rps;
   responses[thread_id] = c.num_resps;
   requests[thread_id] = success_sent;
 
+  std::lock_guard<std::mutex> lock(rps_mutex);
   if (seperate_sending_rps.count(req_type_array[thread_id]) > 0) {
         seperate_sending_rps[req_type_array[thread_id]] += rps;
   } else {
   	seperate_sending_rps[req_type_array[thread_id]] = rps;
   }
-
+  
   delta_ms = (c.last_response_ts.tv_sec - startT.tv_sec) * 1000 + (c.last_response_ts.tv_nsec - startT.tv_nsec) / 1000000;
   delta_s = delta_ms / 1000;
+  assert(delta_s != 0);
+  if (delta_s == 0) {
+	printf("delta time is 0, error\n");
+        close_sessions(c);
+	return;
+  }
+
   int s_rps = static_cast<int>(c.num_resps) / delta_s;
   service_rps[thread_id] = s_rps;
 
@@ -380,6 +392,17 @@ void parse_string(std::string rps, std::vector<int>& result) {
         	result.push_back(stoi(substr));
     	}
 }
+
+void parse_string(std::string rps, std::vector<std::string>& result) {
+    
+	std::stringstream ss(rps);
+    	while (ss.good()) {
+        	std::string substr;
+        	getline(ss, substr, ',');
+        	result.push_back(substr);
+    	}
+}
+
 static inline void
 perf_log_init()
 {
@@ -441,30 +464,13 @@ int main(int argc, char **argv) {
   signal(SIGINT, ctrl_c_handler);
   perf_log_init();
  
+  parse_string(FLAGS_inputs, inputs_array);
   size_t data_size;
-  //mser
-  //data_bufs[3] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size)); 
-  //data_sizes[3] = data_size;
-  //sift
-  data_bufs[1] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  data_sizes[1] = (data_size);
-
-  //multi_ncut
-  //data_bufs[5] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  data_bufs[2] = (read_file_to_array("./lake.bmp", &data_size));
-  data_sizes[2] = (data_size);
-  //tracking
-  //data_bufs[1] = (read_file_to_array("./tracking_seq.bmp", &data_size));
-  //data_bufs[1] = (read_file_to_array("./tracking_large.bmp", &data_size));
-  //data_sizes[1] = (data_size);
-  //disparity
-  //data_bufs[2] = (read_file_to_array("./disparity_seq.bmp", &data_size));
-  //data_sizes[2] = (data_size);
-  //cifar10
-  data_bufs[3] = (read_file_to_array("./frog5_12_cropped.bmp", &data_size));
-  //data_bufs[6] = (read_file_to_array("./test.bmp", &data_size));
-  printf("data size %zu\n", data_size);
-  data_sizes[3] = (data_size);
+  for(size_t i = 0; i < inputs_array.size(); i++) {
+  	data_bufs[i+1] = read_file_to_array(inputs_array[i].c_str(), &data_size);
+	data_sizes[i+1] = data_size; 
+        printf("read size=%zu\n", data_size);
+  }
 
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 

@@ -11,9 +11,14 @@
 #./test_high_bimodal_realapp.sh SHINJUKU
 #./test_high_bimodal_realapp.sh DARC
 
-./test_vision_3apps_change_deadlines.sh EDF_INTERRUPT 12
-./test_vision_3apps_change_deadlines.sh SHINJUKU 12
-./test_vision_3apps_change_deadlines.sh DARC 12
+#./test_vision_3apps_change_deadlines.sh EDF_INTERRUPT 12
+#./test_vision_3apps_change_deadlines.sh SHINJUKU 12
+#./test_vision_3apps_change_deadlines.sh DARC 12
+
+./test_dispatchers.sh RR 12 
+./test_dispatchers.sh JSQ 12
+./test_dispatchers.sh LLD 12
+./test_dispatchers.sh EDF_INTERRUPT 12
 
 #./test_bimodal.sh EDF_INTERRUPT
 #./test_bimodal.sh DARC
