@@ -1,6 +1,6 @@
 #!/bin/bash
 function usage {
-        echo "$0 [scheduler_policy: FIFO, EDF] [dispatcher_policy:SHINJUKU,EDF_INTERRUPT,DARC, TO_GLOBAL_QUEUE,RR,JSQ,LLD]"
+        echo "$0 [scheduler_policy: FIFO, EDF] [dispatcher_policy:EDF_INTERRUPT, TO_GLOBAL_QUEUE]"
         exit 1
 }
 
@@ -20,8 +20,14 @@ popd
 scheduler_policy=$1
 dispatcher_policy=$2
 disable_busy_loop="false"
-disable_autoscaling="true"
 disable_service_ts_simulation="true"
+disable_get_req_from_GQ="true"
+
+if [ "$dispatcher_policy" = "TO_GLOBAL_QUEUE" ]; then
+    disable_get_req_from_GQ="false"
+fi
+
+disable_preempt="true"
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 function run_tests() {
@@ -43,7 +49,7 @@ function run_tests() {
 	client_log="client-${listener_num}-${worker_group_size}-${worker_count[i]}.log"
 	#cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
         echo "start server with worker ${worker_count[i]} testing..."
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh ${worker_count[i]} $listener_num $worker_core_start_idx $dispatcher_policy $scheduler_policy $server_log $disable_busy_loop $disable_autoscaling $disable_service_ts_simulation "empty.json" > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh ${worker_count[i]} $listener_num $worker_core_start_idx $dispatcher_policy $scheduler_policy $server_log $disable_busy_loop $disable_service_ts_simulation $disable_get_req_from_GQ $disable_preempt "empty.json" > 1.txt 2>&1 &"
         sleep 5
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
@@ -69,12 +75,12 @@ function run_tests() {
     mv ../client-*.log $folder_name
 }
 
-worker_count1=(1 2 3 4 5)
+worker_count2=(9)
 #worker_count1=(1 3 6 9 12 15 18)
 #worker_count1=(5 10 15 20)
 #worker_count2=(3 6 9 12 15 18)
 
-run_tests "worker_count1[@]" 1 
+#run_tests "worker_count1[@]" 1 
 #run_tests "worker_count1[@]" 5
-#run_tests "worker_count2[@]" 3 
+run_tests "worker_count2[@]" 3 
 
