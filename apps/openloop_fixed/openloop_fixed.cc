@@ -454,8 +454,8 @@ int main(int argc, char **argv) {
 
   printf("total sending rate %d, service rate %d total sent out requests %u total received response %zu dropped %u\n", 
 	  sending_rate, service_rate, total_requests, total_responses, total_dropped);
-  fprintf(perf_log, "total sending rate %d, service rate %d total sent out requests %u total received response %zu\n",
-          sending_rate, service_rate, total_requests, total_responses); 
+  fprintf(perf_log, "total sending rate %d, service rate %d total sent out requests %u total received response %zu dropped %u\n",
+          sending_rate, service_rate, total_requests, total_responses, total_dropped); 
   for (const auto& pair : seperate_sending_rps) {
         printf("type %d sending rate %d service rate %d\n", pair.first, 
 		pair.second, seperate_service_rps[pair.first]); 
