@@ -6,7 +6,7 @@
 
 #!/bin/bash
 function usage {
-        echo "$0 [dispatcher policy, SHINJUKU, EDF_INTERRUPT, DARC, TO_GLOBAL_QUEUE, RR, JSQ, LLD] [client threads count]"
+        echo "$0 [dispatcher policy, EDF_INTERRUPT, RR, JSQ, LLD] [client threads count]"
         exit 1
 }
 
@@ -82,7 +82,7 @@ base_throughput2=1650
 #base_throughput5=285
 #base_throughput6=2850
 
-throughput_percentage=(100)
+throughput_percentage=(96)
 
 #8 workers
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -129,7 +129,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "likwid-powermeter sudo $path/start_test.sh $threads_count 3 5 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling > $cpu_log 2>&1 &"
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 14 1 3 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling false $json_file > $cpu_log 2>&1 &"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/compare_dispatchers.sh 6 1 3 $dispatcher_policy $server_log $disable_busy_loop $disable_autoscaling true $json_file > $cpu_log 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/compare_dispatchers.sh 6 1 3 $dispatcher_policy $server_log $disable_busy_loop true $json_file > $cpu_log 2>&1 &"
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
 	sleep 10

@@ -1,7 +1,7 @@
 #this script measure function density with openloop to compare with rFaaS 
 #!/bin/bash
 function usage {
-        echo "$0 <server worker count> <listener_count> <dispatcher polidy:SHINJUKU,EDF_INTERRUPT,DARC, TO_GLOBAL_QUEUE,RR,JSQ,LLD> <scheduler policy:EDF, FIFO> <disable busy loop>"
+        echo "$0 <server worker count> <listener_count> <dispatcher polidy:EDF_INTERRUPT,TO_GLOBAL_QUEUE> <scheduler policy:EDF, FIFO> <disable busy loop>"
         exit 1
 }
 
@@ -28,8 +28,8 @@ worker_core_start_idx=$((2 + $listener_count + 1))
 chmod 400 ./id_rsa
 remote_ip="128.110.218.253"
 
-concurrency=(1 10 20 24 28 30 32 40 50 60 64 100 300 500 700 900 1100 1300 1500 1700 1900 2000)
-#concurrency=(50 60 64)
+#concurrency=(1 10 20 24 28 30 32 40 50 60 64 100 300 500 700 900 1100 1300 1500 1700 1900 2000)
+concurrency=(10)
 
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 for(( i=0;i<${#concurrency[@]};i++ )) do
