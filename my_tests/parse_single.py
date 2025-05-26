@@ -41,7 +41,8 @@ def parse_file(file_path):
             r_type = line.split(" ")[1] 
             sending_rate = line.split(" ")[4] 
             service_rate = line.split(" ")[7]
-            total_sending = line.split(" ")[10]  
+            #total_sending = line.split(" ")[10]  
+            total_sending = 0	
             print("type ", r_type, " sending rate", sending_rate, " service rate ", service_rate, " total sending ", total_sending)
     miss_rate = (deadline_miss_count / total_count) * 100
     miss_rate_formatted = "{:.4f}".format(miss_rate)
