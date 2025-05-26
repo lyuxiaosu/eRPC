@@ -393,14 +393,14 @@ void parse_string(std::string rps, std::vector<int>& result) {
     	}
 }
 
-void parse_string(std::string rps, std::vector<std::string>& result) {
-    
-	std::stringstream ss(rps);
+void parse_string(std::string str, std::vector<std::string>& result) {
+ 	printf("str=%s\n", str.c_str());	
+	std::stringstream ss(str);
     	while (ss.good()) {
-        	std::string substr;
-        	getline(ss, substr, ',');
+		std::string substr;
+		getline(ss, substr, ',');
         	result.push_back(substr);
-    	}
+   	}
 }
 
 static inline void
@@ -464,6 +464,8 @@ int main(int argc, char **argv) {
   signal(SIGINT, ctrl_c_handler);
   perf_log_init();
  
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
+
   parse_string(FLAGS_inputs, inputs_array);
   size_t data_size;
   for(size_t i = 0; i < inputs_array.size(); i++) {
@@ -471,9 +473,7 @@ int main(int argc, char **argv) {
 	data_sizes[i+1] = data_size; 
         printf("read size=%zu\n", data_size);
   }
-
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
-
+  
   parse_string(FLAGS_rps, rps_array);
   for(long unsigned int i = 0; i < rps_array.size();i++){ 
 	printf("%d ", rps_array[i]);
