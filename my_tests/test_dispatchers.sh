@@ -6,7 +6,7 @@
 
 #!/bin/bash
 function usage {
-        echo "$0 [dispatcher policy, EDF_INTERRUPT, RR, JSQ, LLD] [client threads count]"
+        echo "$0 [dispatcher policy, EDF_INTERRUPT, RR, JSQ, LLD, Sledge] [client threads count]"
         exit 1
 }
 
@@ -24,6 +24,19 @@ pushd ../
 popd
 
 dispatcher_policy=$1
+disable_busy_loop="true"
+disable_preempt="true"
+disable_get_req_from_GQ="true"
+scheduler="EDF"
+if [ "$dispatcher_policy" = "Sledge" ]; then
+    #dispatcher_policy="LLD"
+    dispatcher_policy="TO_GLOBAL_QUEUE"
+    scheduler="FIFO"
+    disable_preempt="false"
+    disable_get_req_from_GQ="false"
+    disable_busy_loop="false"
+fi
+
 json_file="vision_apps_dispatcher.json"
 
 if [ "$dispatcher_policy" == "DARC" ]; then
@@ -40,7 +53,7 @@ elif [ "$dispatcher_policy" == "EDF_INTERRUPT" ]; then
     #more shorters
     #throughput_percentage=(10 20 30 40 50 60 65 70 75 79 80 84 86 88 90 94 95 96 97 98 99 100 101)
     #same
-    throughput_percentage=(75 79 80 82 84 86 88 94 96)
+    throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
     #more longers
     #throughput_percentage=(10 20 30 40 50 60 65 70 75 79 80 82 84 86 88 90 92 94 95 96 97 98 99 100)
 elif [ "$dispatcher_policy" == "SHINJUKU" ]; then
@@ -62,14 +75,14 @@ elif [ "$dispatcher_policy" == "LLD" ]; then
     #throughput_percentage=(100)
     #same shorters
     throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
+elif [ "$dispatcher_policy" == "TO_GLOBAL_QUEUE" ]; then
+    throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
 fi
 
-disable_busy_loop="true"
-disable_autoscaling="true"
 threads_count=$2
 group_size=$(($threads_count / 2))
 
-flag="vision"
+flag="dispatcher"
 
 base_throughput1=6600
 base_throughput2=1650
@@ -82,7 +95,7 @@ base_throughput2=1650
 #base_throughput5=285
 #base_throughput6=2850
 
-throughput_percentage=(96)
+#throughput_percentage=(96)
 
 #8 workers
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -129,7 +142,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	echo "start $dispatcher_policy ${throughput_percentage[i]} testing..."
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "likwid-powermeter sudo $path/start_test.sh $threads_count 3 5 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling > $cpu_log 2>&1 &"
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 14 1 3 $dispatcher_policy  $server_log $disable_busy_loop $disable_autoscaling false $json_file > $cpu_log 2>&1 &"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/compare_dispatchers.sh 6 1 3 $dispatcher_policy $server_log $disable_busy_loop true $json_file > $cpu_log 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/compare_dispatchers.sh 6 1 3 $dispatcher_policy $scheduler $server_log $disable_busy_loop true $disable_preempt $disable_get_req_from_GQ $json_file > $cpu_log 2>&1 &"
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &"
 	sleep 10
@@ -148,8 +161,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "sudo $path/kill_sledge.sh"
         sleep 10
 done
-#folder_name=$dispatcher_policy"-$flag"
-folder_name=$dispatcher_policy
+folder_name="$flag-"$dispatcher_policy
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mkdir $path/$folder_name"
 ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip  "mv *.log $path/$folder_name"
 mkdir $folder_name
