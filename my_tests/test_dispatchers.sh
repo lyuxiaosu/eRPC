@@ -95,7 +95,7 @@ base_throughput2=1650
 #base_throughput5=285
 #base_throughput6=2850
 
-#throughput_percentage=(96)
+#throughput_percentage=(100)
 
 #8 workers
 path="/my_mount/sledge-serverless-framework/runtime/tests"
@@ -114,7 +114,7 @@ req_type=${req_type%,}
 
 echo $req_type
 
-sed -i -E 's#--inputs[[:space:]]+[^-]+#--inputs ./frog5_12_cropped.bmp, ./frog5_12_cropped.bmp#' /my_mount/eRPC/apps/openloop_vision/config
+sed -i -E 's#--inputs[[:space:]]+[^-]+#--inputs ./frog5_12_cropped.bmp,./frog5_12_cropped.bmp#' /my_mount/eRPC/apps/openloop_vision/config
 sed -i "s/^--req_type.*/$req_type/" /my_mount/eRPC/apps/openloop_vision/config
 for(( i=0;i<${#throughput_percentage[@]};i++ )) do
         throughput1=$(echo "(${throughput_percentage[i]} * $base_throughput1) / 100" | bc)
