@@ -35,6 +35,8 @@ if [ "$dispatcher_policy" = "Sledge" ]; then
     disable_preempt="false"
     disable_get_req_from_GQ="false"
     disable_busy_loop="false"
+elif [ "$dispatcher_policy" = "LLD" ] || [ "$dispatcher_policy" = "RR" ] || [ "$dispatcher_policy" = "JSQ" ]; then
+    disable_preempt="false"
 fi
 
 json_file="vision_apps_dispatcher.json"
@@ -53,7 +55,7 @@ elif [ "$dispatcher_policy" == "EDF_INTERRUPT" ]; then
     #more shorters
     #throughput_percentage=(10 20 30 40 50 60 65 70 75 79 80 84 86 88 90 94 95 96 97 98 99 100 101)
     #same
-    throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
+    throughput_percentage=(75 79 80 84 86 88 90 94 95 96 97 98)
     #more longers
     #throughput_percentage=(10 20 30 40 50 60 65 70 75 79 80 82 84 86 88 90 92 94 95 96 97 98 99 100)
 elif [ "$dispatcher_policy" == "SHINJUKU" ]; then
@@ -66,17 +68,17 @@ elif [ "$dispatcher_policy" == "SHINJUKU" ]; then
 elif [ "$dispatcher_policy" == "RR" ]; then
     #throughput_percentage=(100)
     #same shorters
-    throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
+    throughput_percentage=(75 79 80 84 86 88 90 94 95 96 97 98)
 elif [ "$dispatcher_policy" == "JSQ" ]; then
     #throughput_percentage=(100)
     #same shorters
-    throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
+    throughput_percentage=(75 79 80 84 86 88 90 94 95 96 97 98)
 elif [ "$dispatcher_policy" == "LLD" ]; then
     #throughput_percentage=(100)
     #same shorters
-    throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
+    throughput_percentage=(75 79 80 84 86 88 90 94 95 96 97 98)
 elif [ "$dispatcher_policy" == "TO_GLOBAL_QUEUE" ]; then
-    throughput_percentage=(75 79 80 84 86 88 90 94 95 96)
+    throughput_percentage=(75 79 80 84 86 88 90 94 95 96 97 98)
 fi
 
 threads_count=$2
@@ -95,7 +97,7 @@ base_throughput2=1650
 #base_throughput5=285
 #base_throughput6=2850
 
-#throughput_percentage=(100)
+#throughput_percentage=(98)
 
 #8 workers
 path="/my_mount/sledge-serverless-framework/runtime/tests"
