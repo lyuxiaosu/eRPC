@@ -418,7 +418,8 @@ uint8_t* read_file_to_array(const char* filename, size_t* file_size) {
     // Open the file in binary mode
     FILE* file = fopen(filename, "rb");
     if (!file) {
-        perror("Failed to open file");
+	*file_size = 0;
+        printf("Failed to open file:%s\n", filename);
         return NULL;
     }
 
