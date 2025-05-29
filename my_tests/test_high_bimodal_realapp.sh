@@ -3,7 +3,7 @@
 # all moduels have the same initial memory size.
 #!/bin/bash
 function usage {
-        echo "$0 [dispatcher policy, SHINJUKU or EDF_INTERRUPT or DARC]"
+        echo "$0 [dispatcher policy, SHINJUKU or EDF_INTERRUPT, DARC or Sledge]"
         exit 1
 }
 
@@ -18,7 +18,21 @@ pushd ../
 popd
 
 chmod 400 ./id_rsa
-remote_ip="128.110.219.10"
+remote_ip="128.110.218.253"
+
+disable_busy_loop="true"
+disable_preempt="true"
+disable_get_req_from_GQ="true"
+scheduler="EDF"
+dispatcher_policy=$1
+if [ "$dispatcher_policy" = "Sledge" ]; then
+    #dispatcher_policy="LLD"
+    dispatcher_policy="TO_GLOBAL_QUEUE"
+    scheduler="FIFO"
+    disable_preempt="false"
+    disable_get_req_from_GQ="false"
+    disable_busy_loop="false"
+fi
 
 req_parameter="--req_parameter 1,120"
 sed -i "s/^--req_parameter.*/$req_parameter/" /my_mount/eRPC/apps/openloop_realapps/config
@@ -26,16 +40,22 @@ sed -i "s/^--req_parameter.*/$req_parameter/" /my_mount/eRPC/apps/openloop_reala
 req_type="--req_type 1,1,1,2,2,2"
 sed -i "s/^--req_type.*/$req_type/" /my_mount/eRPC/apps/openloop_realapps/config
 
-dispatcher_policy=$1
 base_throughput=710
-#base_throughput1=16000
-#base_throughput2=2000
 
-#throughput_percentage=(1 10 20 30 40 50 60 70 80 86 87 88 90 92 94 96 98 99 100)
-#throughput_percentage=(86)
-#throughput_percentage=(100)
+if [ "$dispatcher_policy" == "DARC" ]; then
+        throughput_percentage=(1 10 20 30 40 50 60 70 80 81 82 83 84 85 86)
+elif [ "$dispatcher_policy" == "SHINJUKU" ]; then
+        throughput_percentage=(1 10 20 30 40 50 60 70 80 86 88 90 92 94 95 96)
+elif [ "$dispatcher_policy" == "EDF_INTERRUPT" ]; then
+        throughput_percentage=(1 10 20 30 40 50 60 70 80 86 88 90 92 94 96 98 99)
+elif [ "$dispatcher_policy" == "TO_GLOBAL_QUEUE" ]; then
+	#fixed interval = 1ms
+        #throughput_percentage=(1 10 20 30 40 50 60 70 80 86 88 90 92 94 96 97 98)
+	#fixed interval = 15us
+	throughput_percentage=(1 10 20 30 40 50 60 70)
+fi
 
-
+throughput_percentage=(62 64 66 68)
 path="/my_mount/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/old_version/sledge-serverless-framework/runtime/tests"
 #path="/my_mount/edf_interrupt/sledge-serverless-framework/runtime/tests"
@@ -59,7 +79,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	cpu_log="cpu-${total_throughput}-${throughput_percentage[i]}.log"
 	echo "start server for $dispatcher_policy ${throughput_percentage[i]} testing..."
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/sed_json.sh $path/high_bimodal_realapps.json 1 5"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 6 1 3 $dispatcher_policy $server_log true true true high_bimodal_realapps.json > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 6 1 3 $dispatcher_policy $scheduler $server_log $disable_busy_loop true $disable_get_req_from_GQ $disable_preempt high_bimodal_realapps.json > 1.txt 2>&1 &"
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &" 
 	sleep 10

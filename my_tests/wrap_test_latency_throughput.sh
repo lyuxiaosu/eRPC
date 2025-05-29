@@ -1,13 +1,14 @@
 #!/bin/bash
 
-./test_fix.sh EDF_INTERRUPT
-./test_fix.sh DARC
-./test_fix.sh SHINJUKU 
-./test_fix.sh Sledge 
+#./test_fix.sh Sledge 
+#./test_fix.sh DARC
+#./test_fix.sh SHINJUKU 
+#./test_fix.sh EDF_INTERRUPT
 #./test_high_bimodal.sh EDF_INTERRUPT
 #./test_high_bimodal.sh SHINJUKU
 #./test_high_bimodal.sh DARC
 
+#./test_high_bimodal_realapp.sh Sledge 
 #./test_high_bimodal_realapp.sh EDF_INTERRUPT
 #./test_high_bimodal_realapp.sh SHINJUKU
 #./test_high_bimodal_realapp.sh DARC
@@ -20,6 +21,12 @@
 #./test_dispatchers.sh JSQ 12
 #./test_dispatchers.sh LLD 12
 #./test_dispatchers.sh EDF_INTERRUPT 12
+#./test_dispatchers.sh Sledge 12
+
+./test_dispatchers_with_lognormal.sh RR 12
+./test_dispatchers_with_lognormal.sh LLD 12
+./test_dispatchers_with_lognormal.sh EDF_INTERRUPT 12
+./test_dispatchers_with_lognormal.sh Sledge 12
 
 #./test_bimodal.sh EDF_INTERRUPT
 #./test_bimodal.sh DARC
@@ -63,9 +70,11 @@
 #./test_exponential.sh SHINJUKU 10
 #./test_exponential.sh EDF_INTERRUPT 10
 #./test_exponential.sh DARC 10
+#./test_exponential.sh Sledge 10
 #./test_log_normal.sh SHINJUKU 10
 #./test_log_normal.sh EDF_INTERRUPT 10
 #./test_log_normal.sh DARC 10
+#./test_log_normal.sh Sledge 10
 
 #./measure_function_density_scaling2.sh 1 1 1
 #./measure_function_density_scaling2.sh 1 1 12000
