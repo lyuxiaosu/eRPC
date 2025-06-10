@@ -78,7 +78,7 @@ elif [ "$dispatcher_policy" == "LLD" ]; then
     #same shorters
     throughput_percentage=(1 5 10 15 20 25 30 35 40 45 50 55 60 62 64 66 68 70 72 74 76)
 elif [ "$dispatcher_policy" == "TO_GLOBAL_QUEUE" ]; then
-    throughput_percentage=(1 5 10 15 20 25 30 35 40 45 50 55 60 62 64 66 68 70 72 74 76)
+    throughput_percentage=(1 5 10 11 12 13 14 15 20 25 30 35 40 45 50 55 60 62 64 66 68 70 72 74 76)
 fi
 
 threads_count=$2
@@ -93,7 +93,7 @@ base_throughput=100
 #base_throughput5=285
 #base_throughput6=2850
 
-throughput_percentage=(35 40 45 50)
+throughput_percentage=(77 78)
 
 #8 workers
 path="/my_mount/sledge-serverless-framework/runtime/tests"
