@@ -14,14 +14,14 @@ pushd ../
 ./build.sh
 popd
 
-req_parameter="--req_parameter 1,1100"
+req_parameter="--req_parameter 10,100"
 sed -i "s/^--req_parameter.*/$req_parameter/" /my_mount/eRPC/apps/openloop_client/config
 #req_type="--req_type 1,1,1,1,1,1,1,1,2"
 req_type="--req_type 1,1,1,1,1,2"
 sed -i "s/^--req_type.*/$req_type/" /my_mount/eRPC/apps/openloop_client/config
 
 chmod 400 ./id_rsa
-remote_ip="128.110.219.9"
+remote_ip="128.110.219.3"
 
 dispatcher_policy=$1
 #base_throughput1=16177
@@ -61,7 +61,7 @@ for(( i=0;i<${#throughput_percentage[@]};i++ )) do
 	echo "start server for $dispatcher_policy ${throughput_percentage[i]} testing..."
         #ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/sed_json.sh $path/fib.json 1 4"
         ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/sed_json.sh $path/hash_high_bimodal.json 1 5"
-        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 6 1 3 $dispatcher_policy $server_log true true false hash_high_bimodal.json > 1.txt 2>&1 &"
+        ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "sudo $path/start_test.sh 6 1 3 $dispatcher_policy EDF $server_log true false true true hash_high_bimodal.json > 1.txt 2>&1 &"
 	#echo "start cpu monitoring"
 	#ssh -o stricthostkeychecking=no -i ./id_rsa xiaosuGW@$remote_ip "$path/start_monitor.sh $cpu_log > /dev/null 2>&1 &" 
 	sleep 10
