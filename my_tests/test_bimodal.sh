@@ -14,7 +14,7 @@ pushd ../
 ./build.sh
 popd
 
-req_parameter="--req_parameter 10,100"
+req_parameter="--req_parameter 1,1100"
 sed -i "s/^--req_parameter.*/$req_parameter/" /my_mount/eRPC/apps/openloop_client/config
 #req_type="--req_type 1,1,1,1,1,1,1,1,2"
 req_type="--req_type 1,1,1,1,1,2"
